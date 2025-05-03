@@ -30,7 +30,7 @@
                         </p>
                         <div class="form-group">
                             <select name="veh_size_pass" id="veh_size_pass" class="form-control" style="width: auto;"
-                                onchange="pricewithoutvs();">
+                                onchange="h();">
                                 <option selected disabled>Please select</option>
                                 <option value="Yes">Yes</option>
                                 <option value="No">No</option>
