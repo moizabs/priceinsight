@@ -8,7 +8,7 @@
         margin-right: 20px;
     }
 </style>
-<body class="animsition">
+<body>
     <div class="page-wrapper">
         @include('Layout.sidebar')
 

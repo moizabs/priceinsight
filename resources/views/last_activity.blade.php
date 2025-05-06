@@ -9,7 +9,7 @@
     }
 </style>
 
-<body class="animsition">
+<body>
     <div class="page-wrapper">
         @include('Layout.sidebar')
 
@@ -46,28 +46,21 @@
                                 <tbody>
                                     <tr>
                                         <td class="text-center">
-                                            03-May-2025
+                                            {{ $last_Activity->last_login_at }}
                                         </td>
                                         <td class="text-center">
-                                            Moiz
+                                            {{ $last_Activity->name }}
                                         </td>
                                         <td class="text-center">
-                                            192.7520.251.11
+                                            {{ $last_Activity->ip }}
                                         </td>
                                         <td class="text-center">
-                                            Sindh Pakistan
+                                            {{ $last_Activity->location }}
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-
-                        {{-- <div class="row">
-            <div class="col-lg-12">
-                <?php echo $pagination->createLinks(); ?>
-            </div>
-        </div> --}}
-
                     </div>
                 </div>
 

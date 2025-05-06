@@ -22,6 +22,10 @@ class User extends Authenticatable
         'email',
         'password',
         'profile_photo_path',
+        'access',
+        'ip',
+        'location',
+        'last_login_at',
         'email_verified_at',
     ];
 
@@ -46,5 +50,25 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function pricePerMiles()
+    {
+        return $this->hasMany(PricePerMile::class);
+    }
+
+    public function pricingOptions()
+    {
+        return $this->hasMany(PricingOptions::class);
+    }
+
+    public function stateExceptions()
+    {
+        return $this->hasMany(StateExceptions::class);
+    }
+
+    public function zipCodeExceptions()
+    {
+        return $this->hasMany(ZipCodeExceptions::class);
     }
 }

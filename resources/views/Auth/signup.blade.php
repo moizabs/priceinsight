@@ -19,7 +19,13 @@
                             <img src="{{ asset('images/icon/logo.png') }}" alt="CoolAdmin">
                         </a>
                     </div>
-
+                    @if(session('Success!'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('Success!') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    @endif
+                
                     @if(session('Error!'))
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             {{ session('Error!') }}
@@ -27,23 +33,36 @@
                         </div>
                     @endif
 
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <h2>Create Account</h2><br/>
+
                     <div class="login-form">
-                        <form action="{{ route('login.submit') }}" method="post">
+                        <form action="{{ route('create.account') }}" method="post">
                             @csrf
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input class="au-input au-input--full" type="text" name="name" placeholder="Enter Name" required>
+                            </div>
+
                             <div class="form-group">
                                 <label>Email</label>
                                 <input class="au-input au-input--full" type="email" name="email" placeholder="Enter Email" required>
                             </div>
+
                             <div class="form-group">
                                 <label>Password</label>
                                 <input class="au-input au-input--full" type="password" name="password" placeholder="Enter Password" required>
                             </div>
-                            <!-- <div class="col-sm-12 mb-2 p-0">
-                                <div class="g-recaptcha" id="feedback-recaptcha" 
-                                     data-sitekey="6LcmYJwkAAAAAJLp-uGl90uV15xZrcLbjyN2K2FR">
-                                </div>
-                            </div> -->
-                            <button name="submit" class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Sign In</button>
+                            <button class="au-btn au-btn--block au-btn--blue m-b-20" type="submit">Create Account</button>
                         </form>
                     </div>
                 </div>

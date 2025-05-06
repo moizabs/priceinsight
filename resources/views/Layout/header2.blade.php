@@ -6,9 +6,9 @@
                     <img src="{{ asset('images/icon/logo.png') }}" alt="CoolAdmin" />
                 </a>
                 <button class="hamburger hamburger--slider" type="button">
-                            <span class="hamburger-box">
-                                <span class="hamburger-inner"></span>
-                            </span>
+                    <span class="hamburger-box">
+                        <span class="hamburger-inner"></span>
+                    </span>
                 </button>
             </div>
         </div>

@@ -3,8 +3,16 @@
 
 @include('Layout.header')
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<style>
+    #add_rules{
+        display: none;
+    }
 
-<body class="animsition">
+    #destination_state {
+        display: none;
+    }
+</style>
+<body>
     <div class="page-wrapper">
         @include('Layout.sidebar')
 
@@ -31,49 +39,144 @@
                             Select State and Create/View/Delete Rules
                         </p>
                         <div class="form-group">
-                            <select name="stateRule" id="stateRuleId" class="form-control" style="width: auto;">
-                                <option value="NO">Select State</option>
+                            <select name="origin_state" id="origin_state" class="form-control" style="width: auto;">
+                                <option value="">Select State</option>
+                                <option value="Alabama">Alabama</option>
+                                <option value="Alaska">Alaska</option>
+                                <option value="Arizona">Arizona</option>
+                                <option value="Arkansas">Arkansas</option>
+                                <option value="California">California</option>
+                                <option value="Colorado">Colorado</option>
+                                <option value="Connecticut">Connecticut</option>
+                                <option value="Delaware">Delaware</option>
+                                <option value="Florida">Florida</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Hawaii">Hawaii</option>
+                                <option value="Idaho">Idaho</option>
+                                <option value="Illinois">Illinois</option>
+                                <option value="Indiana">Indiana</option>
+                                <option value="Iowa">Iowa</option>
+                                <option value="Kansas">Kansas</option>
+                                <option value="Kentucky">Kentucky</option>
+                                <option value="Louisiana">Louisiana</option>
+                                <option value="Maine">Maine</option>
                                 <option value="Maryland">Maryland</option>
+                                <option value="Massachusetts">Massachusetts</option>
+                                <option value="Michigan">Michigan</option>
+                                <option value="Minnesota">Minnesota</option>
+                                <option value="Mississippi">Mississippi</option>
+                                <option value="Missouri">Missouri</option>
+                                <option value="Montana">Montana</option>
+                                <option value="Nebraska">Nebraska</option>
+                                <option value="Nevada">Nevada</option>
+                                <option value="New Hampshire">New Hampshire</option>
+                                <option value="New Jersey">New Jersey</option>
+                                <option value="New Mexico">New Mexico</option>
+                                <option value="New York">New York</option>
+                                <option value="North Carolina">North Carolina</option>
+                                <option value="North Dakota">North Dakota</option>
+                                <option value="Ohio">Ohio</option>
+                                <option value="Oklahoma">Oklahoma</option>
+                                <option value="Oregon">Oregon</option>
+                                <option value="Pennsylvania">Pennsylvania</option>
+                                <option value="Rhode Island">Rhode Island</option>
+                                <option value="South Carolina">South Carolina</option>
+                                <option value="South Dakota">South Dakota</option>
+                                <option value="Tennessee">Tennessee</option>
+                                <option value="Texas">Texas</option>
+                                <option value="Utah">Utah</option>
+                                <option value="Vermont">Vermont</option>
+                                <option value="Virginia">Virginia</option>
+                                <option value="Washington">Washington</option>
+                                <option value="West Virginia">West Virginia</option>
+                                <option value="Wisconsin">Wisconsin</option>
+                                <option value="Wyoming">Wyoming</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" id="add_rules">
                     <div class="card-header text-black">
-                        <strong>Maryland</strong>
+                        <strong><span id="selected_state_header"></span></strong>
                     </div>
                     <div class="card-body card-block">
 
-                        <h3 style="margin-bottom:15px;">Create a rule for Maryland</h3>
+                        <h3 style="margin-bottom:15px;">Create a rule for <span id="selected_state_h3"></span></h3>
 
                         <div class="row">
-
                             <div class="col-lg-2">
-                                <select name="orig_dest" id="orig_dest" class="form-control" style="width: auto;">
-                                    <option selected="selected">Select</option>
-                                    <option value="any">Any</option>
-                                    <option value="route">Route</option>
-                                    <option value="origin">Origin</option>
-                                    <option value="destination">Destination</option>
+                                <select name="route_type" id="route_type" class="form-control" style="width: auto;">
+                                    <option value="">Select Type</option>
+                                    <option value="Any">Any</option>
+                                    <option value="Route">Route</option>
+                                    <option value="Origin">Origin</option>
+                                    <option value="Destination">Destination</option>
                                 </select>
                             </div>
                             <div class="col-lg-2">
-                                <select name="add_sub" id="add_sub" class="form-control" style="width: auto;">
-                                    <option selected="selected">Select</option>
-                                    <option value="add">Add</option>
-                                    <option value="sub">Subtract</option>
-                                    <option value="no">Don't Quote</option>
+                                <select name="operation_type" id="operation_type" class="form-control" style="width: auto;">
+                                    <option value="">Select Operation</option>
+                                    <option value="Add">Add</option>
+                                    <option value="Sub">Subtract</option>
+                                    <option value="No">Don't Quote</option>
                                 </select>
                             </div>
                             <div class="col-lg-4">
-                                <div>
-                                    <select name="stateDestRule" id="stateDestRule" class="form-control"
+                                        <select name="destination_state" id="destination_state" class="form-control"
                                         style="width: auto;">
-                                        <option value="NO">Select State</option>
-                                        <option value="Nebraska">Nebraska</option>
-                                    </select>
-                                </div>
+                                            <option value="">Select State</option>
+                                            <option value="Alabama">Alabama</option>
+                                            <option value="Alaska">Alaska</option>
+                                            <option value="Arizona">Arizona</option>
+                                            <option value="Arkansas">Arkansas</option>
+                                            <option value="California">California</option>
+                                            <option value="Colorado">Colorado</option>
+                                            <option value="Connecticut">Connecticut</option>
+                                            <option value="Delaware">Delaware</option>
+                                            <option value="Florida">Florida</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Hawaii">Hawaii</option>
+                                            <option value="Idaho">Idaho</option>
+                                            <option value="Illinois">Illinois</option>
+                                            <option value="Indiana">Indiana</option>
+                                            <option value="Iowa">Iowa</option>
+                                            <option value="Kansas">Kansas</option>
+                                            <option value="Kentucky">Kentucky</option>
+                                            <option value="Louisiana">Louisiana</option>
+                                            <option value="Maine">Maine</option>
+                                            <option value="Maryland">Maryland</option>
+                                            <option value="Massachusetts">Massachusetts</option>
+                                            <option value="Michigan">Michigan</option>
+                                            <option value="Minnesota">Minnesota</option>
+                                            <option value="Mississippi">Mississippi</option>
+                                            <option value="Missouri">Missouri</option>
+                                            <option value="Montana">Montana</option>
+                                            <option value="Nebraska">Nebraska</option>
+                                            <option value="Nevada">Nevada</option>
+                                            <option value="New Hampshire">New Hampshire</option>
+                                            <option value="New Jersey">New Jersey</option>
+                                            <option value="New Mexico">New Mexico</option>
+                                            <option value="New York">New York</option>
+                                            <option value="North Carolina">North Carolina</option>
+                                            <option value="North Dakota">North Dakota</option>
+                                            <option value="Ohio">Ohio</option>
+                                            <option value="Oklahoma">Oklahoma</option>
+                                            <option value="Oregon">Oregon</option>
+                                            <option value="Pennsylvania">Pennsylvania</option>
+                                            <option value="Rhode Island">Rhode Island</option>
+                                            <option value="South Carolina">South Carolina</option>
+                                            <option value="South Dakota">South Dakota</option>
+                                            <option value="Tennessee">Tennessee</option>
+                                            <option value="Texas">Texas</option>
+                                            <option value="Utah">Utah</option>
+                                            <option value="Vermont">Vermont</option>
+                                            <option value="Virginia">Virginia</option>
+                                            <option value="Washington">Washington</option>
+                                            <option value="West Virginia">West Virginia</option>
+                                            <option value="Wisconsin">Wisconsin</option>
+                                            <option value="Wyoming">Wyoming</option>
+                                        </select>
                             </div>
                         </div>
                         <div class="row mt-4">
@@ -84,7 +187,7 @@
                                         <div class="input-group-addon" style="border-radius: .25rem 0 0 .25rem;">
                                             <i class="fa fa-dollar"></i>
                                         </div>
-                                        <input name="add_amt" id="add_amt" type="text" maxlength="5"
+                                        <input name="value" id="value" type="text" maxlength="5"
                                             placeholder="" class="form-control" style="width: 75%; flex: unset">
                                     </div>
                                 </div>
@@ -96,55 +199,87 @@
                                         <div class="input-group-addon" style="border-radius: .25rem 0 0 .25rem;">
                                             <i class="fa fa-percent"></i>
                                         </div>
-                                        <input name="add_amt_zip" id="add_amt_zip" type="number" min="0"
+                                        <input name="value_percentage" id="value_percentage" type="number" min="0"
                                             maxlength="5" placeholder="" class="form-control">
                                     </div>
                                 </div>
                             </div>
-                            <input name="st" id="st" value="AZ" type="hidden" />
+
                             <div class="col-lg-1">
-                                <input type="submit" name="Submit" id="submit" value="Add Rule"
+                                <input type="submit" name="Submit" onclick="add_state_rules();" value="Add Rule"
                                     class="btn btn-primary ml-3">
                             </div>
                             <div class="col-lg-3"></div>
                         </div>
-
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" id="rules_list">
                     <div class="card-header text-black">
                         <strong>Current Rules</strong>
                     </div>
                     <div class="card-body card-block">
                         <div class="table-responsive table--no-card m-b-30">
-                            <table class="table table-borderless table-striped table-earning">
+                            <table class="table table-borderless table-striped table-earning" id="contentMid">
                                 <thead>
                                     <tr>
-                                        <th class="text-center font-weight-bold">Origin / Destination</th>
-                                        <th class="text-center font-weight-bold">Amount</th>
-                                        <th class="text-center font-weight-bold">Add /Subtract</th>
-                                        <th class="text-center font-weight-bold">Delete</th>
+                                        <th class="text-center font-weight-bold">Origin/Destination State</th>
+                                        <th class="text-center font-weight-bold">Amount ($)</th>
+                                        <th class="text-center font-weight-bold">Amount (%)</th>
+                                        <th class="text-center font-weight-bold">Operation</th>                                        
+                                        <th class="text-center font-weight-bold">Entered By</th>                                        
+                                        <th class="text-center font-weight-bold">Created at</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="text-center">
-                                        <td>Route CT -> MD</td>
-                                        <td>$140</td>
-                                        <td>Add</td>
-                                        <td><a href="javascript:;"><img src="{{ asset('images/delete.png') }}" /></a>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
+
+                <div class="container  p-5">
+                    <div class="row">
+                        <div class="modal fade" id="statusErrorsModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+                            <div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+                                <div class="modal-content"> 
+                                    <div class="modal-body text-center p-lg-4"> 
+                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                            <circle class="path circle" fill="none" stroke="#db3646" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" /> 
+                                            <line class="path line" fill="none" stroke="#db3646" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                                            <line class="path line" fill="none" stroke="#db3646" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" X2="34.4" y2="92.2" /> 
+                                        </svg> 
+                                        <h4 class="text-danger mt-3">Oops!</h4> 
+                                        <p class="mt-3">Error saving the vehicle size option.</p>
+                                        <button type="button" class="btn btn-sm mt-3 btn-danger" data-bs-dismiss="modal">Ok</button> 
+                                    </div> 
+                                </div> 
+                            </div> 
+                        </div>
+                        <div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+                            <div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+                                <div class="modal-content"> 
+                                    <div class="modal-body text-center p-lg-4"> 
+                                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                            <circle class="path circle" fill="none" stroke="#198754" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                                            <polyline class="path check" fill="none" stroke="#198754" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
+                                        </svg> 
+                                        <h4 class="text-success mt-3">Oh Yeah!</h4> 
+                                        <p class="mt-3">You have successfully updated Price Without a Vehicle Size.</p>
+                                        <button type="button" class="btn btn-sm mt-3 btn-success" data-bs-dismiss="modal">Ok</button> 
+                                    </div> 
+                                </div> 
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="copyright">
-                            <p>Copyright © 2019 ALL RIGHTS RESERVED • AUTO TRANSPORT</p>
+                            <p>Copyright © 2025 ALL RIGHTS RESERVED • AUTO TRANSPORT</p>
                         </div>
                     </div>
                 </div>
@@ -153,97 +288,113 @@
         </div>
     </div>
 
-    @include('Layout.footer')
 
-
-</body>
-
-</html>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("#route").hide();
-
-    });
-
-    function delstateRule(id) {
-        $.ajax({
-            type: "GET",
-            url: "/ajax/state/del_rule.php",
-            data: "id=" + id + "&userobj=" + 987897,
-            success: function(html) {
-                $("#delrule").html(html);
+    <script>
+            function loadAllRuleRecords() {
+                $.ajax({
+                    url: "{{ route('get.all.state.exceptions') }}",
+                    type: "GET",
+                    success: function(response) {
+                        if (response.success) {
+                            let rows = '';
+                            response.data.forEach(function(item) {
+                                rows += `
+                                    <tr>
+                                        <td class="text-center">${item.route_type} | ${item.origin_destination}</td>
+                                        <td class="text-center">${item.value}</td>
+                                        <td class="text-center">${item.value_percentage}</td>
+                                        <td class="text-center">${item.operation_type}</td>
+                                        <td class="text-center">${item.entered_by}</td>
+                                        <td class="text-center">${formatDate(item.entery_date)}</td>
+                                    </tr>
+                                `;
+                            });
+                            $('#contentMid tbody').html(rows);
+                        }
+                    },
+                    error: function() {
+                        alert('Error loading records');
+                    }
+                });
             }
-        });
-        return fetchstateRules();
-    }
 
-    function submitStateRule() {
-
-        var orig_dest = document.getElementById('orig_dest').options[document.getElementById('orig_dest').selectedIndex]
-            .value;
-        var add_sub = document.getElementById('add_sub').options[document.getElementById('add_sub').selectedIndex]
-            .value;
-        var add_amt = document.getElementById('add_amt').value;
-        var origin = document.getElementById('stateRuleId').options[document.getElementById('stateRuleId')
-            .selectedIndex].value;
-        var desti = document.getElementById('stateDestRule').options[document.getElementById('stateDestRule')
-            .selectedIndex].value;
-        var buttonsubmit = document.getElementById('submit').value;
-
-        $.ajax({
-            type: "GET",
-            url: "/ajax/state/del_rule.php",
-            data: "orig_dest=" + orig_dest +
-                "&origin=" + origin +
-                "&desti=" + desti +
-                "&add_sub=" + add_sub +
-                "&add_amt=" + add_amt + "&userobj=" + 154212,
-
-            success: function(html) {
-                //$("#createrule").html(html);
-                return getstateRules();
+            function formatDate(date) {
+                const options = {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric'
+                };
+                return new Date(date).toLocaleDateString('en-GB', options);
             }
-        });
-    }
 
-    function fetchstateRules() {
-        var state_id = document.getElementById('stateRuleId').options[document.getElementById('stateRuleId')
-            .selectedIndex].value;
-        $.ajax({
-            type: "GET",
-            url: "/ajax/state/fetch_rules.php",
-            data: "state_id=" + state_id + "&userobj=" + 326556,
-            success: function(html) {
-                $("#showrules").html(html);
-            }
-        });
-    }
+            loadAllRuleRecords();
 
-    function makeRoute() {
-        var stName = document.getElementById('orig_dest').value;
-        if (stName == "route") {
-            $("#route").show();
-        } else {
-            $("#route").hide();
-        }
-    }
 
-    function getstateRules() {
-        var state_id = document.getElementById('stateRuleId').options[document.getElementById('stateRuleId')
-            .selectedIndex].value;
-        if (state_id == 'NO') {
-            return stateExceptions();
-        } else {
+        function add_state_rules() {
+            var Origin_State = $('#origin_state').val();
+            var Destination_State = $('#destination_state').val();
+            var Route_Type = $('#route_type').val();
+            var Operation_Type = $('#operation_type').val();
+            var Value = $('#value').val();
+            var Value_Percentage = $('#value_percentage').val();
+
             $.ajax({
-                type: "GET",
-                url: "/ajax/state/create_rule.php",
-                data: "state_id=" + state_id + "&userobj=" + 012010,
-                success: function(html) {
-                    $("#createrule").html(html);
+                url: "{{ route('add.state.exceptions') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    Origin_State: Origin_State,
+                    Destination_State: Destination_State,
+                    Route_Type: Route_Type,
+                    Operation_Type: Operation_Type,
+                    Value: Value,
+                    Value_Percentage: Value_Percentage,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        loadAllRuleRecords();
+                        var successModal = new bootstrap.Modal(document.getElementById('statusSuccessModal'));
+                        successModal.show();
+                        $('#value').val('');
+                        $('#value_percentage').val('');
+                        $('#destination_state').val('');
+                        $('#route_type').val('');
+                        $('#operation_type').val('');
+                    } else {
+                        var errorModal = new bootstrap.Modal(document.getElementById('statusErrorsModal'));
+                        errorModal.show();
+                    }
+                },
+                error: function(xhr) {
+                    alert("An error occurred.");
                 }
             });
-            return fetchstateRules(state_id);
         }
-    }
-</script>
+
+        $('#origin_state').on('change', function () {
+            var selectedState = $(this).val();
+    
+            if (selectedState !== '') {
+                loadAllRuleRecords();
+                $('#add_rules').show();
+                $('#selected_state_header').text(selectedState);
+                $('#selected_state_h3').text(selectedState);
+            } else {
+                $('#add_rules').hide();
+            }
+        });
+
+
+        $('#route_type').on('change', function () {
+            var selected = $(this).val();
+            if (selected === 'Route') {
+                $('#destination_state').show();
+            } else {
+                $('#destination_state').hide().val('');
+            }
+        });
+    </script>
+
+    @include('Layout.footer')
+</body>
+</html>
