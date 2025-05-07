@@ -12,9 +12,9 @@
             <div class="header-wrap">
                 <div class="form-header"></div>
                 <div class="nav-menu">
-                    <span><a href="">Vehicle</a></span>
-                    <span><a href="">Heavy Vehicle</a></span>
-                    <span><a href="">Freight Load</a></span>
+                    <span><a href="#">Vehicle</a></span>
+                    <span><a href="#">Heavy Vehicle</a></span>
+                    <span><a href="#">Freight Load</a></span>
                    </div>
                 <div class="header-button">
                     <div class="account-wrap">
