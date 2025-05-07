@@ -31,8 +31,8 @@
                         <div class="form-group">
                             <select name="veh_size_pass" id="veh_size_pass" class="form-control" style="width: auto;" onchange="withoutVehicleSize();">
                                 <option selected disabled>Please Select</option>
-                                <option value="Yes" @selected($pricing_options->disabled_vehicle == 'Yes')>Yes</option>
-                                <option value="No" @selected($pricing_options->disabled_vehicle == 'No')>No</option>
+                                <option value="Yes" @selected(($pricing_options->disabled_vehicle ?? '') == 'Yes')>Yes</option>
+                                <option value="No" @selected(($pricing_options->disabled_vehicle ?? '') == 'No')>No</option>
                             </select>
                         </div>
                     </div>
@@ -123,12 +123,12 @@
                                     <label for="nf-email"
                                         class="font-weight-bold form-control-label mt-2 label-config">Hide
                                         Deposit:</label>
-                                    <select class="form-control" style="width: auto;" id="DepositHide"
+                                        <select class="form-control" style="width: auto;" id="DepositHide"
                                         name="DepositHide" onchange="withoutVehicleSize();">
-                                        <option selected disabled>Please select</option>
-                                        <option value="Yes" @selected($pricing_options->hide_deposit == 'Yes')>Yes</option>
-                                        <option value="No" @selected($pricing_options->hide_deposit == 'No')>No</option>
-                                    </select>
+                                    <option selected disabled>Please select</option>
+                                    <option value="Yes" @selected(($pricing_options->hide_deposit ?? '') == 'Yes')>Yes</option>
+                                    <option value="No" @selected(($pricing_options->hide_deposit ?? '') == 'No')>No</option>
+                                </select>                                
                                 </div>
                             </div>
                         </div>

@@ -233,8 +233,7 @@
                 return new Date(date).toLocaleDateString('en-GB', options);
             }
 
-            loadzipcoderules() 
-
+            loadzipcoderules(); 
 
         function add_zipcode_rules() {
             var Route_Type = $('#zipcode_route_type').val();
@@ -260,6 +259,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
+                        loadzipcoderules();
                         var successModal = new bootstrap.Modal(document.getElementById('statusSuccessModal'));
                         successModal.show();
                         $('#zipcode_route_type').val('');
