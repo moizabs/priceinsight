@@ -5,9 +5,9 @@
     <meta name="description" content="au theme template">
     <meta name="author" content="Hau Nguyen">
     <meta name="keywords" content="au theme template">
-
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('images/logo.png') }}">
     <!-- Title Page-->
-    <title>SHIPA! Rates Portal</title>
+    <title>DayDispatch Rates</title>
 
     <!-- Fontfaces CSS-->
     <link href="{{ asset('css/font-face.css') }}" rel="stylesheet" media="all">
