@@ -13,8 +13,8 @@
                 <div class="form-header"></div>
                 <div class="nav-menu">
                     <span><a href="">Vehicle</a></span>
-                    <span><a href="">Heavy Vehicle</a></span>
-                    <span><a href="">Freight Load</a></span>
+                    <span><a href="">Heavy</a></span>
+                    <span><a href="">Freight</a></span>
                 </div>
 
                 <div class="account-dropdown__footer">

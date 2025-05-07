@@ -30,7 +30,7 @@
                         </p>
                         <div class="form-group">
                             <select name="veh_size_pass" id="veh_size_pass" class="form-control" style="width: auto;" onchange="withoutVehicleSize();">
-                                <option selected disabled>Please select</option>
+                                <option selected disabled>Please Select</option>
                                 <option value="Yes" @selected($pricing_options->disabled_vehicle == 'Yes')>Yes</option>
                                 <option value="No" @selected($pricing_options->disabled_vehicle == 'No')>No</option>
                             </select>

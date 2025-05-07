@@ -13,7 +13,7 @@ class PricingOptionsController extends Controller
      */
     public function index()
     {
-        $pricing_options = PricingOptions::where('user_id', Auth::guard('authorized')->user()->id)->first();
+        $pricing_options = PricingOptions::first();
         return view('pricing_options', compact('pricing_options'));
     }
 
