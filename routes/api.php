@@ -2,10 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PricePerMileController;
-use App\Http\Controllers\PricingOptionsController;
-use App\Http\Controllers\StateExceptionsController;
-use App\Http\Controllers\VehicleTypeSettingController;
-use App\Http\Controllers\ZipCodeExceptionsController;
 
-Route::get('/price-data', 'PricePerMileController@api_price_per_miles');
+Route::get('/price-data', 'ApiController@api_price_per_miles');
+Route::get('/pricing-options-data', 'ApiController@api_pricing_options');
+Route::get('/state-exceptions-data', 'ApiController@api_state_exceptions');
+Route::get('/vehicle-type-data', 'ApiController@api_vehicle_type_settings');
+Route::get('/zip-code-exceptions-data', 'ApiController@api_zip_code_exceptions');
