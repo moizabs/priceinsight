@@ -5,7 +5,7 @@ use App\Http\Controllers\PricePerMileController;
 use App\Http\Controllers\PricingOptionsController;
 use App\Http\Controllers\StateExceptionsController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\priceinsightController;
+use App\Http\Controllers\PriceInsightController;
 use App\Http\Controllers\VehicleTypeSettingController;
 use App\Http\Controllers\ZipCodeExceptionsController;
 use App\Http\Middleware\UserMiddleware as AuthorizedGuardMiddleware;
