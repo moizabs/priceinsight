@@ -3,7 +3,7 @@
 
 @include('Layout.header')
 
-<body class="animsition">
+<body>
 <div class="page-wrapper">
     @include('Layout.sidebar')
     

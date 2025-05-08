@@ -7,44 +7,48 @@
     <div class="menu-sidebar__content js-scrollbar1">
         <nav class="navbar-sidebar">
             <ul class="list-unstyled navbar__list">
-                <li class="active" id="dashboard">
+                <li class="{{ request()->routeIs('dashboard') ? 'active' : '' }}" id="dashboard">
                     <a href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
 
-                <li id="basicPricing">
+                <li class="{{ request()->routeIs('pricing.options') ? 'active' : '' }}" id="basicPricing">
                     <a href="{{ route('pricing.options') }}">Pricing Options</a>
                 </li>
 
-                <li id="pricePerMile">
+                <li class="{{ request()->routeIs('price.per.mile') ? 'active' : '' }}" id="pricePerMile">
                     <a href="{{ route('price.per.mile') }}">Price Per Mile</a>
                 </li>
 
-                <li id="stateExceptions">
+                <li class="{{ request()->routeIs('state.exceptions') ? 'active' : '' }}" id="stateExceptions">
                     <a href="{{ route('state.exceptions') }}">State Exceptions</a>
                 </li>
 
-                <li id="zipExceptions">
+                <li class="{{ request()->routeIs('zipcode.exceptions') ? 'active' : '' }}" id="zipExceptions">
                     <a href="{{ route('zipcode.exceptions') }}">Zip Code Exceptions</a>
                 </li>
 
-                <li id="viewException">
+                {{-- <li class="{{ request()->routeIs('exceptions.list') ? 'active' : '' }}" id="viewException">
                     <a href="{{ route('exceptions.list') }}">View / Delete Exceptions</a>
+                </li> --}}
+
+                {{-- <li class="{{ request()->routeIs('vehicle.size.database') ? 'active' : '' }}" id="vehicleSize">
+                    <a href="{{ route('vehicle.size.database') }}">Vehicle type Database</a>
+                </li> --}}
+
+                <li class="{{ request()->routeIs('vehicle.size.queue') ? 'active' : '' }}" id="sizeQueue">
+                    <a href="{{ route('vehicle.size.queue') }}">Vehicle Type Queue</a>
                 </li>
 
-                <li id="vehicleSize">
-                    <a href="{{ route('vehicle.size.database') }}">Vehicle Size Database</a>
-                </li>
-
-                <li id="sizeQueue">
-                    <a href="{{ route('vehicle.size.queue') }}">Vehicle Size Queue</a>
-                </li>
-
-                <li id="vehicleSizeSetting">
-                    <a href="{{ route('vehicle.size.settings') }}">Vehicle Size Settings</a>
+                <li class="{{ request()->routeIs('vehicle.size.settings') ? 'active' : '' }}" id="vehicleSizeSetting">
+                    <a href="{{ route('vehicle.size.settings') }}">Vehicle Type Settings</a>
                 </li>
                 
-                <li id="lastActivity">
+                <li class="{{ request()->routeIs('last.activity') ? 'active' : '' }}" id="lastActivity">
                     <a href="{{ route('last.activity') }}">Last Activity</a>
+                </li>
+
+                <li class="{{ request()->routeIs('price.insight') ? 'active' : '' }}" id="lastActivity">
+                    <a href="{{ route('price.insight') }}">Price Insight</a>
                 </li>
 
             </ul>

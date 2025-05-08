@@ -8,7 +8,7 @@
         margin-right: 20px;
     }
 </style>
-<body class="animsition">
+<body>
     <div class="page-wrapper">
         @include('Layout.sidebar')
 
@@ -21,7 +21,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="overview-wrap">
-                            <h2 class="title-1 mb-2">Vehicle Size Queue</h2>
+                            <h2 class="title-1 mb-2">Vehicle type Settings</h2>
                         </div>
                     </div>
                 </div>
