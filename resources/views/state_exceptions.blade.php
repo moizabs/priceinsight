@@ -288,7 +288,6 @@
         </div>
     </div>
 
-
     <script>
             function loadAllRuleRecords() {
                 $.ajax({
