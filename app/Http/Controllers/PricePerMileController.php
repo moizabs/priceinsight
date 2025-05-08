@@ -139,4 +139,14 @@ class PricePerMileController extends Controller
         // PricePerMile::destroy($id);
         // return response()->json(['success' => true]);
     }
+
+
+
+
+
+    public function api_price_per_miles()
+    {
+        $data = PricePerMile::all();
+        return response()->json($data);
+    }
 }

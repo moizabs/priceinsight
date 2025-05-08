@@ -36,11 +36,8 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/js/bootstrap.min.js'></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
 
-    
-
     <script src="https://www.google.com/recaptcha/api.js" 
     async defer></script>
-
 
     <style>
         .modal#statusSuccessModal .modal-content, 
