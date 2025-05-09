@@ -71,7 +71,15 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
 
 
      Route::get('/last-activity', [UserController::class, 'last_Activity'])->name('last.activity');
+     
+     
+    //  Price Insight
      Route::get('/price-insight', [PriceInsightController::class, 'index'])->name('price.insight');
+     Route::get('autocomplete-search', [PriceInsightController::class, 'getZipCodeLocation'])->name('autocomplete');
+    Route::post('/calculate-price-insights', [PriceInsightController::class, 'Calculate_Price_Insight'])->name('calculate.price.insights');
+    Route::post('/get-coordinates', [PriceInsightController::class, 'getCoordinates'])->name('get.zip.coordinates');
+
+
 
 
     // Route::get('/exceptions-list', function () {

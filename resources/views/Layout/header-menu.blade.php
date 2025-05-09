@@ -3,7 +3,7 @@
         display: flex;
         justify-content: space-around;
         /* background-color: blueviolet; */
-        width: 400px;
+        width: 350px;
     }
     .account-dropdown {
         display: none;
@@ -17,6 +17,122 @@
     .account-dropdown.show {
         display: block;
     }
+
+
+
+/* From Uiverse.io by ErzenXz */ 
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.toggle-switch input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-switch-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ddd;
+  border-radius: 20px;
+  box-shadow: inset 0 0 0 2px #ccc;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.toggle-switch-handle {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+}
+
+.toggle-switch::before {
+  content: "";
+  position: absolute;
+  top: -25px;
+  right: -25px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #aaa;
+  text-shadow: 1px 1px #fff;
+  transition: color 0.3s ease-in-out;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch-handle {
+  transform: translateX(45px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 0 3px #001d4d;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch-background {
+  background-color: #001d4d;
+  box-shadow: inset 0 0 0 2px #001d4d;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch:before {
+  content: "On";
+  color: #001d4d;
+  right: -10px;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch-background .toggle-switch-handle {
+  transform: translateX(20px);
+}
+
+
+
+
+/* From Uiverse.io by JaydipPrajapati1910 */ 
+.menu-option {
+  font-size: 16px;
+  color: #222;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  border: none;
+  background: none;
+  text-transform: uppercase;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-duration: 400ms;
+  transition-property: color;
+}
+
+.menu-option:focus,
+.menu-option:hover {
+  color: #222;
+}
+
+.menu-option:focus:after,
+.menu-option:hover:after {
+  width: 100%;
+  left: 0%;
+}
+
+.menu-option:after {
+  content: "";
+  pointer-events: none;
+  bottom: -2px;
+  left: 50%;
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  background-color: #001d4d;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-duration: 400ms;
+  transition-property: width, left;
+}
+
 </style>
 <header class="header-desktop">
     <div class="section__content section__content--p30">
@@ -24,9 +140,28 @@
             <div class="header-wrap">
                 <div class="form-header"></div>
                 <div class="nav-menu">
-                    <span><a href="">Vehicle</a></span>
-                    <span><a href="">Heavy</a></span>
-                    <span><a href="">Freight</a></span>
+                    {{-- <span><a href="">Vehicle</a></span> --}}
+                    <button class="menu-option">
+                        Vehicle
+                    </button>
+                     <button class="menu-option">
+                        Heavy
+                    </button>
+                     <button class="menu-option">
+                        Freight
+                    </button>
+                    {{-- <span><a href="">Heavy</a></span>
+                    <span><a href="">Freight</a></span> --}}
+                </div>
+
+                <div class="nav-menu" style="width: 230px">
+                    <label class="toggle-switch">
+                      <input type="checkbox">
+                      <div class="toggle-switch-background">
+                        <div class="toggle-switch-handle"></div>
+                      </div>
+                    </label>
+                    Day Dispatch Data
                 </div>
 
                 {{-- <div class="account-dropdown__footer">

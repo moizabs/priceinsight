@@ -5,7 +5,7 @@
     <meta name="description" content="au theme template">
     <meta name="author" content="Hau Nguyen">
     <meta name="keywords" content="au theme template">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('images/logo.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('images/icon/logo-of-dispatch-rates.png') }}">
     <!-- Title Page-->
     <title>DayDispatch Rates</title>
 
