@@ -256,7 +256,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5>Edit Price Per Mile</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close" id="closemodal" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="edit_id">
@@ -413,6 +413,10 @@
                 $('#edit_end_range').val($(this).data('end'));
                 $('#edit_price').val($(this).data('price'));
                 $('#editModal').modal('show');
+            });
+
+            $(document).on('click', '#closemodal', function() {
+                $('#editModal').modal('hide');
             });
             
             $('#updateRecord').click(function() {

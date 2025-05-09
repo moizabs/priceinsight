@@ -31,12 +31,12 @@
                     <a href="{{ route('exceptions.list') }}">View / Delete Exceptions</a>
                 </li> --}}
 
-                <li class="{{ request()->routeIs('vehicle.size.database') ? 'active' : '' }}" id="vehicleSize">
-                    <a href="{{ route('vehicle.size.database') }}">Vehicle Size Database</a>
-                </li>
+                {{-- <li class="{{ request()->routeIs('vehicle.size.database') ? 'active' : '' }}" id="vehicleSize">
+                    <a href="{{ route('vehicle.size.database') }}">Vehicle type Database</a>
+                </li> --}}
 
                 <li class="{{ request()->routeIs('vehicle.size.queue') ? 'active' : '' }}" id="sizeQueue">
-                    <a href="{{ route('vehicle.size.queue') }}">Vehicle Size Queue</a>
+                    <a href="{{ route('vehicle.size.queue') }}">Vehicle Type Queue</a>
                 </li>
 
                 <li class="{{ request()->routeIs('vehicle.size.settings') ? 'active' : '' }}" id="vehicleSizeSetting">
@@ -45,6 +45,10 @@
                 
                 <li class="{{ request()->routeIs('last.activity') ? 'active' : '' }}" id="lastActivity">
                     <a href="{{ route('last.activity') }}">Last Activity</a>
+                </li>
+
+                <li class="{{ request()->routeIs('price.insight') ? 'active' : '' }}" id="lastActivity">
+                    <a href="{{ route('price.insight') }}">Price Insight</a>
                 </li>
 
             </ul>

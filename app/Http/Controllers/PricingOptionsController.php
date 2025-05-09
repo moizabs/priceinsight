@@ -52,7 +52,7 @@ class PricingOptionsController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Vehicle size option saved successfully.',
+            'message' => 'Vehicle type option saved successfully.',
         ]);
     }
 

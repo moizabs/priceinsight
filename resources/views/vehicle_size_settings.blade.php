@@ -17,7 +17,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="overview-wrap">
-                            <h2 class="title-1 mb-2">Vehicle Type Settings</h2>
+                            <h2 class="title-1 mb-2">Vehicle Type Pricing</h2>
                         </div>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                                             <line class="path line" fill="none" stroke="#db3646" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" X2="34.4" y2="92.2" /> 
                                         </svg> 
                                         <h4 class="text-danger mt-3">Oops!</h4> 
-                                        <p class="mt-3">Error saving the vehicle size option.</p>
+                                        <p class="mt-3">Error saving the vehicle type option.</p>
                                         <button type="button" class="btn btn-sm mt-3 btn-danger" data-bs-dismiss="modal">Ok</button> 
                                     </div> 
                                 </div> 
@@ -119,8 +119,8 @@
                                             <circle class="path circle" fill="none" stroke="#198754" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
                                             <polyline class="path check" fill="none" stroke="#198754" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
                                         </svg> 
-                                        <h4 class="text-success mt-3">Oh Yeah!</h4> 
-                                        <p class="mt-3">You have successfully updated Price Without a Vehicle Size.</p>
+                                        <h4 class="text-success mt-3">Success</h4> 
+                                        <p class="mt-3">You have successfully updated Price Without a Vehicle Type.</p>
                                         <button type="button" class="btn btn-sm mt-3 btn-success" data-bs-dismiss="modal">Ok</button> 
                                     </div> 
                                 </div> 

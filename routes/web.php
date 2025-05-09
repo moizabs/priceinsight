@@ -5,6 +5,7 @@ use App\Http\Controllers\PricePerMileController;
 use App\Http\Controllers\PricingOptionsController;
 use App\Http\Controllers\StateExceptionsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PriceInsightController;
 use App\Http\Controllers\VehicleTypeSettingController;
 use App\Http\Controllers\ZipCodeExceptionsController;
 use App\Http\Middleware\UserMiddleware as AuthorizedGuardMiddleware;
@@ -70,6 +71,7 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
 
 
      Route::get('/last-activity', [UserController::class, 'last_Activity'])->name('last.activity');
+     Route::get('/price-insight', [PriceInsightController::class, 'index'])->name('price.insight');
 
 
     // Route::get('/exceptions-list', function () {
