@@ -473,6 +473,41 @@
           <div class="first-parent">
             <h2 class="form-section-title">Shipping Details</h2>
 
+
+            <div id="map_showing" style="display: none">
+          <div class="map-container"
+            style="position: relative; height: 400px; width: 100%; border-radius: 4px; overflow: hidden;">
+            <div id="map" style="height: 100%;"></div>
+            <div class="map-loading" id="map-loading" style="display: none;">
+              <div class="spinner"></div>
+            </div>
+            <div class="route-info-panel"
+              style="position: absolute; bottom: 20px; left: 20px; right: 20px; z-index: 1000; background: rgba(255,255,255,0.9); border-radius: 8px; padding: 12px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 400px; display: flex; justify-content: space-between; align-items: center;">
+              <div style="flex: 1;">
+                <div style="font-weight: 500; color: #333; margin-bottom: 4px;">Route Summary</div>
+                <div style="display: flex; gap: 16px; font-size: 14px;">
+                  <div>
+                    <span style="color: #666;">Distance:</span>
+                    <span id="route-distance"
+                      style="font-weight: bold; color: #0066cc; margin-left: 4px;">Calculating...</span>
+                  </div>
+                  <div>
+                    <span style="color: #666;">Time:</span>
+                    <span id="route-time"
+                      style="font-weight: bold; color: #0066cc; margin-left: 4px;">Calculating...</span>
+                  </div>
+                </div>
+              </div>
+              <a id="view-google-maps" target="_blank" href="#"
+                style="background: #4285F4; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+                <i class="fas fa-external-link-alt"></i>
+                <span>View in Google Maps</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
             <!-- Route Information -->
             <h3 class="form-subtitle">Route Information</h3>
             <div class="input-group">
@@ -699,39 +734,6 @@
           </div>
         </div>
 
-        <div id="map_showing" style="display: none">
-          <div class="map-container"
-            style="position: relative; height: 400px; width: 100%; border-radius: 4px; overflow: hidden;">
-            <div id="map" style="height: 100%;"></div>
-            <div class="map-loading" id="map-loading" style="display: none;">
-              <div class="spinner"></div>
-            </div>
-            <div class="route-info-panel"
-              style="position: absolute; bottom: 20px; left: 20px; right: 20px; z-index: 1000; background: rgba(255,255,255,0.9); border-radius: 8px; padding: 12px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 400px; display: flex; justify-content: space-between; align-items: center;">
-              <div style="flex: 1;">
-                <div style="font-weight: 500; color: #333; margin-bottom: 4px;">Route Summary</div>
-                <div style="display: flex; gap: 16px; font-size: 14px;">
-                  <div>
-                    <span style="color: #666;">Distance:</span>
-                    <span id="route-distance"
-                      style="font-weight: bold; color: #0066cc; margin-left: 4px;">Calculating...</span>
-                  </div>
-                  <div>
-                    <span style="color: #666;">Time:</span>
-                    <span id="route-time"
-                      style="font-weight: bold; color: #0066cc; margin-left: 4px;">Calculating...</span>
-                  </div>
-                </div>
-              </div>
-              <a id="view-google-maps" target="_blank" href="#"
-                style="background: #4285F4; color: white; padding: 8px 12px; border-radius: 4px; text-decoration: none; font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 6px;">
-                <i class="fas fa-external-link-alt"></i>
-                <span>View in Google Maps</span>
-              </a>
-            </div>
-          </div>
-
-        </div>
 
         <div class="row">
           <div class="col-md-12">
@@ -919,6 +921,7 @@
                 createMarker: function () {
                   return null;
                 },
+                show: false,
                 formatter: new L.Routing.Formatter({
                   language: 'en',
                   units: 'imperial'
