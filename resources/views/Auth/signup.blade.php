@@ -16,7 +16,7 @@
                 <div class="login-content">
                     <div class="login-logo">
                         <a href="{{ route('index') }}">
-                            <img src="{{ asset('images/icon/logo.png') }}" alt="CoolAdmin">
+                            <img src="{{ asset('images/icon/logo-of-dispatch-rates.png') }}" width="45%" alt="CoolAdmin">
                         </a>
                     </div>
                     @if(session('Success!'))

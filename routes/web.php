@@ -80,6 +80,9 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
     Route::post('/get-coordinates', [PriceInsightController::class, 'getCoordinates'])->name('get.zip.coordinates');
 
 
+    Route::get('Get-Make', [PriceInsightController::class, 'getVehcileMake'])->name('Get.Vehcile.Make');
+    Route::get('Get-Model', [PriceInsightController::class, 'getVehcilModel'])->name('Get.Vehcile.Model');
+
 
 
     // Route::get('/exceptions-list', function () {

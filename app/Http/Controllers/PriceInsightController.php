@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PriceInsight;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -67,6 +68,7 @@ class PriceInsightController extends Controller
         //
     }
 
+
     public function getZipCodeLocation(Request $request): JsonResponse
     {
         $data = DB::table('zip_codes')
@@ -81,6 +83,45 @@ class PriceInsightController extends Controller
     }
 
 
+    public function getVehcilModel(Request $request): JsonResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            $data = DB::table('make_models')->where('title', 'LIKE', '%' . $request->input('query') . '%')->get();
+            $Makes = $data->map(function ($row) {
+                return $row->title;
+            });
+
+            DB::commit();
+
+            return response()->json($Makes);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'No Request Available'], 500);
+        }
+    }
+
+    public function getVehcileMake(Request $request): JsonResponse
+    {
+        try {
+            DB::beginTransaction();
+
+            $data = DB::table('makes')->where('title', 'LIKE', '%' . $request->input('query') . '%')->get();
+            $Makes = $data->map(function ($row) {
+                return $row->title;
+            });
+
+            DB::commit();
+
+            return response()->json($Makes);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'No Request Available'], 500);
+        }
+    }
 
     public function Calculate_Price_Insight(Request $request) {
         $Origin = $request->Origin;
@@ -96,7 +137,7 @@ class PriceInsightController extends Controller
     
         foreach ($priceData as $row) {
             if ($Miles >= $row['minimum_range'] && $Miles <= $row['maximum_range']) {
-                $matchedPrice = $row['price'];
+                $matchedPrice = $row['price'] * $Miles;
                 break;
             }
         }
