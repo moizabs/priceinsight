@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Models\PricePerMile;
 use App\Models\PricingOptions;
@@ -46,6 +47,13 @@ class ApiController extends Controller
     public function api_setting_data()
     {
         $data = Setting::get();
+        return response()->json($data);
+    }
+    public function api_listing_data()
+    {
+        $data = Order::whereNotNull('listed_price')
+            ->where('listed_price', '!=', '')
+            ->get();
         return response()->json($data);
     }
 }

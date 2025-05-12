@@ -12,6 +12,7 @@ Route::get('/vehicle-type-data', 'ApiController@api_vehicle_type_settings');
 Route::get('/zip-code-exceptions-data', 'ApiController@api_zip_code_exceptions');
 
 Route::get('/setting-data', 'ApiController@api_setting_data');
+Route::get('/listing-data', 'ApiController@api_listing_data');
 
 
 
