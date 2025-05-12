@@ -6,7 +6,9 @@ use App\Http\Controllers\PricingOptionsController;
 use App\Http\Controllers\StateExceptionsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PriceInsightController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\VehicleTypeSettingController;
+use App\Http\Controllers\WashingtonController;
 use App\Http\Controllers\ZipCodeExceptionsController;
 use App\Http\Middleware\UserMiddleware as AuthorizedGuardMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -74,15 +76,22 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
      
      
     //  Price Insight
-     Route::get('/price-insight', [PriceInsightController::class, 'index'])->name('price.insight');
-     Route::get('autocomplete-search', [PriceInsightController::class, 'getZipCodeLocation'])->name('autocomplete');
+    Route::get('/price-insight', [PriceInsightController::class, 'index'])->name('price.insight');
+    Route::get('autocomplete-search', [PriceInsightController::class, 'getZipCodeLocation'])->name('autocomplete');
     Route::post('/calculate-price-insights', [PriceInsightController::class, 'Calculate_Price_Insight'])->name('calculate.price.insights');
     Route::post('/get-coordinates', [PriceInsightController::class, 'getCoordinates'])->name('get.zip.coordinates');
-
-
     Route::get('Get-Make', [PriceInsightController::class, 'getVehcileMake'])->name('Get.Vehcile.Make');
     Route::get('Get-Model', [PriceInsightController::class, 'getVehcilModel'])->name('Get.Vehcile.Model');
 
+
+    //  Washington Data
+    Route::get('/washington-listing', [WashingtonController::class, 'index'])->name('washington.index');
+    Route::get('/get-all-washington-listing', [WashingtonController::class, 'getAllWashingtonListing'])->name('get.all.washington.listing');
+
+
+
+    // Setting
+    Route::post('/settings/toggle-washington', [SettingController::class, 'toggleWashington'])->name('settings.toggleWashington');
 
 
     // Route::get('/exceptions-list', function () {

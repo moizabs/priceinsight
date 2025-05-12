@@ -11,6 +11,9 @@ Route::get('/state-exceptions-data', 'ApiController@api_state_exceptions');
 Route::get('/vehicle-type-data', 'ApiController@api_vehicle_type_settings');
 Route::get('/zip-code-exceptions-data', 'ApiController@api_zip_code_exceptions');
 
+Route::get('/setting-data', 'ApiController@api_setting_data');
+
+
 
 Route::get('/osrm-proxy', function(Request $request) {
     $url = "http://router.project-osrm.org/route/v1/driving/" . 

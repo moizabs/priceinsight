@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PricePerMile;
 use App\Models\PricingOptions;
+use App\Models\Setting;
 use App\Models\StateExceptions;
 use App\Models\ZipCodeExceptions;
 use App\Models\VehicleTypeSetting;
@@ -39,6 +40,12 @@ class ApiController extends Controller
     public function api_zip_code_exceptions()
     {
         $data = ZipCodeExceptions::all();
+        return response()->json($data);
+    }
+
+    public function api_setting_data()
+    {
+        $data = Setting::all();
         return response()->json($data);
     }
 }

@@ -51,6 +51,10 @@
                     <a href="{{ route('price.insight') }}">Price Insight</a>
                 </li>
 
+                <li class="{{ request()->routeIs('washington.index') ? 'active' : '' }}" id="lastActivity">
+                    <a href="{{ route('washington.index') }}">Day Dispatch Data</a>
+                </li>
+
             </ul>
         </nav>
     </div>
