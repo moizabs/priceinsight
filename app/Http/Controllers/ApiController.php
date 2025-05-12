@@ -45,7 +45,7 @@ class ApiController extends Controller
 
     public function api_setting_data()
     {
-        $data = Setting::all();
+        $data = Setting::get();
         return response()->json($data);
     }
 }
