@@ -67,6 +67,7 @@ class UserController extends Controller
         }
 
         if (Auth::guard('authorized')->attempt($credentials)) {
+            
             $ip = iPrequest::ip();
             $location = $this->getLocationFromIp($ip);
     
