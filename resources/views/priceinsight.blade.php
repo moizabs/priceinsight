@@ -560,12 +560,12 @@
             <h4 class="form-subtitle">Trailer Type</h4>
             <div class="radio-group">
               <label class="radio-option">
-                <input type="radio" name="trailer-type" value="Enclosed" checked>
-                Enclosed
+                <input type="radio" name="trailer-type" value="Open" checked>
+                Open
               </label>
               <label class="radio-option">
-                <input type="radio" name="trailer-type" value="Open">
-                Open
+                <input type="radio" name="trailer-type" value="Enclosed" >
+                Enclosed
               </label>
             </div>
 
@@ -758,221 +758,220 @@
   <script>
 
     document.addEventListener('DOMContentLoaded', function () {
-      document.getElementById('results-card').style.display = 'none';
-      document.getElementById('welcome-card').style.display = 'block';
+    document.getElementById('results-card').style.display = 'none';
+    document.getElementById('welcome-card').style.display = 'block';
     });
 
 
     let map;
     let routeControl;
+    let firstLoad = true;
 
     function get_insight_value() {
+    document.getElementById('welcome-card').style.display = 'none';
+    document.getElementById('results-card').style.display = 'block';
 
-      document.getElementById('welcome-card').style.display = 'none';
-      document.getElementById('results-card').style.display = 'block';
+    document.getElementById('loading-skeleton').style.display = 'block';
+    document.getElementById('results-content').style.display = 'none';
+    document.getElementById('map-loading').style.display = 'flex';
 
-      document.getElementById('loading-skeleton').style.display = 'block';
-      document.getElementById('results-content').style.display = 'none';
-      document.getElementById('map-loading').style.display = 'flex';
+    const calculateBtn = document.getElementById('calculate-btn');
+    calculateBtn.disabled = true;
+    calculateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculating...';
 
-      const calculateBtn = document.getElementById('calculate-btn');
-      calculateBtn.disabled = true;
-      calculateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculating...';
+    var Origin = $('#origin').val();
+    var Destination = $('#destination').val();
+    var OriginZip = Origin.split(',').pop().trim();
+    var DestinationZip = Destination.split(',').pop().trim();
 
-      var Origin = $('#origin').val();
-      var Destination = $('#destination').val();
-      var OriginZip = Origin.split(',').pop().trim();
-      var DestinationZip = Destination.split(',').pop().trim();
+    var Vehicle_type = $('#vehicle_type').val();
+    var Year_check = $('#year_check').val();
+    var Make = $('#make').val();
+    var Model = $('#model').val();
+    var Inoperable = $('#inoperable').val();
 
-      var Vehicle_type = $('#vehicle_type').val();
-      var Year_check = $('#year_check').val();
-      var Make = $('#make').val();
-      var Model = $('#model').val();
-      var Inoperable = $('#inoperable').val();
+    if (!Origin || !Destination) {
+      alert('Please enter both origin and destination');
+      resetLoadingStates();
+      return;
+    } else if (!Vehicle_type || !Make || !Year_check || !Model || !Inoperable) {
+      alert('Please enter all vehicle informations');
+      resetLoadingStates();
+      return;
+    }
 
-      if (!Origin || !Destination) {
-        alert('Please enter both origin and destination');
-        document.getElementById('results-card').style.display = 'none';
-        document.getElementById('welcome-card').style.display = 'block';
-        resetLoadingStates();
-        return;
-      } else if (!Vehicle_type || !Make || !Year_check || !Model || !Inoperable) {
-        alert('Please enter all vehicle informations');
-        document.getElementById('results-card').style.display = 'none';
-        document.getElementById('welcome-card').style.display = 'block';
-        resetLoadingStates();
-        return;
-      }
+    $.ajax({
+      url: "{{ route('get.zip.coordinates') }}",
+      type: "POST",
+      data: {
+      _token: "{{ csrf_token() }}",
+      origin_zip: OriginZip,
+      destination_zip: DestinationZip
+      },
+      success: function (coordResponse) {
+      if (coordResponse.success) {
+        const originLat = parseFloat(coordResponse.origin.lat);
+        const originLon = parseFloat(coordResponse.origin.lon);
+        const destLat = parseFloat(coordResponse.destination.lat);
+        const destLon = parseFloat(coordResponse.destination.lon);
 
-      $.ajax({
-        url: "{{ route('get.zip.coordinates') }}",
-        type: "POST",
-        data: {
-          _token: "{{ csrf_token() }}",
-          origin_zip: OriginZip,
-          destination_zip: DestinationZip
-        },
-        success: function (coordResponse) {
-          if (coordResponse.success) {
-            const originLat = parseFloat(coordResponse.origin.lat);
-            const originLon = parseFloat(coordResponse.origin.lon);
-            const destLat = parseFloat(coordResponse.destination.lat);
-            const destLon = parseFloat(coordResponse.destination.lon);
+        if (originLat && originLon && destLat && destLon) {
+        const mapContainer = document.getElementById('map');
 
-            if (originLat && originLon && destLat && destLon) {
-              const mapContainer = document.getElementById('map');
-
-              if (map) {
-                map.remove();
-                map = null;
-                mapContainer._leaflet_id = null;
-              }
-
-              const wasHidden = mapContainer.style.display === 'none';
-              if (wasHidden) {
-                mapContainer.style.display = 'block';
-              }
-
-              map = L.map(mapContainer, {
-                zoomControl: false
-              }).setView([(originLat + destLat) / 2, (originLon + destLon) / 2], 7);
-
-              if (wasHidden) {
-                mapContainer.style.display = 'none';
-              }
-
-              setTimeout(() => {
-                map.invalidateSize();
-                if (wasHidden) {
-                  mapContainer.style.display = 'block';
-                }
-              }, 100);
-
-              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              }).addTo(map);
-
-              L.control.zoom({
-                position: 'topright'
-              }).addTo(map);
-
-              const originIcon = L.divIcon({
-                html: `<div style="position: relative;">
-            <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#4CAF50"/>
-            </svg>
-          </div>`,
-                className: '',
-                iconSize: [28, 28],
-                iconAnchor: [14, 28]
-              });
-
-              const destIcon = L.divIcon({
-                html: `<div style="position: relative;">
-            <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#F44336"/>
-            </svg>
-          </div>`,
-                className: '',
-                iconSize: [28, 28],
-                iconAnchor: [14, 28]
-              });
-
-              const originMarker = L.marker([originLat, originLon], {
-                icon: originIcon,
-                zIndexOffset: 1000
-              }).addTo(map);
-
-              const destMarker = L.marker([destLat, destLon], {
-                icon: destIcon,
-                zIndexOffset: 1000
-              }).addTo(map);
-
-              if (routeControl) {
-                map.removeControl(routeControl);
-              }
-
-              const customRouter = new L.Routing.OSRMv1({
-                serviceUrl: 'https://router.project-osrm.org/route/v1',
-                timeout: 10000,
-                profile: 'driving'
-              });
-
-              routeControl = L.Routing.control({
-                waypoints: [
-                  L.latLng(originLat, originLon),
-                  L.latLng(destLat, destLon)
-                ],
-                router: customRouter,
-                routeWhileDragging: false,
-                showAlternatives: false,
-                addWaypoints: false,
-                draggableWaypoints: false,
-                fitSelectedRoutes: 'smart',
-                lineOptions: {
-                  styles: [{
-                    color: '#2196F3',
-                    weight: 5,
-                    opacity: 0.8
-                  }],
-                  extendToWaypoints: true,
-                  missingRouteTolerance: 1
-                },
-                createMarker: function () {
-                  return null;
-                },
-                show: false,
-                formatter: new L.Routing.Formatter({
-                  language: 'en',
-                  units: 'imperial'
-                })
-              }).addTo(map);
-
-              routeControl.on('routesfound', function (e) {
-                const routes = e.routes;
-                const distance = routes[0].summary.totalDistance;
-                const time = routes[0].summary.totalTime;
-
-                document.getElementById('route-distance').textContent =
-                  (distance / 1609.34).toFixed(1) + ' miles';
-
-                var distanceMiles = (distance / 1609.34).toFixed(1);
-
-                const hours = Math.floor(time / 3600);
-                const minutes = Math.round((time % 3600) / 60);
-                document.getElementById('route-time').textContent =
-                  `${hours > 0 ? hours + 'h ' : ''}${minutes}m`;
-
-                const googleMapsUrl =
-                  `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLon}&destination=${destLat},${destLon}&travelmode=driving`;
-                document.getElementById('view-google-maps').href = googleMapsUrl;
-
-                calculatePriceInsights(distanceMiles);
-              });
-
-
-              const group = new L.featureGroup([originMarker, destMarker]);
-              map.fitBounds(group.getBounds().pad(0.2));
-              document.getElementById('map-loading').style.display = 'none';
-              document.getElementById('map_showing').style.display = 'block';
-            } else {
-              document.getElementById('map').innerHTML = `
-          <div style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#666; gap: 12px;">
-            <i class="fas fa-map-marked-alt" style="font-size: 32px;"></i>
-            <div>Map data not available</div>
-          </div>`;
-              document.getElementById('map-loading').style.display = 'none';
-              resetLoadingStates();
-            }
-          } else {
-            alert('ZIP coordinates not found!');
-            resetLoadingStates();
-          }
-        },
-        error: function () {
-          alert('ZIP lookup failed.');
-          resetLoadingStates();
+        if (map) {
+          map.remove();
+          map = null;
+          mapContainer._leaflet_id = null;
         }
+
+        mapContainer.style.display = 'block';
+
+        setTimeout(() => {
+          map = L.map(mapContainer, {
+          zoomControl: false,
+          preferCanvas: true
+          }).setView([(originLat + destLat) / 2, (originLon + destLon) / 2], 7);
+
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          }).addTo(map);
+
+          L.control.zoom({
+          position: 'topright'
+          }).addTo(map);
+
+          const originIcon = L.divIcon({
+          html: `<div style="position: relative;">
+                  <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#4CAF50"/>
+                  </svg>
+                  </div>`,
+          className: '',
+          iconSize: [28, 28],
+          iconAnchor: [14, 28]
+          });
+
+          const destIcon = L.divIcon({
+          html: `<div style="position: relative;">
+                  <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#F44336"/>
+                  </svg>
+                  </div>`,
+          className: '',
+          iconSize: [28, 28],
+          iconAnchor: [14, 28]
+          });
+
+          const originMarker = L.marker([originLat, originLon], {
+          icon: originIcon,
+          zIndexOffset: 1000
+          }).addTo(map);
+
+          const destMarker = L.marker([destLat, destLon], {
+          icon: destIcon,
+          zIndexOffset: 1000
+          }).addTo(map);
+
+          if (routeControl) {
+          map.removeControl(routeControl);
+          }
+
+          getOpenRouteServiceRoute(originLon, originLat, destLon, destLat, function (error, routeData) {
+          if (error) {
+            alert('Route calculation failed: ' + error);
+            resetLoadingStates();
+            return;
+          }
+
+          map.eachLayer(layer => {
+            if (layer instanceof L.GeoJSON) {
+            map.removeLayer(layer);
+            }
+          });
+
+          const route = L.geoJSON(routeData, {
+            style: {
+            color: '#2196F3',
+            weight: 5,
+            opacity: 0.8
+            }
+          }).addTo(map);
+
+          const distance = routeData.features[0].properties.segments[0].distance; // in meters
+          const duration = routeData.features[0].properties.segments[0].duration; // in seconds
+
+          document.getElementById('route-distance').textContent =
+            (distance / 1609.34).toFixed(1) + ' miles';
+
+          var distanceMiles = (distance / 1609.34).toFixed(1);
+
+          const hours = Math.floor(duration / 3600);
+          const minutes = Math.round((duration % 3600) / 60);
+          document.getElementById('route-time').textContent =
+            `${hours > 0 ? hours + 'h ' : ''}${minutes}m`;
+
+          const googleMapsUrl =
+            `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLon}&destination=${destLat},${destLon}&travelmode=driving`;
+          document.getElementById('view-google-maps').href = googleMapsUrl;
+
+          calculatePriceInsights(distanceMiles);
+
+          const group = new L.featureGroup([originMarker, destMarker, route]);
+          map.fitBounds(group.getBounds().pad(0.2));
+
+          if (firstLoad) {
+            setTimeout(() => {
+            map.invalidateSize();
+            map.fitBounds(group.getBounds().pad(0.2));
+            firstLoad = false;
+          }, 300);
+          }
+
+          document.getElementById('map-loading').style.display = 'none';
+          document.getElementById('map_showing').style.display = 'block';
+          });
+        }, 50);
+        } else {
+        handleMapError();
+        }
+      } else {
+        alert('ZIP coordinates not found!');
+        resetLoadingStates();
+      }
+      },
+      error: function () {
+      alert('ZIP lookup failed.');
+      resetLoadingStates();
+      }
+    });
+    }
+
+    function handleMapError() {
+    document.getElementById('map').innerHTML = `
+    <div style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#666; gap: 12px;">
+    <i class="fas fa-map-marked-alt" style="font-size: 32px;"></i>
+    <div>Map data not available</div>
+    </div>`;
+    document.getElementById('map-loading').style.display = 'none';
+    resetLoadingStates();
+    }
+
+    function getOpenRouteServiceRoute(startLon, startLat, endLon, endLat, callback) {
+    const apiKey = '5b3ce3597851110001cf6248498a4e64e25942fdbd2ae37467f7c349';
+    const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${startLon},${startLat}&end=${endLon},${endLat}`;
+
+    fetch(url)
+      .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+      })
+      .then(data => {
+      callback(null, data);
+      })
+      .catch(error => {
+      callback(error.message || 'Failed to get route');
       });
     }
 
