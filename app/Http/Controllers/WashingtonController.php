@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Order;
+// use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class WashingtonController extends Controller
@@ -17,10 +18,17 @@ class WashingtonController extends Controller
     public function getAllWashingtonListing()
     {
         try {
-        $records = Order::whereNotNull('listed_price')
+
+        $records = DB::table('washington_listing')
+            ->whereNotNull('listed_price')
             ->where('listed_price', '!=', '')
             ->orderBy('created_at', 'desc')
             ->get();
+            
+        // $records = Order::whereNotNull('listed_price')
+        //     ->where('listed_price', '!=', '')
+        //     ->orderBy('created_at', 'desc')
+        //     ->get();
 
         $data = $records->map(function ($item) {
             return [

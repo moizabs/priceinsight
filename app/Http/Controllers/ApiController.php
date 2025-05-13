@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
-use Illuminate\Http\Request;
+// use App\Models\Order;
 use App\Models\PricePerMile;
 use App\Models\PricingOptions;
 use App\Models\Setting;
 use App\Models\StateExceptions;
-use App\Models\ZipCodeExceptions;
 use App\Models\VehicleTypeSetting;
+use App\Models\ZipCodeExceptions;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
 {
@@ -51,7 +52,12 @@ class ApiController extends Controller
     }
     public function api_listing_data()
     {
-        $data = Order::whereNotNull('listed_price')
+        // $data = Order::whereNotNull('listed_price')
+        //     ->where('listed_price', '!=', '')
+        //     ->get();
+
+        $data = DB::table('washington_listing')
+            ->whereNotNull('listed_price')
             ->where('listed_price', '!=', '')
             ->get();
         return response()->json($data);
