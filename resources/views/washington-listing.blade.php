@@ -51,6 +51,7 @@
                         <table class="table table-borderless table-striped table-earning" id="contentMid">
                             <thead>
                                 <tr>
+                                    <th class="text-center font-weight-bold">Status</th>
                                     <th class="text-center font-weight-bold">Origin Location</th>
                                     <th class="text-center font-weight-bold">Destination Location</th>
                                     <th class="text-center font-weight-bold">Vehicle Information</th>
@@ -129,6 +130,7 @@
                         paginatedData.forEach(function(item) {
                             rows += `
                                 <tr>
+                                    <td class="text-center">${item.status}</td>
                                     <td class="text-center">${item.origin_location}</td>
                                     <td class="text-center">${item.destination_location}</td>
                                     <td class="text-center">${item.vehicle_info}</td>

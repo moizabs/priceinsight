@@ -17,22 +17,18 @@ class WashingtonController extends Controller
     public function getAllWashingtonListing()
 {
     try {
-            $records = Washington::select([
-                'originzsc',
-                'destinationzsc', 
-                'ymk',
-                'listed_price',
-                'created_at'
-            ])
-            ->whereNotNull('listed_price')
-            ->where('listed_price', '!=', '')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        // $records = Washington::whereNotNull('listed_price')
-        //     ->where('listed_price', '!=', '')
-        //     ->orderBy('created_at', 'desc')
-        //     ->get();
+        $records = Washington::select([
+            'originzsc',
+            'destinationzsc', 
+            'ymk',
+            'listed_price',
+            'created_at',
+            'pstatus'
+        ])
+        ->whereNotNull('listed_price')
+        ->where('listed_price', '!=', '')
+        ->orderBy('created_at', 'desc')
+        ->get();
 
         if ($records->isEmpty()) {
             return response()->json([
@@ -48,6 +44,29 @@ class WashingtonController extends Controller
                 'destination_location' => $item->destinationzsc ?? 'N/A',
                 'vehicle_info' => $item->ymk ?? 'N/A',
                 'price' => $item->listed_price ?? '0.00',
+                'status' => match($item->pstatus) {
+                    0 => 'New',
+                    1 => 'Interested',
+                    2 => 'FollowMore',
+                    3 => 'AskingLow',
+                    4 => 'NotInterested',
+                    5 => 'NoResponse',
+                    6 => 'TimeQuote',
+                    7 => 'PaymentMissing',
+                    8 => 'Booked',
+                    9 => 'Listed',
+                    10 => 'Scheduled',
+                    11 => 'Pickup',
+                    12 => 'Delivered',
+                    13 => 'Completed',
+                    14 => 'Cancelled',
+                    18 => 'OnApproval',
+                    19 => 'CancelOnApproval',
+                    15 => 'Deleted',
+                    16 => 'OwesMoney',
+                    17 => 'CarrierUpdate',
+                    default => 'Unknown'
+                },
                 'entery_date' => optional($item->created_at)->toDateTimeString() ?? 'N/A',
             ];            
         });
@@ -66,4 +85,23 @@ class WashingtonController extends Controller
         ], 500);
     } 
 }
+
+// Dispatch
+//  10 => 'Scheduled',
+//                     11 => 'Pickup',
+//                     12 => 'Delivered',
+//                     13 => 'Completed',
+//                     18 => 'OnApproval',
+
+
+// Listed
+// 9 => 'Listed',
+//                     10 => 'Scheduled',
+//                     11 => 'Pickup',
+//                     12 => 'Delivered',
+//                     13 => 'Completed',
+//                     14 => 'Cancelled',
+//                     18 => 'OnApproval',
+//                     19 => 'CancelOnApproval',
+
 }
