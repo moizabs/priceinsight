@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class WashingtonController extends Controller
 {
@@ -14,6 +16,7 @@ class WashingtonController extends Controller
 
     public function getAllWashingtonListing()
     {
+        try {
         $records = Order::whereNotNull('listed_price')
             ->where('listed_price', '!=', '')
             ->orderBy('created_at', 'desc')
@@ -33,5 +36,9 @@ class WashingtonController extends Controller
             'success' => true,
             'data' => $data
         ]);
+    } catch (\Exception $e) {
+        Log::error('Washington Listing Error: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Server error. Check logs.'], 500);
+    } 
     }
 }
