@@ -8,6 +8,7 @@ use App\Models\PricingOptions;
 use App\Models\Setting;
 use App\Models\StateExceptions;
 use App\Models\VehicleTypeSetting;
+use App\Models\Washington;
 use App\Models\ZipCodeExceptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -52,14 +53,14 @@ class ApiController extends Controller
     }
     public function api_listing_data()
     {
-        // $data = Order::whereNotNull('listed_price')
-        //     ->where('listed_price', '!=', '')
-        //     ->get();
-
-        $data = DB::table('washington_listing')
-            ->whereNotNull('listed_price')
+        $data = Washington::whereNotNull('listed_price')
             ->where('listed_price', '!=', '')
             ->get();
+
+        // $data = DB::table('washington_listing')
+        //     ->whereNotNull('listed_price')
+        //     ->where('listed_price', '!=', '')
+        //     ->get();
         return response()->json($data);
     }
 }

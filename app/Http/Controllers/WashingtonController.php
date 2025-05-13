@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Washington;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -17,12 +18,16 @@ class WashingtonController extends Controller
     {
         try {
 
-        $records = DB::table('washington_listing')
-            ->whereNotNull('listed_price')
-            ->where('listed_price', '!=', '')
-            ->orderBy('created_at', 'desc')
-            ->get();
-        
+        $records = Washington::whereNotNull('listed_price')
+        ->where('listed_price', '!=', '')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        // $records = DB::table('washington_listing')
+        //     ->whereNotNull('listed_price')
+        //     ->where('listed_price', '!=', '')
+        //     ->orderBy('created_at', 'desc')
+        //     ->get();
 
         $data = $records->map(function ($item) {
             return [
