@@ -53,17 +53,17 @@ class ApiController extends Controller
     }
     public function api_listing_data()
     {
-
         $data = Washington::select([
             'originzsc',
             'destinationzsc', 
             'ymk',
             'listed_price',
             'created_at',
-            'pstatus'
+            'pstatus',
+            'condition',
+            'type',
+            'transport'
         ])
-        ->whereNotNull('listed_price')
-        ->where('listed_price', '!=', '')
         ->get();
         return response()->json($data);
     }
