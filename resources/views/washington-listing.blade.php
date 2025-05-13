@@ -143,8 +143,15 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    alert('Error: ' + xhr.status + ' - ' + xhr.responseText);
-                    console.log(xhr);
+                    console.error('AJAX Error:', status);
+                    console.error('Error:', error);
+                    console.error('Response:', xhr.responseText);
+                                
+                    let errorMsg = 'An error occurred while loading data.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    }
+                    alert(errorMsg);
                 }
             });
         }
