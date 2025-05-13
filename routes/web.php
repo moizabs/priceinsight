@@ -29,6 +29,12 @@ Route::middleware('guest:authorized')->group(function () {
     Route::post('/login', [UserController::class, 'login_submit'])->name('login.submit');
 });
 
+Route::middleware('guest:authorized')->group(function () {
+    Route::get('/otp', function () {
+        return view('Auth.otp');
+    })->name('otp');
+
+});
 
 // After Authorized 
 Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
