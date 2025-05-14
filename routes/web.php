@@ -10,6 +10,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\VehicleTypeSettingController;
 use App\Http\Controllers\WashingtonController;
 use App\Http\Controllers\ZipCodeExceptionsController;
+use App\Http\Controllers\OtpController;
 use App\Http\Middleware\UserMiddleware as AuthorizedGuardMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -27,8 +28,10 @@ Route::middleware('guest:authorized')->group(function () {
     })->name('index');
 
     Route::post('/login', [UserController::class, 'login_submit'])->name('login.submit');
+    Route::get('/otp/{email}/{password}', [UserController::class, 'otp_view'])->name('otp');
+    Route::post('/otp-submit', [UserController::class, 'otp_submit'])->name('otp.submit');
+    Route::post('/resend-form', [UserController::class, 'resend_form'])->name('otp.resend');
 });
-
 
 // After Authorized 
 Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
