@@ -2,6 +2,7 @@
 <html lang="en">
 
 @include('Layout.header')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
 <body>
     <div class="page-wrapper">
@@ -23,24 +24,16 @@
                                 </div>
                             </div>
                         </div>
-                        @if (session('success'))
-                            <div class="alert alert-success ">
-                                {{ session('success') }}
-                            </div>
-                        @endif
 
-                        @if (session('error'))
-                            <div class="alert alert-danger">
-                                {{ session('error') }}
-                            </div>
-                        @endif  
-                            <div class="row" style="margin-top: 60vh;">
-                                <div class="col-md-12">
-                                    <div class="copyright">
-                                        <p>Copyright © 2025 ALL RIGHTS RESERVED • AUTO TRANSPORT</p>
-                                    </div>
+
+                        <div class="row" style="margin-top: 60vh;">
+                            <div class="col-md-12">
+                                <div class="copyright">
+                                    <p>Copyright © 2025 ALL RIGHTS RESERVED • AUTO TRANSPORT</p>
                                 </div>
                             </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -48,7 +41,26 @@
         </div>
 
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "3000"
+        };
+    </script>
+    @if (session('success'))
+        <script>
+            toastr.success("{{ session('success') }}");
+        </script>
+    @endif
 
+    @if (session('error'))
+    <script>
+        toastr.error("{{ session('error') }}");
+    </script>
+    @endif
 </body>
 
 </html>
