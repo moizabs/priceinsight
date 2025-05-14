@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request as iPrequest;
+use App\Mail\OtpVerification;
 
 class UserController extends Controller
 {
@@ -66,17 +67,22 @@ class UserController extends Controller
             return redirect()->back()->with('Error!','400 Bad Request User doesn\'t Exist! Invalid Email!');
         }
 
-        if (Auth::guard('authorized')->attempt($credentials)) {
+        // if (Auth::guard('authorized')->attempt($credentials)) {
+            $otpcode = rand(1000,9999);
             $ip = iPrequest::ip();
             $location = $this->getLocationFromIp($ip);
     
             $User->last_login_at = Carbon::now();
             $User->ip = $ip;
             $User->location = $location;
+            $User->otp_code = $otpcode;
             $User->save();
-    
-            return redirect()->route('dashboard');
-        }
+
+            $checkMail = Mail::to($credentials['email'])->queue( new OtpVerification( $otpcode, $credentials['email'], $User->name));
+            return redirect()->route('otp', [
+            'email' => $credentials['email'],
+            'password' => $credentials['password']]);
+        // }
 
         return back()->with([
             'Error!' => 'The provided credentials do not match our records.',
@@ -104,6 +110,67 @@ class UserController extends Controller
     {
         Auth::guard('authorized')->logout();
         return redirect('/');
+    }
+
+
+    public function otp_view(Request $request)
+    {
+        $email = $request->email;
+        $password = $request->password;
+        return view('Auth.otp',compact('email' , 'password'));
+    }
+
+
+    public function otp_submit(Request $request)
+    {
+         $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+        $User = User::where('email', $credentials['email'])->first();
+           $request->validate([
+               'otp1' => 'required|digits:1',
+               'otp2' => 'required|digits:1',
+               'otp3' => 'required|digits:1',
+               'otp4' => 'required|digits:1',
+           ]);
+   
+           $enteredOtp = $request->otp1 . $request->otp2 . $request->otp3 . $request->otp4;
+
+           if($User->otp_code == $enteredOtp){
+
+               if (Auth::guard('authorized')->attempt($credentials)) {
+                   return redirect()->route('dashboard')->with('success','Login successfully');;
+                  }   
+
+           }else{
+           
+            return redirect()->route('otp', [
+            'email' => $credentials['email'],
+            'password' => $credentials['password']])->with('error','Your OTP is Invalid!');;
+
+           };
+
+    }
+
+
+     public function resend_form(Request $request)
+    {
+
+          $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+          ]);
+
+         $User = User::where('email', $credentials['email'])->first();
+
+         $resendcode = rand(1000,9999);
+         $User->otp_code = $resendcode;
+         $User->save();
+         
+         return redirect()->route('otp', [
+        'email' => $credentials['email'],
+        'password' => $credentials['password']])->with('success','otp send successfully');
     }
 
 }

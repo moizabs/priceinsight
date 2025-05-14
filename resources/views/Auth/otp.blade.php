@@ -106,24 +106,55 @@
         <div class="page-content--bge5"
             style="background-image: url('{{ asset('images/red-truck.jpg') }}'); background-size: cover; background-repeat: no-repeat; background-position: center;">
 
-            <div class=" d-flex justify-content-center align-items-center h-100" style="background-color: rgba(7, 7, 7, 0.507) ; ">
+            <div class=" d-flex justify-content-center align-items-center h-100"
+                style="background-color: rgba(7, 7, 7, 0.507) ; ">
                 <div class="col-md-5">
-                    <form class="otp-Form mx-auto">
-                        <span class="mainHeading">Enter OTP</span>
-                        <p class="otpSubheading">We have sent a verification code to your Email</p>
-                        <div class="inputContainer">
-                            <input required maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*"class="otp-input" id="otp-input1">
-                            <input required maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*" class="otp-input" id="otp-input2">
-                            <input required maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*" class="otp-input" id="otp-input3">
-                            <input required maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*" class="otp-input" id="otp-input4">
-
+                   
+                    <form class="otp-Form mx-auto" action="{{ route('otp.submit') }}" method="POST">
+                         @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
                         </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+                        @csrf
+                        <span class="mainHeading">Enter OTP</span>
+
+                        <p class="otpSubheading">We have sent a verification code to your Email</p>
+                        
+                        <div class="inputContainer">
+                            <input required name="otp1" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*" class="otp-input" id="otp-input1">
+                            <input required name="otp2" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*" class="otp-input" id="otp-input2">
+                            <input required name="otp3" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*" class="otp-input" id="otp-input3">
+                            <input required name="otp4" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*" class="otp-input" id="otp-input4">
+                        </div>
+
+                        <input type="hidden" name="email" value="{{ $email }}" >
+                        <input type="hidden" name="password" value="{{ $password }}" >
+
                         <button class="verifyButton" type="submit">Verify</button>
-                        {{-- <button class="exitBtn">×</button> --}}
-                        <p class="resendNote">Didn't receive the code? <button class="resendBtn">Resend Code</button>
+
+                        <p class="resendNote">Didn't receive the code?
+                            <button type="button" class="resendBtn" onclick="document.getElementById('resend-form').submit()">Resend Code</button>
                         </p>
 
                     </form>
+
+                    <!-- Hidden form for resend -->
+                    <form id="resend-form" action="{{ route('otp.resend') }}" method="POST" style="display: none;">
+                        @csrf
+                            <input type="hidden" name="email" value="{{ $email }}" >
+                            <input type="hidden" name="password" value="{{ $password }}" >
+                    </form>
+
+                    <!-- Display success/error messages -->
+                    
+
                 </div>
 
             </div>
@@ -132,6 +163,8 @@
 
 
     <script>
+       
+
         document.addEventListener("DOMContentLoaded", function() {
             const inputs = document.querySelectorAll(".otp-input");
 
