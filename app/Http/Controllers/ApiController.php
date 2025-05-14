@@ -64,7 +64,47 @@ class ApiController extends Controller
             'type',
             'transport'
         ])
+        ->whereIn('pstatus', [9, 10, 11, 12, 13, 14, 18, 19])
+        ->get();
+        return response()->json($data);
+    }
+
+
+    public function api_dispatch_listing_data()
+    {
+        $data = Washington::select([
+            'originzsc',
+            'destinationzsc', 
+            'ymk',
+            'listed_price',
+            'created_at',
+            'pstatus',
+            'condition',
+            'type',
+            'transport'
+        ])
+        ->whereIn('pstatus', [10, 11, 12, 13, 18])
         ->get();
         return response()->json($data);
     }
 }
+
+
+
+// Dispatch
+//  10 => 'Scheduled',
+//                     11 => 'Pickup',
+//                     12 => 'Delivered',
+//                     13 => 'Completed',
+//                     18 => 'OnApproval',
+
+
+// Listed
+// 9 => 'Listed',
+//                     10 => 'Scheduled',
+//                     11 => 'Pickup',
+//                     12 => 'Delivered',
+//                     13 => 'Completed',
+//                     14 => 'Cancelled',
+//                     18 => 'OnApproval',
+//                     19 => 'CancelOnApproval',

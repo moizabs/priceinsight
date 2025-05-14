@@ -13,6 +13,7 @@ Route::get('/zip-code-exceptions-data', 'ApiController@api_zip_code_exceptions')
 
 Route::get('/setting-data', 'ApiController@api_setting_data');
 Route::get('/listing-data', 'ApiController@api_listing_data');
+Route::get('/dispatch-listing-data', 'ApiController@api_dispatch_listing_data');
 
 
 
