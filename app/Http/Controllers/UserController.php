@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request as iPrequest;
 use App\Mail\OtpVerification;
+use Illuminate\Support\Facades\Crypt;
 
 class UserController extends Controller
 {
@@ -64,47 +65,28 @@ class UserController extends Controller
         $User = User::where('email', $credentials['email'])->first();
 
         if(!$User){
-            return redirect()->back()->with('Error!','400 Bad Request User doesn\'t Exist! Invalid Email!');
+            return redirect()->back()->with('error!','400 Bad Request User doesn\'t Exist! Invalid Email!');
         }
 
-        // if (Auth::guard('authorized')->attempt($credentials)) {
-            $otpcode = rand(1000,9999);
-            $ip = iPrequest::ip();
-            $location = $this->getLocationFromIp($ip);
-    
-            $User->last_login_at = Carbon::now();
-            $User->ip = $ip;
-            $User->location = $location;
-            $User->otp_code = $otpcode;
-            $User->save();
+        if (!Hash::check($credentials['password'], $User->password)) {
+            return back()->with('error!', 'Unauthorized \n Incorrect password!');
+        }
 
-            $checkMail = Mail::to($credentials['email'])->queue( new OtpVerification( $otpcode, $credentials['email'], $User->name));
-            return redirect()->route('otp', [
-            'email' => $credentials['email'],
-            'password' => $credentials['password']]);
-        // }
+        $otpcode = rand(1000,9999);
+        $User->otp_code = $otpcode;
+        $User->save();
+
+        $checkMail = Mail::to($credentials['email'])->queue( new OtpVerification( $otpcode, $credentials['email'], $User->name));
+        
+        $encryptedEmail = Crypt::encryptString($credentials['email']);
+        $encryptedPassword = Crypt::encryptString($credentials['password']);
+
+        return redirect()->route('otp', ['email' => $encryptedEmail,'password' => $encryptedPassword]);
 
         return back()->with([
             'Error!' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
     }
-
-
-    public function getLocationFromIp($ip)
-    {
-    if ($ip === '127.0.0.1' || $ip === '::1') {
-        return 'Localhost';
-    }
-
-    try {
-        $response = file_get_contents("http://ipinfo.io/{$ip}/json");
-        $details = json_decode($response, true);
-        return ($details['region'] ?? 'Unknown') . ', ' . ($details['country'] ?? '');
-    } catch (\Exception $e) {
-        return 'Unknown';
-    }
-    }
-
 
     public function logout()
     {
@@ -127,7 +109,11 @@ class UserController extends Controller
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
-        $User = User::where('email', $credentials['email'])->first();
+
+        $decryptedEmail = Crypt::decryptString($credentials['email']);
+        $decryptedPassword = Crypt::decryptString($credentials['password']);
+
+        $User = User::where('email', $decryptedEmail)->first();
            $request->validate([
                'otp1' => 'required|digits:1',
                'otp2' => 'required|digits:1',
@@ -139,15 +125,27 @@ class UserController extends Controller
 
            if($User->otp_code == $enteredOtp){
 
-               if (Auth::guard('authorized')->attempt($credentials)) {
-                   return redirect()->route('dashboard')->with('success','Login successfully');;
-                  }   
+               if (Auth::guard('authorized')->attempt([
+                    'email' => $decryptedEmail,
+                    'password' => $decryptedPassword
+                ])) {
+
+                $ip = iPrequest::ip();
+                $location = $this->getLocationFromIp($ip);
+
+                $User->last_login_at = Carbon::now();
+                $User->ip = $ip;
+                $User->location = $location;
+                $User->save();
+
+                return redirect()->route('dashboard')->with('success','Login successfully');
+                }   
 
            }else{
            
             return redirect()->route('otp', [
-            'email' => $credentials['email'],
-            'password' => $credentials['password']])->with('error','Your OTP is Invalid!');;
+            'email' => $request->email,
+            'password' => $request->password])->with('error','Your OTP is Invalid!');
 
            };
 
@@ -155,22 +153,45 @@ class UserController extends Controller
 
 
      public function resend_form(Request $request)
+{
+    
+    $decryptedEmail = Crypt::decryptString($request->email);
+    $decryptedPassword = Crypt::decryptString($request->password);
+    
+    $User = User::where('email', $decryptedEmail)->first();
+
+    if (!$User) {
+        return back()->with('error', 'User not found.');
+    }
+
+    $resendcode = rand(1000, 9999);
+    $User->otp_code = $resendcode;
+    $User->save();
+
+    Mail::to($decryptedEmail)->queue(
+        new OtpVerification($resendcode, $decryptedEmail, $User->name)
+    );
+
+    return redirect()->route('otp', [
+        'email' => $decryptedEmail,
+        'password' => $decryptedPassword
+    ])->with('success', 'OTP sent successfully.');
+}
+
+
+    public function getLocationFromIp($ip)
     {
+    if ($ip === '127.0.0.1' || $ip === '::1') {
+        return 'Localhost';
+    }
 
-          $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-          ]);
-
-         $User = User::where('email', $credentials['email'])->first();
-
-         $resendcode = rand(1000,9999);
-         $User->otp_code = $resendcode;
-         $User->save();
-         
-         return redirect()->route('otp', [
-        'email' => $credentials['email'],
-        'password' => $credentials['password']])->with('success','otp send successfully');
+    try {
+        $response = file_get_contents("http://ipinfo.io/{$ip}/json");
+        $details = json_decode($response, true);
+        return ($details['region'] ?? 'Unknown') . ', ' . ($details['country'] ?? '');
+    } catch (\Exception $e) {
+        return 'Unknown';
+    }
     }
 
 }

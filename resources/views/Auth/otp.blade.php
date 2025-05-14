@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 @include('Layout.header')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
 <body>
     <style>
@@ -111,17 +112,6 @@
                 <div class="col-md-5">
                    
                     <form class="otp-Form mx-auto" action="{{ route('otp.submit') }}" method="POST">
-                         @if (session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if (session('error'))
-                        <div class="alert alert-danger">
-                            {{ session('error') }}
-                        </div>
-                    @endif
                         @csrf
                         <span class="mainHeading">Enter OTP</span>
 
@@ -139,18 +129,23 @@
 
                         <button class="verifyButton" type="submit">Verify</button>
 
-                        <p class="resendNote">Didn't receive the code?
+                        {{-- <p class="resendNote">Didn't receive the code?
                             <button type="button" class="resendBtn" onclick="document.getElementById('resend-form').submit()">Resend Code</button>
+                        </p> --}}
+
+                        <p class="resendNote">
+                            Didn’t receive an OTP? <a
+                                href="{{ route('otp.resend', ['email' => $email, 'password' => $password]) }}" class="resendBtn">Resend</a>
                         </p>
 
                     </form>
 
                     <!-- Hidden form for resend -->
-                    <form id="resend-form" action="{{ route('otp.resend') }}" method="POST" style="display: none;">
+                    {{-- <form id="resend-form" action="{{ route('otp.resend') }}" method="POST" style="display: none;">
                         @csrf
-                            <input type="hidden" name="email" value="{{ $email }}" >
-                            <input type="hidden" name="password" value="{{ $password }}" >
-                    </form>
+                            <input type="hidden" name="email-resend" value="{{ $email }}" >
+                            <input type="hidden" name="password-resend" value="{{ $password }}" >
+                    </form> --}}
 
                     <!-- Display success/error messages -->
                     
@@ -189,6 +184,26 @@
             });
         });
     </script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "3000"
+        };
+    </script>
+    @if (session('success'))
+        <script>
+            toastr.success("{{ session('success') }}");
+        </script>
+    @endif
+
+    @if (session('error'))
+    <script>
+        toastr.error("{{ session('error') }}");
+    </script>
+    @endif
 </body>
 
 </html>

@@ -30,7 +30,7 @@ Route::middleware('guest:authorized')->group(function () {
     Route::post('/login', [UserController::class, 'login_submit'])->name('login.submit');
     Route::get('/otp/{email}/{password}', [UserController::class, 'otp_view'])->name('otp');
     Route::post('/otp-submit', [UserController::class, 'otp_submit'])->name('otp.submit');
-    Route::post('/resend-form', [UserController::class, 'resend_form'])->name('otp.resend');
+    Route::get('/resend-form', [UserController::class, 'resend_form'])->name('otp.resend');
 });
 
 // After Authorized 
