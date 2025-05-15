@@ -654,8 +654,8 @@
 
                 <!-- Tabs -->
                 <div class="tabs">
-                  <div class="tab active" id="recent-move-tab">Recent Moves</div>
-                  <div class="tab" id="super-load-tab">Posted To Super Loadboard</div>
+                  <div class="tab active" id="recent-move-tab">Recent Dispatches</div>
+                  <div class="tab" id="super-load-tab">Listings on Day Dispatch</div>
                 </div>
 
                 <!-- Tab Content -->

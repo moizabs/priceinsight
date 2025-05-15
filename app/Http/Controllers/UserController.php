@@ -52,7 +52,6 @@ class UserController extends Controller
 
     public function login_submit(Request $request)
     {
-
         if (Auth::guard('authorized')->check()) {
             return redirect()->route('dashboard');
         }
@@ -65,27 +64,24 @@ class UserController extends Controller
         $User = User::where('email', $credentials['email'])->first();
 
         if(!$User){
-            return redirect()->back()->with('error!','400 Bad Request User doesn\'t Exist! Invalid Email!');
+            return redirect()->back()->with('Error!','400 Bad Request User doesn\'t Exist! Invalid Email!');
         }
 
         if (!Hash::check($credentials['password'], $User->password)) {
-            return back()->with('error!', 'Unauthorized \n Incorrect password!');
+            return back()->with('Error!', 'Unauthorized \n Incorrect password!');
         }
 
         $otpcode = rand(1000,9999);
         $User->otp_code = $otpcode;
         $User->save();
 
-        $checkMail = Mail::to($credentials['email'])->queue( new OtpVerification( $otpcode, $credentials['email'], $User->name));
+        Mail::to($credentials['email'])->queue( new OtpVerification( $otpcode, $credentials['email'], $User->name));
         
         $encryptedEmail = Crypt::encryptString($credentials['email']);
         $encryptedPassword = Crypt::encryptString($credentials['password']);
 
         return redirect()->route('otp', ['email' => $encryptedEmail,'password' => $encryptedPassword]);
 
-        return back()->with([
-            'Error!' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
     }
 
     public function logout()
@@ -105,13 +101,8 @@ class UserController extends Controller
 
     public function otp_submit(Request $request)
     {
-         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
-
-        $decryptedEmail = Crypt::decryptString($credentials['email']);
-        $decryptedPassword = Crypt::decryptString($credentials['password']);
+        $decryptedEmail = Crypt::decryptString($request->email);
+        $decryptedPassword = Crypt::decryptString($request->password);
 
         $User = User::where('email', $decryptedEmail)->first();
            $request->validate([
@@ -173,8 +164,8 @@ class UserController extends Controller
     );
 
     return redirect()->route('otp', [
-        'email' => $decryptedEmail,
-        'password' => $decryptedPassword
+        'email' => $request->email,
+        'password' => $request->password
     ])->with('success', 'OTP sent successfully.');
 }
 
