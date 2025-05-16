@@ -1,16 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Mail;
+use App\Mail\OtpVerification;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request as iPrequest;
-use App\Mail\OtpVerification;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -26,36 +27,39 @@ class UserController extends Controller
 
     public function create_account(Request $request)
     {
-        $validateCheck = $request->validate([
-            'role' => 'required',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
-            'phone' => 'required',
+        $validatedData = $request->validate([
+        'role'       => 'required',
+        'first_name' => 'required|string|max:255',
+        'last_name'  => 'required|string|max:255',
+        'email'      => 'required|email|unique:users,email',
+        'password'   => 'required|string|min:6',
+        'phone'      => 'required',
+    ]);
+
+    try {
+        $user = User::create([
+            'name'         => $validatedData['first_name'] . ' ' . $validatedData['last_name'],
+            'email'        => $validatedData['email'],
+            'role'         => $validatedData['role'],
+            'phone_number' => $validatedData['phone'],
+            'password'     => Hash::make($validatedData['password']),
         ]);
 
-        try {
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Account created successfully',
+        ], 201);
 
-            $user = new User();
-            $user->name = $validateCheck['first_name'] . ' ' . $validateCheck['last_name'];
-            $user->email = $validateCheck['email'];
-            $user->role = $validateCheck['role'];
-            $user->phone_number = $validateCheck['phone'];
-            $user->password = Hash::make($validateCheck['password']);
-            $user->save();
-
-            return response()->json([
-                'status' => 'success',
-            ], 201);
-
-        } catch (\Exception $e) {
-
-            return response()->json([
-            'status' => 'error',
-            ], 500);
-        }
+    } catch (\Exception $e) {
+        Log::error('Account creation failed: ' . $e->getMessage());
+        
+        return response()->json([
+            'status'  => 'error',
+            'message' => 'Account creation failed',
+            'error'   => env('APP_DEBUG') ? $e->getMessage() : null
+        ], 500);
     }
+}
 
 
     public function login_submit(Request $request)
