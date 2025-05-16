@@ -28,12 +28,7 @@ class UserController extends Controller
     public function create_account(Request $request)
     {
         $validator = Validator::make($request->all(), [
-        'role'       => 'required',
-        'first_name' => 'required|string|max:255',
-        'last_name'  => 'required|string|max:255',
-        'email'      => 'required|email|unique:users,email',
-        'password'   => 'required|string|min:6',
-        'phone'      => 'required',
+        'email' => 'required|email|unique:users,email',
     ]);
 
     if ($validator->fails()) {
@@ -48,17 +43,17 @@ class UserController extends Controller
         $validatedData = $validator->validated();
         
         $user = User::create([
-            'name'         => $validatedData['first_name'] . ' ' . $validatedData['last_name'],
+            'name'         => $request->first_name . ' ' . $request->last_name,
             'email'        => $validatedData['email'],
-            'role'         => $validatedData['role'],
-            'phone_number' => $validatedData['phone'],
-            'password'     => Hash::make($validatedData['password']),
+            'role'         => $request->role,
+            'phone_number' => $request->phone,
+            'password'     => Hash::make($request->password),
         ]);
 
         return response()->json([
             'status'  => 'success',
             'message' => 'Account created successfully',
-            'data'    => ['user_id' => $user->id]
+            'success'    => 'Account created successfully'
         ], 201);
 
     } catch (\Exception $e) {
