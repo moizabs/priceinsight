@@ -25,25 +25,15 @@ class UserController extends Controller
         return view('last_activity', compact('last_Activity'));
     }
 
-    /**
- * Create a new user account
- *
- * @param Request $request
- * @return JsonResponse
- */
-public function create_account(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'role'       => 'required|string|in:admin,user,manager', // Example roles - adjust as needed
+    public function create_account(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+        'role'       => 'required',
         'first_name' => 'required|string|max:255',
         'last_name'  => 'required|string|max:255',
         'email'      => 'required|email|unique:users,email',
-        'password'   => 'required|string|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/', // Stronger password requirements
-        'phone'      => 'required|string|regex:/^\+?[0-9]{10,15}$/',
-    ], [
-        'email.unique' => 'The email address is already registered',
-        'password.regex' => 'Password must contain at least one uppercase letter, one lowercase letter, and one number',
-        'phone.regex' => 'Please enter a valid phone number (10-15 digits)'
+        'password'   => 'required|string|min:6',
+        'phone'      => 'required',
     ]);
 
     if ($validator->fails()) {
@@ -58,32 +48,21 @@ public function create_account(Request $request)
         $validatedData = $validator->validated();
         
         $user = User::create([
-            'name'         => trim($validatedData['first_name'] . ' ' . $validatedData['last_name']),
-            'email'        => strtolower(trim($validatedData['email'])),
+            'name'         => $validatedData['first_name'] . ' ' . $validatedData['last_name'],
+            'email'        => $validatedData['email'],
             'role'         => $validatedData['role'],
-            'phone_number' => preg_replace('/[^0-9+]/', '', $validatedData['phone']),
+            'phone_number' => $validatedData['phone'],
             'password'     => Hash::make($validatedData['password']),
-            'email_verified_at' => null, // Explicitly set if needed
         ]);
-
-        // Optional: Send email verification
-        // $user->sendEmailVerificationNotification();
 
         return response()->json([
             'status'  => 'success',
             'message' => 'Account created successfully',
-            'data'    => [
-                'user_id' => $user->id,
-                'email'   => $user->email,
-                'name'    => $user->name
-            ]
+            'data'    => ['user_id' => $user->id]
         ], 201);
 
     } catch (\Exception $e) {
-        Log::error('Account creation failed: ' . $e->getMessage(), [
-            'request_data' => $request->except(['password']), // Don't log passwords
-            'error_trace' => $e->getTraceAsString()
-        ]);
+        Log::error('Account creation failed: ' . $e->getMessage());
         
         return response()->json([
             'status'  => 'error',
