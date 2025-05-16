@@ -30,22 +30,27 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
+            'phone_number' => 'required',
         ]);
 
         try {
 
             $user = new User();
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->password = Hash::make($request->password);
+            $user->name = $validateCheck['name'];
+            $user->email = $validateCheck['email'];
+            $user->phone_number = $validateCheck['phone_number'];
+            $user->password = Hash::make($validateCheck['password']);
             $user->save();
 
-            return redirect()->back()->with('Success!', 'Account created successfully.');
+            // return redirect()->back()->with('Success!', 'Account created successfully.');
+
+            return response()->json($user);
 
         } catch (\Exception $e) {
 
             Log::error('Account creation failed: ' . $e->getMessage());
-            return redirect()->back()->with('Error!', 'Something went wrong while creating the account.');
+            // return redirect()->back()->with('Error!', 'Something went wrong while creating the account.');
+            // return response()->json($user);
         }
     }
 

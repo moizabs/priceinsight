@@ -17,7 +17,16 @@ class PriceInsightController extends Controller
      */
     public function index()
     {
-       return view('priceinsight');
+        $checkSetting = Http::get('https://price.shipa1.com/api/setting-data');
+        $settingData = $checkSetting->json();
+
+        if (!empty($settingData) && isset($settingData[0]['washington_data']) && $settingData[0]['washington_data'] === 1) {
+            $Washington_Yes = 'Washington_Dropdown';
+        }else{
+            $Washington_Yes = 'No_Washington_Dropdown';
+        }
+
+       return view('priceinsight', compact( 'Washington_Yes'));
     }
 
     /**
@@ -123,7 +132,193 @@ class PriceInsightController extends Controller
         }
     }
 
-    public function Calculate_Price_Insight(Request $request) {
+    public function Calculate_Price_Insight(Request $request) 
+    {
+
+    $checkSetting = Http::get('https://price.shipa1.com/api/setting-data');
+    $settingData = $checkSetting->json();
+
+    if (!empty($settingData) && isset($settingData[0]['washington_data']) && $settingData[0]['washington_data'] === 1) {
+        
+    $Origin = str_replace(' ', '', $request->Origin);
+    $Destination = str_replace(' ', '', $request->Destination);
+    $Vehicles = $request->Vehicles;
+    $Miles = $request->Miles;
+    $Trailer_Type = $request->TrailerType;
+
+    $originParts = explode(',', $Origin);
+    $destParts = explode(',', $Destination);
+    
+    $originCity = trim($originParts[0] ?? '');
+    $originState = trim($originParts[1] ?? '');
+    $originZip = trim($originParts[2] ?? '');
+    
+    $destCity = trim($destParts[0] ?? '');
+    $destState = trim($destParts[1] ?? '');
+    $destZip = trim($destParts[2] ?? '');
+
+    $listingFetching = Http::retry(3, 1000)
+        ->timeout(60)
+        ->get('https://price.shipa1.com/api/listing-data');
+    $listingData = $listingFetching->json();
+
+    $matchedListings = [];
+    $matchLevel = null;
+    
+    $vehicleStats = [];
+    $totalCombinedPrice = 0;
+    $totalCombinedCount = 0;
+
+    foreach ($Vehicles as $index => $vehicle) {
+        $vehicleStats[$index] = [
+            'vehicle' => $vehicle,
+            'total_price' => 0,
+            'count' => 0,
+            'average_price' => 0,
+            'matches' => [],
+            'vehicle_match_level' => 'type_condition'
+        ];
+    }
+
+    foreach ($listingData as $row) {
+        
+        $listingOriginParts = explode(',', str_replace(' ', '', $row['originzsc']));
+        $listingDestParts = explode(',', str_replace(' ', '', $row['destinationzsc']));
+        
+        $listingOriginCity = trim($listingOriginParts[0] ?? '');
+        $listingOriginState = trim($listingOriginParts[1] ?? '');
+        $listingOriginZip = trim($listingOriginParts[2] ?? '');
+        
+        $listingDestCity = trim($listingDestParts[0] ?? '');
+        $listingDestState = trim($listingDestParts[1] ?? '');
+        $listingDestZip = trim($listingDestParts[2] ?? '');
+
+        $originMatch = false;
+        $destMatch = false;
+    
+        if (!empty($originZip) && !empty($listingOriginZip) && !empty($destZip) && !empty($listingDestZip)) {
+            if ($originZip === $listingOriginZip && $destZip === $listingDestZip) {
+                $originMatch = true;
+                $destMatch = true;
+                $matchLevel = 'zip';
+            }
+        }
+
+        if (!$originMatch && !empty($originZip) && !empty($destCity)) {
+            if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
+                $originMatch = true;
+                $destMatch = true;
+                $matchLevel = $matchLevel ?: 'zip-city';
+            }
+        }
+
+        if (!$originMatch && !empty($originCity) && !empty($listingOriginCity)) {
+            if (strcasecmp($originCity, $listingOriginCity) === 0) {
+                $originMatch = true;
+                $matchLevel = $matchLevel ?: 'city';
+            }
+        }
+        
+        if (!$destMatch && !empty($destCity) && !empty($listingDestCity)) {
+            if (strcasecmp($destCity, $listingDestCity) === 0) {
+                $destMatch = true;
+                $matchLevel = $matchLevel ?: 'city';
+            }
+        }
+        
+        if (!$originMatch && !empty($originState) && !empty($listingOriginState)) {
+            if (strcasecmp($originState, $listingOriginState) === 0) {
+                $originMatch = true;
+                $matchLevel = $matchLevel ?: 'state';
+            }
+        }
+        
+        if (!$destMatch && !empty($destState) && !empty($listingDestState)) {
+            if (strcasecmp($destState, $listingDestState) === 0) {
+                $destMatch = true;
+                $matchLevel = $matchLevel ?: 'state';
+            }
+        }       
+
+        if ($originMatch && $destMatch) {
+            if (empty($Vehicles)) {
+                $row['match_level'] = $matchLevel;
+                $row['vehicle_match_level'] = 'none_required';
+                $matchedListings[] = $row;
+                continue;
+            }
+
+            $vehicleMatched = false;
+
+            foreach ($Vehicles as $index => $vehicle) {
+    $condition = strtolower($vehicle['Inoperable'] === 'Yes' ? '2' : '1');
+    $type = strtolower(trim($vehicle['Vehicle_Type'] ?? ''));
+    
+    $listingCondition = strtolower(trim($row['condition'] ?? '1'));
+    $listingTrailer = strtolower(trim($row['transport'] ?? '1'));
+    $listingType = strtolower(trim($row['type'] ?? 'car'));
+
+    $trailerCondition = strtolower($Trailer_Type === 'Open' ? '1' : '2');
+
+    $conditionMatch = $condition === $listingCondition;
+    $typeMatch = !empty($type) && !empty($listingType) && str_contains($listingType, $type);
+    $trailerMatch = $trailerCondition === $listingTrailer;
+
+    if (!$typeMatch) {
+        $typeMatch = empty($type) || empty($listingType) || str_contains($listingType, 'car');
+    }
+
+    if (!$conditionMatch) {
+        $conditionMatch = $listingCondition == '1';
+    }
+
+    if (!$trailerMatch) {
+        $trailerMatch = $listingTrailer == '1';
+    }
+
+    if ($conditionMatch && $typeMatch && $trailerMatch) {
+        $vehicleStats[$index]['total_price'] += $row['listed_price'];
+        $vehicleStats[$index]['count']++;
+        $vehicleStats[$index]['matches'][] = $row;
+        
+        $totalCombinedPrice += $row['listed_price'];
+        $totalCombinedCount++;
+        
+        $vehicleMatched = true;
+    }
+}
+
+            if ($vehicleMatched) {
+                $row['match_level'] = $matchLevel;
+                $row['vehicle_match_level'] = 'type_condition';
+                $matchedListings[] = $row;
+            }
+        }
+    }
+
+    // Calculate averages
+    foreach ($vehicleStats as &$stats) {
+        $stats['average_price'] = $stats['count'] > 0 
+            ? round($stats['total_price'] / $stats['count'], 2)
+            : 0;
+    }
+
+    $overallAverage = $totalCombinedCount > 0 
+        ? round($totalCombinedPrice / $totalCombinedCount, 2)
+        : 0;
+
+    return response()->json([
+        'washington_success' => true,
+        'matches' => $matchedListings,
+        'miles' => $Miles,
+        'count' => count($matchedListings),
+        'match_level' => $matchLevel,
+        'vehicle_stats' => $vehicleStats,
+        'overall_average_price' => $overallAverage
+    ]);
+}
+ else {
+
         $Origin = $request->Origin;
         $Destination = $request->Destination;
         $Vehicles = $request->Vehicles;
@@ -223,6 +418,8 @@ class PriceInsightController extends Controller
                 'level' => $confidenceLevel
             ]
         ]);
+        }
+        
     }
 
 
