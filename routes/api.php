@@ -18,7 +18,8 @@ Route::get('/dispatch-listing-data', 'ApiController@api_dispatch_listing_data');
 Route::post('/create-account', 'UserController@create_account');
 Route::get('/view-accounts', 'UserController@view_accounts');
 
-Route::post('/delete-accounts', 'UserController@delete_accounts');
+Route::delete('/delete-account', 'UserController@delete_accounts');
+
 
 Route::get('/osrm-proxy', function(Request $request) {
     $url = "http://router.project-osrm.org/route/v1/driving/" . 

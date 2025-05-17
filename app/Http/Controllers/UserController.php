@@ -87,26 +87,47 @@ public function view_accounts(){
 }
 
 
-public function delete_accounts(Request $request){
-    try {
-        
-        User::destroy($request->user_id);
+public function delete_accounts(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'user_id' => 'required|integer|exists:users,id'
+    ]);
+
+    if ($validator->fails()) {
         return response()->json([
-            'status'  => 'success',
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+    try {
+        $deleted = User::destroy($request->user_id);
+        
+        if (!$deleted) {
+            throw new \Exception('No account was deleted');
+        }
+
+        return response()->json([
+            'status' => 'success',
             'message' => 'Account deleted successfully',
-            'success'    => 'Account deleted successfully'
-        ], 201);
+            'data' => [
+                'deleted_id' => $request->user_id
+            ]
+        ], 200);
 
     } catch (\Exception $e) {
-
-        Log::error('Account deleting failed: ' . $e->getMessage());
+        Log::error('Account deletion failed', [
+            'user_id' => $request->user_id,
+            'error' => $e->getMessage(),
+            'trace' => env('APP_DEBUG') ? $e->getTrace() : null
+        ]);
         
         return response()->json([
-            'status'  => 'error',
-            'message' => 'Account deleting failed',
-            'error'   => env('APP_DEBUG') ? $e->getMessage() : null
+            'status' => 'error',
+            'message' => 'Account deletion failed',
+            'error' => env('APP_DEBUG') ? $e->getMessage() : null
         ], 500);
-
     }
 }
 
