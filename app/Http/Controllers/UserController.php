@@ -29,6 +29,9 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
         'email' => 'required|email|unique:users,email',
+        'phone' => 'required',
+        'password' => 'required',
+        'role' => 'required',
     ]);
 
     if ($validator->fails()) {
@@ -45,8 +48,8 @@ class UserController extends Controller
         $user = User::create([
             'name'         => $request->first_name . ' ' . $request->last_name,
             'email'        => $validatedData['email'],
-            'role'         => $request->role,
-            'phone_number' => $request->phone,
+            'role'         => $validatedData['role'],
+            'phone_number' => $validatedData['phone'],
             'password'     => Hash::make($request->password),
         ]);
 
