@@ -32,7 +32,9 @@ class UserController extends Controller
         'phone' => 'required',
         'password' => 'required',
         'role' => 'required',
-    ]);
+        ]);
+
+        Log::debug('Received payload:', $request->all());
 
     if ($validator->fails()) {
         return response()->json([
