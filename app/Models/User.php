@@ -26,6 +26,8 @@ class User extends Authenticatable
         'ip',
         'location',
         'last_login_at',
+        'phone_number',
+        'account_role',
         'email_verified_at',
     ];
 
