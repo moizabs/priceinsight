@@ -46,12 +46,13 @@ class UserController extends Controller
 
     try {
         $validatedData = $validator->validated();
-        
+        Log::debug('Received Role:', $request->role);
+        Log::debug('Received Phone:', $request->phone);
         $user = User::create([
             'name'         => $request->first_name . ' ' . $request->last_name,
             'email'        => $validatedData['email'],
-            'role'         => $validatedData['role'],
-            'phone_number' => $validatedData['phone'],
+            'role'         => $request->role,
+            'phone_number' => $request->phone,
             'password'     => Hash::make($request->password),
         ]);
 
