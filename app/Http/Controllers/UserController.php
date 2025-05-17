@@ -90,8 +90,7 @@ public function view_accounts(){
 public function delete_accounts(Request $request){
     try {
         
-        $allUsers = User::findOrFail($request->user_id);
-        $allUsers->delete();
+        User::destroy($request->user_id);
         return response()->json([
             'status'  => 'success',
             'message' => 'Account deleted successfully',
