@@ -68,6 +68,26 @@ class UserController extends Controller
 }
 
 
+public function view_accounts(){
+    try {
+        
+        $allUsers = User::all();
+        return response()->json($allUsers);
+
+    } catch (\Exception $e) {
+
+        Log::error('Account fetching failed: ' . $e->getMessage());
+        
+        return response()->json([
+            'status'  => 'error',
+            'message' => 'Account fetching failed',
+            'error'   => env('APP_DEBUG') ? $e->getMessage() : null
+        ], 500);
+
+    }
+}
+
+
     public function login_submit(Request $request)
     {
         if (Auth::guard('authorized')->check()) {
