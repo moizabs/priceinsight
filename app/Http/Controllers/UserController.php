@@ -92,7 +92,11 @@ public function delete_accounts(Request $request){
         
         $allUsers = User::findOrFail($request->user_id);
         $allUsers->delete();
-        return response()->json($allUsers);
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Account deleted successfully',
+            'success'    => 'Account deleted successfully'
+        ], 201);
 
     } catch (\Exception $e) {
 
