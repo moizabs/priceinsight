@@ -87,6 +87,27 @@ public function view_accounts(){
 }
 
 
+public function delete_accounts(Request $request){
+    try {
+        
+        $allUsers = User::findOrFail($request->user_id);
+        $allUsers->delete();
+        return response()->json($allUsers);
+
+    } catch (\Exception $e) {
+
+        Log::error('Account deleting failed: ' . $e->getMessage());
+        
+        return response()->json([
+            'status'  => 'error',
+            'message' => 'Account deleting failed',
+            'error'   => env('APP_DEBUG') ? $e->getMessage() : null
+        ], 500);
+
+    }
+}
+
+
     public function login_submit(Request $request)
     {
         if (Auth::guard('authorized')->check()) {
