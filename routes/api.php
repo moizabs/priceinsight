@@ -17,7 +17,6 @@ Route::get('/dispatch-listing-data', 'ApiController@api_dispatch_listing_data');
 
 Route::post('/create-account', 'UserController@create_account');
 Route::get('/view-accounts', 'UserController@view_accounts');
-
 Route::delete('/delete-account', 'UserController@delete_accounts');
 
 
