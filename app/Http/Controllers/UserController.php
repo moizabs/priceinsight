@@ -28,13 +28,8 @@ class UserController extends Controller
     public function create_account(Request $request)
     {
         $validator = Validator::make($request->all(), [
-        'email' => 'required|email|unique:users,email',
-        'phone' => 'required',
-        'password' => 'required',
-        'role' => 'required',
+            'email' => 'required|email|unique:users,email',
         ]);
-
-        Log::debug('Received payload:', $request->all());
 
     if ($validator->fails()) {
         return response()->json([
@@ -46,8 +41,6 @@ class UserController extends Controller
 
     try {
         $validatedData = $validator->validated();
-        Log::debug('Received Role:', $request->role);
-        Log::debug('Received Phone:', $request->phone);
         $user = User::create([
             'name'         => $request->first_name . ' ' . $request->last_name,
             'email'        => $validatedData['email'],
