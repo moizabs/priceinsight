@@ -125,9 +125,12 @@ class StateExceptionsController extends Controller
                 $se->destination_state = $request->dest_zipcode;
             }else if($request->route_type == 'Origin'){
                 $se->origin_state = $request->zipcode;
+                $se->destination_state = null;
             }else if($request->route_type == 'Destination'){
+                $se->origin_state = null;
                 $se->destination_state = $request->zipcode;
             }else{
+                $se->destination_state = null;
                 $se->origin_state = $request->zipcode;
             }
 
