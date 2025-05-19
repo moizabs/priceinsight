@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\StateExceptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class StateExceptionsController extends Controller
 {
@@ -103,16 +104,56 @@ class StateExceptionsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, StateExceptions $stateExceptions)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'route_type' => 'required',
+            'value' => 'nullable',
+            'operation_type' => 'required',
+            'origin_zipcode' => 'nullable',
+            'dest_zipcode' => 'nullable',
+            'zipcode' => 'nullable',
+            'percentage' => 'nullable',
+        ]);
+
+        try{
+        
+            $se = StateExceptions::findOrFail($id);
+
+            if($request->route_type == 'Route'){
+                $se->origin_state = $request->origin_zipcode;
+                $se->destination_state = $request->dest_zipcode;
+            }else if($request->route_type == 'Origin'){
+                $se->origin_state = $request->zipcode;
+            }else if($request->route_type == 'Destination'){
+                $se->destination_state = $request->zipcode;
+            }else{
+                $se->origin_state = $request->zipcode;
+            }
+
+            $se->route_type = $request->route_type;
+            $se->operation_type = $request->operation_type;
+            $se->value = $request->value;
+            $se->value_percentage = $request->percentage;
+            $se->save();
+
+        }catch(\Exception $e){
+            Log::error("Error" . $e->getMessage());
+            return response()->json(['success' => true, 'message' => $e->getMessage()]);
+        }
+    
+        
+    
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(StateExceptions $stateExceptions)
+    public function destroy(Request $request)
     {
-        //
+        $id = $request->id;
+        StateExceptions::destroy($id);
+
+        return response()->json(['success' => true]);
     }
 }

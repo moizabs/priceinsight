@@ -61,13 +61,17 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
     Route::get('/state-exceptions', [StateExceptionsController::class, 'index'])->name('state.exceptions');
     Route::post('/add-state-exceptions', [StateExceptionsController::class, 'store'])->name('add.state.exceptions');
     Route::get('/get-state-exceptions', [StateExceptionsController::class, 'getAll'])->name('get.all.state.exceptions');
+    Route::post('/state-exceptions/update/{id}', [StateExceptionsController::class, 'update']);
+    Route::delete('/state-exceptions/delete/{id}', [StateExceptionsController::class, 'destroy']);
 
 
+    
     // ZipCode Exceptions
     Route::get('/zipcode-exceptions', [ZipCodeExceptionsController::class, 'index'])->name('zipcode.exceptions');
     Route::post('/add-zipcode-exceptions', [ZipCodeExceptionsController::class, 'store'])->name('add.zipcode.exceptions');
     Route::get('/get-zipcode-exceptions', [ZipCodeExceptionsController::class, 'getAll'])->name('get.all.zipcode.exceptions');
     Route::post('/zipcode-exceptions/update/{id}', [ZipCodeExceptionsController::class, 'update']);
+    Route::delete('/zipcode-exceptions/delete/{id}', [ZipCodeExceptionsController::class, 'destroy']);
 
 
      // Vehicle Type Exceptions

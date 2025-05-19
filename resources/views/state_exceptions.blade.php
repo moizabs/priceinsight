@@ -229,6 +229,7 @@
                                         <th class="text-center font-weight-bold">Operation</th>                                        
                                         <th class="text-center font-weight-bold">Entered By</th>                                        
                                         <th class="text-center font-weight-bold">Created at</th>
+                                        <th class="text-center font-weight-bold">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -287,6 +288,223 @@
         </div>
     </div>
 
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Edit State Exception</h5>
+                    <button type="button" class="close" id="closemodal" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="edit_id">
+                    <div class="form-group">
+                        <label>Route Type</label>
+                        <select name="modal_route_type" id="modal_route_type" class="form-control" style="width: auto;"
+                            required>
+                            <option value="">Please Select</option>
+                            <option value="Any">Any</option>
+                            <option value="Origin">Origin</option>
+                            <option value="Destination">Destination</option>
+                            <option value="Route">Route</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Operation Type</label>
+                        <select name="modal_operation_type" id="modal_operation_type" class="form-control"
+                            style="width: auto;" required>
+                            <option value="">Please Select</option>
+                            <option value="Add">Add</option>
+                            <option value="Sub">Subtract</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="input_display" style="display: none">
+                        <label>Origin State</label>
+                        <select name="modal_origin_zipcode" id="modal_origin_zipcode" class="form-control"
+                                        style="width: auto;">
+                                            <option value="">Select State</option>
+                                            <option value="Alabama">Alabama</option>
+                                            <option value="Alaska">Alaska</option>
+                                            <option value="Arizona">Arizona</option>
+                                            <option value="Arkansas">Arkansas</option>
+                                            <option value="California">California</option>
+                                            <option value="Colorado">Colorado</option>
+                                            <option value="Connecticut">Connecticut</option>
+                                            <option value="Delaware">Delaware</option>
+                                            <option value="Florida">Florida</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Hawaii">Hawaii</option>
+                                            <option value="Idaho">Idaho</option>
+                                            <option value="Illinois">Illinois</option>
+                                            <option value="Indiana">Indiana</option>
+                                            <option value="Iowa">Iowa</option>
+                                            <option value="Kansas">Kansas</option>
+                                            <option value="Kentucky">Kentucky</option>
+                                            <option value="Louisiana">Louisiana</option>
+                                            <option value="Maine">Maine</option>
+                                            <option value="Maryland">Maryland</option>
+                                            <option value="Massachusetts">Massachusetts</option>
+                                            <option value="Michigan">Michigan</option>
+                                            <option value="Minnesota">Minnesota</option>
+                                            <option value="Mississippi">Mississippi</option>
+                                            <option value="Missouri">Missouri</option>
+                                            <option value="Montana">Montana</option>
+                                            <option value="Nebraska">Nebraska</option>
+                                            <option value="Nevada">Nevada</option>
+                                            <option value="New Hampshire">New Hampshire</option>
+                                            <option value="New Jersey">New Jersey</option>
+                                            <option value="New Mexico">New Mexico</option>
+                                            <option value="New York">New York</option>
+                                            <option value="North Carolina">North Carolina</option>
+                                            <option value="North Dakota">North Dakota</option>
+                                            <option value="Ohio">Ohio</option>
+                                            <option value="Oklahoma">Oklahoma</option>
+                                            <option value="Oregon">Oregon</option>
+                                            <option value="Pennsylvania">Pennsylvania</option>
+                                            <option value="Rhode Island">Rhode Island</option>
+                                            <option value="South Carolina">South Carolina</option>
+                                            <option value="South Dakota">South Dakota</option>
+                                            <option value="Tennessee">Tennessee</option>
+                                            <option value="Texas">Texas</option>
+                                            <option value="Utah">Utah</option>
+                                            <option value="Vermont">Vermont</option>
+                                            <option value="Virginia">Virginia</option>
+                                            <option value="Washington">Washington</option>
+                                            <option value="West Virginia">West Virginia</option>
+                                            <option value="Wisconsin">Wisconsin</option>
+                                            <option value="Wyoming">Wyoming</option>
+                                        </select>
+                    </div>
+                    <div class="form-group" id="input_display2" style="display: none">
+                        <label>Destination State</label>
+                        <select name="modal_destination_zipcode" id="modal_destination_zipcode" class="form-control" style="width: auto;">
+                                <option value="">Select State</option>
+                                <option value="Alabama">Alabama</option>
+                                <option value="Alaska">Alaska</option>
+                                <option value="Arizona">Arizona</option>
+                                <option value="Arkansas">Arkansas</option>
+                                <option value="California">California</option>
+                                <option value="Colorado">Colorado</option>
+                                <option value="Connecticut">Connecticut</option>
+                                <option value="Delaware">Delaware</option>
+                                <option value="Florida">Florida</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Hawaii">Hawaii</option>
+                                <option value="Idaho">Idaho</option>
+                                <option value="Illinois">Illinois</option>
+                                <option value="Indiana">Indiana</option>
+                                <option value="Iowa">Iowa</option>
+                                <option value="Kansas">Kansas</option>
+                                <option value="Kentucky">Kentucky</option>
+                                <option value="Louisiana">Louisiana</option>
+                                <option value="Maine">Maine</option>
+                                <option value="Maryland">Maryland</option>
+                                <option value="Massachusetts">Massachusetts</option>
+                                <option value="Michigan">Michigan</option>
+                                <option value="Minnesota">Minnesota</option>
+                                <option value="Mississippi">Mississippi</option>
+                                <option value="Missouri">Missouri</option>
+                                <option value="Montana">Montana</option>
+                                <option value="Nebraska">Nebraska</option>
+                                <option value="Nevada">Nevada</option>
+                                <option value="New Hampshire">New Hampshire</option>
+                                <option value="New Jersey">New Jersey</option>
+                                <option value="New Mexico">New Mexico</option>
+                                <option value="New York">New York</option>
+                                <option value="North Carolina">North Carolina</option>
+                                <option value="North Dakota">North Dakota</option>
+                                <option value="Ohio">Ohio</option>
+                                <option value="Oklahoma">Oklahoma</option>
+                                <option value="Oregon">Oregon</option>
+                                <option value="Pennsylvania">Pennsylvania</option>
+                                <option value="Rhode Island">Rhode Island</option>
+                                <option value="South Carolina">South Carolina</option>
+                                <option value="South Dakota">South Dakota</option>
+                                <option value="Tennessee">Tennessee</option>
+                                <option value="Texas">Texas</option>
+                                <option value="Utah">Utah</option>
+                                <option value="Vermont">Vermont</option>
+                                <option value="Virginia">Virginia</option>
+                                <option value="Washington">Washington</option>
+                                <option value="West Virginia">West Virginia</option>
+                                <option value="Wisconsin">Wisconsin</option>
+                                <option value="Wyoming">Wyoming</option>
+                            </select>
+                    </div>
+                    <div class="form-group" id="input_display4" style="display: none">
+                        <label>State</label>
+                        <select name="modal_zipcode" id="modal_zipcode" class="form-control" style="width: auto;">
+                                <option value="">Select State</option>
+                                <option value="Alabama">Alabama</option>
+                                <option value="Alaska">Alaska</option>
+                                <option value="Arizona">Arizona</option>
+                                <option value="Arkansas">Arkansas</option>
+                                <option value="California">California</option>
+                                <option value="Colorado">Colorado</option>
+                                <option value="Connecticut">Connecticut</option>
+                                <option value="Delaware">Delaware</option>
+                                <option value="Florida">Florida</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Hawaii">Hawaii</option>
+                                <option value="Idaho">Idaho</option>
+                                <option value="Illinois">Illinois</option>
+                                <option value="Indiana">Indiana</option>
+                                <option value="Iowa">Iowa</option>
+                                <option value="Kansas">Kansas</option>
+                                <option value="Kentucky">Kentucky</option>
+                                <option value="Louisiana">Louisiana</option>
+                                <option value="Maine">Maine</option>
+                                <option value="Maryland">Maryland</option>
+                                <option value="Massachusetts">Massachusetts</option>
+                                <option value="Michigan">Michigan</option>
+                                <option value="Minnesota">Minnesota</option>
+                                <option value="Mississippi">Mississippi</option>
+                                <option value="Missouri">Missouri</option>
+                                <option value="Montana">Montana</option>
+                                <option value="Nebraska">Nebraska</option>
+                                <option value="Nevada">Nevada</option>
+                                <option value="New Hampshire">New Hampshire</option>
+                                <option value="New Jersey">New Jersey</option>
+                                <option value="New Mexico">New Mexico</option>
+                                <option value="New York">New York</option>
+                                <option value="North Carolina">North Carolina</option>
+                                <option value="North Dakota">North Dakota</option>
+                                <option value="Ohio">Ohio</option>
+                                <option value="Oklahoma">Oklahoma</option>
+                                <option value="Oregon">Oregon</option>
+                                <option value="Pennsylvania">Pennsylvania</option>
+                                <option value="Rhode Island">Rhode Island</option>
+                                <option value="South Carolina">South Carolina</option>
+                                <option value="South Dakota">South Dakota</option>
+                                <option value="Tennessee">Tennessee</option>
+                                <option value="Texas">Texas</option>
+                                <option value="Utah">Utah</option>
+                                <option value="Vermont">Vermont</option>
+                                <option value="Virginia">Virginia</option>
+                                <option value="Washington">Washington</option>
+                                <option value="West Virginia">West Virginia</option>
+                                <option value="Wisconsin">Wisconsin</option>
+                                <option value="Wyoming">Wyoming</option>
+                            </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Price ($)</label>
+                        <input name="value" id="modal_value" type="text" maxlength="5" class="form-control">
+                    </div>
+                    <div class="form-group" id="input_display3" style="display: none">
+                        <label>Price (%)</label>
+                        <input name="modal_percentage" id="modal_percentage" type="number" min="0" maxlength="5"
+                            class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="updateRecord" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
             function loadAllRuleRecords() {
                 $.ajax({
@@ -304,6 +522,17 @@
                                         <td class="text-center">${item.operation_type}</td>
                                         <td class="text-center">${item.entered_by}</td>
                                         <td class="text-center">${formatDate(item.entery_date)}</td>
+                                        <td class="text-center">
+                                        <a href="javascript:void(0);" class="editBtn" 
+                                            data-id="${item.id}" 
+                                            data-route="${item.route_type}"
+                                            data-origin_zipcode="${item.origin_state}" 
+                                            data-dest_zipcode="${item.destination_state}" 
+                                            data-value="${item.value}" 
+                                            data-percentage="${item.value_percentage}" 
+                                            data-operation="${item.operation_type}">Edit</a> |
+                                            <button class="deleteBtn" data-id="${item.id}">Delete</button>
+                                        </td>
                                     </tr>
                                 `;
                             });
@@ -391,6 +620,114 @@
                 $('#destination_state').hide().val('');
             }
         });
+        
+
+        $(document).on('click', '.editBtn', function () {
+            $('#edit_id').val($(this).data('id'));
+            $('#modal_route_type').val($(this).data('route'));
+            $('#modal_value').val($(this).data('value'));
+            $('#modal_operation_type').val($(this).data('operation'));
+
+            if ($(this).data('route') == 'Route') {
+
+                $('#input_display').css('display', 'block');
+                $('#input_display2').css('display', 'block');
+
+                $('#modal_origin_zipcode').val($(this).data('origin_zipcode'));
+                $('#modal_destination_zipcode').val($(this).data('dest_zipcode'));
+
+                $('#input_display4').css('display', 'none');
+                $('#modal_zipcode').val('');
+
+            } else {
+
+                $('#input_display').css('display', 'none');
+                $('#input_display2').css('display', 'none');
+
+                $('#modal_origin_zipcode').val('');
+                $('#modal_destination_zipcode').val('');
+
+                $('#input_display4').css('display', 'block');
+
+                if ($(this).data('origin_zipcode') != null) {
+                    $('#modal_zipcode').val($(this).data('origin_zipcode'));
+                } else {
+                    $('#modal_zipcode').val($(this).data('dest_zipcode'));
+                }
+
+            }
+
+            if ($(this).data('percentage') != null) {
+
+                $('#input_display3').css('display', 'block');
+                $('#modal_percentage').val($(this).data('percentage'));
+
+            } else {
+
+                $('#input_display3').css('display', 'none');
+                $('#modal_percentage').val('');
+
+            }
+
+            $('#editModal').modal('show');
+        });
+
+        $(document).on('click', '#closemodal', function () {
+            $('#editModal').modal('hide');
+        });
+
+        $('#updateRecord').click(function () {
+            let id = $('#edit_id').val();
+            $.ajax({
+                url: `/state-exceptions/update/${id}`,
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    route_type: $('#modal_route_type').val(),
+                    value: $('#modal_value').val(),
+                    operation_type: $('#modal_operation_type').val(),
+                    origin_zipcode: $('#modal_origin_zipcode').val(),
+                    dest_zipcode: $('#modal_destination_zipcode').val(),
+                    zipcode: $('#modal_zipcode').val(),
+                    percentage: $('#modal_percentage').val(),
+                },
+                success: function (res) {
+                    $('#editModal').modal('hide');
+                    loadAllRuleRecords();
+                    var successModal = new bootstrap.Modal(document.getElementById('statusSuccessModal'));
+                    successModal.show();
+                },
+                error: function (res) {
+                    alert(res.message);
+                    $('#editModal').modal('hide');
+                    var errorModal = new bootstrap.Modal(document.getElementById('statusErrorsModal'));
+                    errorModal.show();
+                }
+            });
+        });
+
+
+        $(document).on('click', '.deleteBtn', function () {
+            var id = $(this).data('id');
+
+            $.ajax({
+                url: `/state-exceptions/delete/${id}`,
+                type: "DELETE",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                },
+                success: function (res) {
+                    loadAllRuleRecords();
+                    var successModal = new bootstrap.Modal(document.getElementById('statusSuccessModal'));
+                    successModal.show();
+                },
+                error: function (xhr) {
+                    var errorModal = new bootstrap.Modal(document.getElementById('statusErrorsModal'));
+                    errorModal.show();
+                }
+            });
+        });
+
     </script>
 
     @include('Layout.footer')

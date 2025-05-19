@@ -123,9 +123,9 @@ class ZipCodeExceptionsController extends Controller
             'zipcode' => 'nullable|numeric',
             'percentage' => 'nullable|numeric',
         ]);
-    
+        
         $ze = ZipCodeExceptions::findOrFail($id);
-
+        
         if($request->route_type == 'Route'){
             $ze->origin_zipcode = $request->origin_zipcode;
             $ze->destination_zipcode = $request->dest_zipcode;
@@ -150,8 +150,11 @@ class ZipCodeExceptionsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ZipCodeExceptions $zipCodeExceptions)
+    public function destroy(Request $request)
     {
-        //
+        $id = $request->id;
+        ZipCodeExceptions::destroy($id);
+
+        return response()->json(['success' => true]);
     }
 }
