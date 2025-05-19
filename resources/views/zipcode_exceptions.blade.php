@@ -28,16 +28,16 @@
 
                 <div class="card">
                     <div class="card-header text-black">
-                        <strong>Zip Code Search</strong>
+                        <strong>Zip Code Exceptions</strong>
                     </div>
                     <div class="card-body card-block">
 
-                        <small>Search zip codes and add pricing rules.</small>
-                            <br/><br/>
+                        {{-- <small>Search zip codes and add pricing rules.</small> --}}
+                            {{-- <br/><br/> --}}
                             <div class="row">
                                 {{-- <div class="col-lg-4"></div> --}}
                                 <div class="col-lg-2">
-                                    <select name="zipcode_route_type" id="zipcode_route_type" class="form-control" style="width: auto;">
+                                    <select name="zipcode_route_type" id="zipcode_route_type" class="form-control" style="width: auto;" required>
                                         <option value="">Please Select</option>
                                         <option value="Any">Any</option>
                                         <option value="Origin">Origin</option>
@@ -46,7 +46,7 @@
                                     </select>
                                 </div>
                                 <div class="col-lg-2">
-                                    <select name="zipcode_operation_type" id="zipcode_operation_type" class="form-control" style="width: auto;">
+                                    <select name="zipcode_operation_type" id="zipcode_operation_type" class="form-control" style="width: auto;" required>
                                         <option value="">Please Select</option>
                                         <option value="Add">Add</option>
                                         <option value="Sub">Subtract</option>
@@ -133,6 +133,7 @@
                                     <th class="text-center font-weight-bold">Operation</th>                                        
                                     <th class="text-center font-weight-bold">Enter By</th>                                        
                                     <th class="text-center font-weight-bold">Created at</th>
+                                    <th class="text-center font-weight-bold">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -191,9 +192,71 @@
         </div>
     </div>
 
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Edit ZipCode Exception</h5>
+                    <button type="button" class="close" id="closemodal" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="edit_id">
+                    <div class="form-group">
+                        <label>Route Type</label>
+                        <select name="modal_route_type" id="modal_route_type" class="form-control" style="width: auto;" required>
+                            <option value="">Please Select</option>
+                            <option value="Any">Any</option>
+                            <option value="Origin">Origin</option>
+                            <option value="Destination">Destination</option>
+                            <option value="Route">Route</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Operation Type</label>
+                        <select name="modal_operation_type" id="modal_operation_type" class="form-control" style="width: auto;" required>
+                            <option value="">Please Select</option>
+                            <option value="Add">Add</option>
+                            <option value="Sub">Subtract</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="input_display" style="display: none">
+                        <label>Origin ZipCode</label>
+                        <input name="modal_origin_zipcode" id="modal_origin_zipcode" type="text" maxlength="5"
+                            class="form-control">
+                    </div>
+                    <div class="form-group" id="input_display2" style="display: none">
+                        <label>Destination ZipCode</label>
+                        <input name="modal_destination_zipcode" id="modal_destination_zipcode" type="text" maxlength="5"
+                            class="form-control">
+                    </div>
+                    <div class="form-group" id="input_display4" style="display: none">
+                        <label>ZipCode</label>
+                        <input name="modal_zipcode" id="modal_zipcode" type="text" maxlength="5"
+                            class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Price ($)</label>
+                        <input name="value" id="modal_value" type="text" maxlength="5"
+                            class="form-control">
+                    </div>
+                    <div class="form-group" id="input_display3" style="display: none">
+                        <label>Price (%)</label>
+                        <input name="modal_percentage" id="modal_percentage" type="number" min="0"
+                            maxlength="5" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="updateRecord" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
     <script>
-
-
             function loadzipcoderules() {
                 $.ajax({
                     url: "{{ route('get.all.zipcode.exceptions') }}",
@@ -210,6 +273,16 @@
                                         <td class="text-center">${item.operation_type}</td>
                                         <td class="text-center">${item.entered_by}</td>
                                         <td class="text-center">${formatDate(item.entery_date)}</td>
+                                        <td class="text-center">
+                                        <a href="javascript:void(0);" class="editBtn" 
+                                            data-id="${item.id}" 
+                                            data-route="${item.route_type}"
+                                            data-origin_zipcode="${item.origin_zipcode}" 
+                                            data-dest_zipcode="${item.destination_zipcode}" 
+                                            data-value="${item.value}" 
+                                            data-percentage="${item.value_percentage}" 
+                                            data-operation="${item.operation_type}">Edit</a>
+                                        </td>
                                     </tr>
                                 `;
                             });
@@ -292,6 +365,88 @@
             $('#zipcode').show();
         }
     });
+
+
+    $(document).on('click', '.editBtn', function() {
+        $('#edit_id').val($(this).data('id'));
+        $('#modal_route_type').val($(this).data('route'));
+        $('#modal_value').val($(this).data('value'));
+        $('#modal_operation_type').val($(this).data('operation'));
+        
+        if ($(this).data('route') == 'Route') {
+
+            $('#input_display').css('display', 'block');
+            $('#input_display2').css('display', 'block');
+
+            $('#modal_origin_zipcode').val($(this).data('origin_zipcode'));
+            $('#modal_destination_zipcode').val($(this).data('dest_zipcode'));
+
+            $('#input_display4').css('display', 'none');
+            $('#modal_zipcode').val('');
+
+        }else {
+
+            $('#input_display').css('display', 'none');
+            $('#input_display2').css('display', 'none');
+
+            $('#modal_origin_zipcode').val('');
+            $('#modal_destination_zipcode').val('');
+
+            $('#input_display4').css('display', 'block');
+
+            if($(this).data('origin_zipcode') != null){
+                $('#modal_zipcode').val($(this).data('origin_zipcode'));
+            }else{
+                $('#modal_zipcode').val($(this).data('dest_zipcode'));
+            }
+
+        }
+        
+        if($(this).data('percentage') != null){
+
+            $('#input_display3').css('display', 'block');
+            $('#modal_percentage').val($(this).data('percentage'));
+
+        }else{
+
+            $('#input_display3').css('display', 'none');
+            $('#modal_percentage').val('');
+
+        }
+
+        $('#editModal').modal('show');
+    });
+
+    $(document).on('click', '#closemodal', function() {
+        $('#editModal').modal('hide');
+    });
+
+    $('#updateRecord').click(function() {
+                let id = $('#edit_id').val();
+                $.ajax({
+                    url: `/zipcode-exceptions/update/${id}`,
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        route_type: $('#modal_route_type').val(),
+                        value: $('#modal_value').val(),
+                        operation_type: $('#modal_operation_type').val(),
+                        origin_zipcode: $('#modal_origin_zipcode').val(),
+                        dest_zipcode: $('#modal_destination_zipcode').val(),
+                        zipcode: $('#modal_zipcode').val(),
+                        percentage: $('#modal_percentage').val(),
+                    },
+                    success: function(res) {
+                        $('#editModal').modal('hide');
+                        loadzipcoderules();
+                        showSuccess('Price record updated successfully');
+                    },
+                    error: function(xhr) {
+                        showError(xhr.responseJSON?.message || 'Error updating record');
+                    }
+                });
+            });
+            
 
     </script>
 

@@ -112,9 +112,39 @@ class ZipCodeExceptionsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ZipCodeExceptions $zipCodeExceptions)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'route_type' => 'required',
+            'value' => 'nullable|numeric',
+            'operation_type' => 'required',
+            'origin_zipcode' => 'nullable|numeric',
+            'dest_zipcode' => 'nullable|numeric',
+            'zipcode' => 'nullable|numeric',
+            'percentage' => 'nullable|numeric',
+        ]);
+    
+        $ze = ZipCodeExceptions::findOrFail($id);
+
+        if($request->route_type == 'Route'){
+            $ze->origin_zipcode = $request->origin_zipcode;
+            $ze->destination_zipcode = $request->dest_zipcode;
+        }else if($request->route_type == 'Origin'){
+            $ze->origin_zipcode = $request->zipcode;
+        }else if($request->route_type == 'Destination'){
+            $ze->destination_zipcode = $request->zipcode;
+        }else{
+            $ze->origin_zipcode = $request->zipcode;
+        }
+
+        $ze->route_type = $request->route_type;
+        $ze->operation_type = $request->operation_type;
+        $ze->value = $request->value;
+        $ze->value_percentage = $request->percentage;
+        $ze->save();
+    
+        return response()->json(['success' => true]);
+    
     }
 
     /**

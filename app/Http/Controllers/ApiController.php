@@ -54,6 +54,7 @@ class ApiController extends Controller
     public function api_listing_data()
     {
         $data = Washington::select([
+            'id',
             'originzsc',
             'destinationzsc', 
             'ymk',
@@ -73,6 +74,7 @@ class ApiController extends Controller
     public function api_dispatch_listing_data()
     {
         $data = Washington::select([
+            'id',
             'originzsc',
             'destinationzsc', 
             'ymk',

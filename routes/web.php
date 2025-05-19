@@ -67,6 +67,7 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
     Route::get('/zipcode-exceptions', [ZipCodeExceptionsController::class, 'index'])->name('zipcode.exceptions');
     Route::post('/add-zipcode-exceptions', [ZipCodeExceptionsController::class, 'store'])->name('add.zipcode.exceptions');
     Route::get('/get-zipcode-exceptions', [ZipCodeExceptionsController::class, 'getAll'])->name('get.all.zipcode.exceptions');
+    Route::post('/zipcode-exceptions/update/{id}', [ZipCodeExceptionsController::class, 'update']);
 
 
      // Vehicle Type Exceptions

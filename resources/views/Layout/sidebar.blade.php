@@ -35,9 +35,9 @@
                     <a href="{{ route('vehicle.size.database') }}">Vehicle type Database</a>
                 </li> --}}
 
-                <li class="{{ request()->routeIs('vehicle.size.queue') ? 'active' : '' }}" id="sizeQueue">
+                {{-- <li class="{{ request()->routeIs('vehicle.size.queue') ? 'active' : '' }}" id="sizeQueue">
                     <a href="{{ route('vehicle.size.queue') }}">Vehicle Type Queue</a>
-                </li>
+                </li> --}}
 
                 <li class="{{ request()->routeIs('vehicle.size.settings') ? 'active' : '' }}" id="vehicleSizeSetting">
                     <a href="{{ route('vehicle.size.settings') }}">Vehicle Type Settings</a>
