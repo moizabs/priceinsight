@@ -139,7 +139,7 @@ class PriceInsightController extends Controller
     $settingData = $checkSetting->json();
 
     if (!empty($settingData) && isset($settingData[0]['washington_data']) && $settingData[0]['washington_data'] === 1) {
-        
+    
     $Origin = str_replace(' ', '', $request->Origin);
     $Destination = str_replace(' ', '', $request->Destination);
     $Vehicles = $request->Vehicles;
@@ -157,17 +157,274 @@ class PriceInsightController extends Controller
     $destState = trim($destParts[1] ?? '');
     $destZip = trim($destParts[2] ?? '');
 
+    $dispatchFetching = Http::retry(3, 1000)
+        ->timeout(60)
+        ->get('https://price.shipa1.com/api/dispatch-listing-data');
+    $dispatchData = $dispatchFetching->json();
+
     $listingFetching = Http::retry(3, 1000)
         ->timeout(60)
         ->get('https://price.shipa1.com/api/listing-data');
     $listingData = $listingFetching->json();
 
-    $matchedListings = [];
-    $matchLevel = null;
+
+
+
+    // Dispatch Listing
+
+    $matchedListings2 = [];
+    $strictMatchedListings2 = [];
+    $defaultMatchedListings2 = [];
+    $matchLevel2 = null;
+    $vehicleStats2 = [];
+    $totalCombinedPrice2 = 0;
+    $totalCombinedCount2 = 0;
+    $strictMatchesFound2 = false;
+
+    foreach ($Vehicles as $index => $vehicle2) {
+        $vehicleStats2[$index] = [
+            'vehicle' => $vehicle2,
+            'total_price' => 0,
+            'count' => 0,
+            'average_price' => 0,
+            'matches' => [],
+            'vehicle_match_level' => null
+        ];
+    }
+
+    foreach ($dispatchData as $row) {
+        $listingOriginParts = explode(',', str_replace(' ', '', $row['originzsc']));
+        $listingDestParts = explode(',', str_replace(' ', '', $row['destinationzsc']));
+        
+        $listingOriginCity = trim($listingOriginParts[0] ?? '');
+        $listingOriginState = trim($listingOriginParts[1] ?? '');
+        $listingOriginZip = trim($listingOriginParts[2] ?? '');
+        
+        $listingDestCity = trim($listingDestParts[0] ?? '');
+        $listingDestState = trim($listingDestParts[1] ?? '');
+        $listingDestZip = trim($listingDestParts[2] ?? '');
+
+        $originMatch = false;
+        $destMatch = false;
     
+        if (!empty($originZip) && !empty($listingOriginZip) && !empty($destZip) && !empty($listingDestZip)) {
+            if ($originZip === $listingOriginZip && $destZip === $listingDestZip) {
+                $originMatch = true;
+                $destMatch = true;
+                $matchLevel2 = 'zip';
+            }
+        }
+
+        if (!$originMatch && !empty($originZip) && !empty($destCity)) {
+            if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
+                $originMatch = true;
+                $destMatch = true;
+                $matchLevel2 = $matchLevel2 ?: 'zip-city';
+            }
+        }
+
+        if (!$originMatch && !empty($originCity) && !empty($listingOriginCity)) {
+            if (strcasecmp($originCity, $listingOriginCity) === 0) {
+                $originMatch = true;
+                $matchLevel2 = $matchLevel2 ?: 'city';
+            }
+        }
+        
+        if (!$destMatch && !empty($destCity) && !empty($listingDestCity)) {
+            if (strcasecmp($destCity, $listingDestCity) === 0) {
+                $destMatch = true;
+                $matchLevel2 = $matchLevel2 ?: 'city';
+            }
+        }
+        
+        if (!$originMatch && !empty($originState) && !empty($listingOriginState)) {
+            if (strcasecmp($originState, $listingOriginState) === 0) {
+                $originMatch = true;
+                $matchLevel2 = $matchLevel2 ?: 'state';
+            }
+        }
+        
+        if (!$destMatch && !empty($destState) && !empty($listingDestState)) {
+            if (strcasecmp($destState, $listingDestState) === 0) {
+                $destMatch = true;
+                $matchLevel2 = $matchLevel2 ?: 'state';
+            }
+        }
+
+        if ($originMatch && $destMatch) {
+            if (empty($Vehicles)) {
+                $row['match_level'] = $matchLevel2;
+                $row['vehicle_match_level'] = 'none_required';
+                $matchedListings2[] = $row;
+                continue;
+            }
+
+            foreach ($Vehicles as $index => $vehicle) {
+                $condition = strtolower($vehicle['Inoperable'] === 'Yes' ? '2' : '1');
+                $type = strtolower(trim($vehicle['Vehicle_Type'] ?? ''));
+                $trailerCondition = strtolower($Trailer_Type === 'Open' ? '1' : '2');
+                
+                $listingCondition = strtolower(trim($row['condition']));
+                $listingTrailer = strtolower(trim($row['transport']));
+                $listingType = strtolower(trim($row['type']));
+
+                if ($condition === $listingCondition && 
+                    !empty($type) && 
+                    !empty($listingType) && 
+                    str_contains($listingType, $type) && 
+                    $trailerCondition === $listingTrailer) {
+                    
+                    $vehicleStats2[$index]['total_price'] += $row['listed_price'];
+                    $vehicleStats2[$index]['count']++;
+                    $vehicleStats2[$index]['matches'][] = $row;
+                    $vehicleStats2[$index]['vehicle_match_level'] = 'strict';
+                    
+                    $totalCombinedPrice2 += $row['listed_price'];
+                    $totalCombinedCount2++;
+                    
+                    $strictMatchesFound2 = true;
+                    $row['match_level'] = $matchLevel2;
+                    $row['vehicle_match_level'] = 'strict';
+                    $strictMatchedListings2[] = $row;
+                }
+            }
+        }
+    }
+
+    $neededMatches2 = max(0, 10 - count($strictMatchedListings2));
+    
+    if ($neededMatches2 > 0) {
+        foreach ($dispatchData as $row) {
+            if (count($defaultMatchedListings2) >= $neededMatches2) {
+                break;
+            }
+            
+        $listingOriginParts = explode(',', str_replace(' ', '', $row['originzsc']));
+        $listingDestParts = explode(',', str_replace(' ', '', $row['destinationzsc']));
+        
+        $listingOriginCity = trim($listingOriginParts[0] ?? '');
+        $listingOriginState = trim($listingOriginParts[1] ?? '');
+        $listingOriginZip = trim($listingOriginParts[2] ?? '');
+        
+        $listingDestCity = trim($listingDestParts[0] ?? '');
+        $listingDestState = trim($listingDestParts[1] ?? '');
+        $listingDestZip = trim($listingDestParts[2] ?? '');
+
+        $originMatch = false;
+        $destMatch = false;
+    
+        if (!empty($originZip) && !empty($listingOriginZip) && !empty($destZip) && !empty($listingDestZip)) {
+            if ($originZip === $listingOriginZip && $destZip === $listingDestZip) {
+                $originMatch = true;
+                $destMatch = true;
+                $matchLevel2 = 'zip';
+            }
+        }
+
+        if (!$originMatch && !empty($originZip) && !empty($destCity)) {
+            if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
+                $originMatch = true;
+                $destMatch = true;
+                $matchLevel2 = $matchLevel2 ?: 'zip-city';
+            }
+        }
+
+        if (!$originMatch && !empty($originCity) && !empty($listingOriginCity)) {
+            if (strcasecmp($originCity, $listingOriginCity) === 0) {
+                $originMatch = true;
+                $matchLevel2 = $matchLevel2 ?: 'city';
+            }
+        }
+        
+        if (!$destMatch && !empty($destCity) && !empty($listingDestCity)) {
+            if (strcasecmp($destCity, $listingDestCity) === 0) {
+                $destMatch = true;
+                $matchLevel2 = $matchLevel2 ?: 'city';
+            }
+        }
+        
+        if (!$originMatch && !empty($originState) && !empty($listingOriginState)) {
+            if (strcasecmp($originState, $listingOriginState) === 0) {
+                $originMatch = true;
+                $matchLevel2 = $matchLevel2 ?: 'state';
+            }
+        }
+        
+        if (!$destMatch && !empty($destState) && !empty($listingDestState)) {
+            if (strcasecmp($destState, $listingDestState) === 0) {
+                $destMatch = true;
+                $matchLevel2 = $matchLevel2 ?: 'state';
+            }
+        }
+
+            if ($originMatch && $destMatch) {
+                foreach ($Vehicles as $index => $vehicle) {
+                    $type = strtolower(trim($vehicle['Vehicle_Type'] ?? ''));
+                    
+                    $listingCondition = strtolower(trim($row['condition'] ?? '1'));
+                    $listingTrailer = strtolower(trim($row['transport'] ?? '1'));
+                    $listingType = strtolower(trim($row['type'] ?? 'car'));
+
+                    if ($listingCondition === '1' && 
+                        (empty($type) || empty($listingType) || 
+                         str_contains($listingType, 'car') || 
+                         str_contains($listingType, 'suv') || 
+                         str_contains($listingType, 'pickup')) && 
+                        $listingTrailer === '1') {
+                        
+                        // Check if this listing was already matched in strict phase
+                        $alreadyMatched = false;
+                        foreach ($strictMatchedListings2 as $strictMatch) {
+                            if ($strictMatch['id'] == $row['id']) { // Assuming each row has unique 'id'
+                                $alreadyMatched = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!$alreadyMatched) {
+                            $vehicleStats2[$index]['total_price'] += $row['listed_price'];
+                            $vehicleStats2[$index]['count']++;
+                            $vehicleStats2[$index]['matches'][] = $row;
+                            $vehicleStats2[$index]['vehicle_match_level'] = 'default';
+                            
+                            $totalCombinedPrice2 += $row['listed_price'];
+                            $totalCombinedCount2++;
+                            
+                            $row['match_level'] = $matchLevel2;
+                            $row['vehicle_match_level'] = 'default';
+                            $defaultMatchedListings2[] = $row;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    $matchedListings2 = array_merge($strictMatchedListings2, $defaultMatchedListings2);
+
+    foreach ($vehicleStats2 as &$stats) {
+        $stats['average_price'] = $stats['count'] > 0 
+            ? round($stats['total_price'] / $stats['count'], 2)
+            : 0;
+    }
+
+    $overallAverage2 = $totalCombinedCount2 > 0 
+        ? round($totalCombinedPrice2 / $totalCombinedCount2, 2)
+        : 0;
+
+
+
+
+    // Listed Listing
+
+    $matchedListings = [];
+    $strictMatchedListings = [];
+    $defaultMatchedListings = [];
+    $matchLevel = null;
     $vehicleStats = [];
     $totalCombinedPrice = 0;
     $totalCombinedCount = 0;
+    $strictMatchesFound = false;
 
     foreach ($Vehicles as $index => $vehicle) {
         $vehicleStats[$index] = [
@@ -176,12 +433,11 @@ class PriceInsightController extends Controller
             'count' => 0,
             'average_price' => 0,
             'matches' => [],
-            'vehicle_match_level' => 'type_condition'
+            'vehicle_match_level' => null
         ];
     }
 
     foreach ($listingData as $row) {
-        
         $listingOriginParts = explode(',', str_replace(' ', '', $row['originzsc']));
         $listingDestParts = explode(',', str_replace(' ', '', $row['destinationzsc']));
         
@@ -238,7 +494,7 @@ class PriceInsightController extends Controller
                 $destMatch = true;
                 $matchLevel = $matchLevel ?: 'state';
             }
-        }       
+        }
 
         if ($originMatch && $destMatch) {
             if (empty($Vehicles)) {
@@ -248,55 +504,149 @@ class PriceInsightController extends Controller
                 continue;
             }
 
-            $vehicleMatched = false;
-
             foreach ($Vehicles as $index => $vehicle) {
-    $condition = strtolower($vehicle['Inoperable'] === 'Yes' ? '2' : '1');
-    $type = strtolower(trim($vehicle['Vehicle_Type'] ?? ''));
-    
-    $listingCondition = strtolower(trim($row['condition'] ?? '1'));
-    $listingTrailer = strtolower(trim($row['transport'] ?? '1'));
-    $listingType = strtolower(trim($row['type'] ?? 'car'));
+                $condition = strtolower($vehicle['Inoperable'] === 'Yes' ? '2' : '1');
+                $type = strtolower(trim($vehicle['Vehicle_Type'] ?? ''));
+                $trailerCondition = strtolower($Trailer_Type === 'Open' ? '1' : '2');
+                
+                $listingCondition = strtolower(trim($row['condition']));
+                $listingTrailer = strtolower(trim($row['transport']));
+                $listingType = strtolower(trim($row['type']));
 
-    $trailerCondition = strtolower($Trailer_Type === 'Open' ? '1' : '2');
-
-    $conditionMatch = $condition === $listingCondition;
-    $typeMatch = !empty($type) && !empty($listingType) && str_contains($listingType, $type);
-    $trailerMatch = $trailerCondition === $listingTrailer;
-
-    if (!$typeMatch) {
-        $typeMatch = empty($type) || empty($listingType) || str_contains($listingType, 'car');
-    }
-
-    if (!$conditionMatch) {
-        $conditionMatch = $listingCondition == '1';
-    }
-
-    if (!$trailerMatch) {
-        $trailerMatch = $listingTrailer == '1';
-    }
-
-    if ($conditionMatch && $typeMatch && $trailerMatch) {
-        $vehicleStats[$index]['total_price'] += $row['listed_price'];
-        $vehicleStats[$index]['count']++;
-        $vehicleStats[$index]['matches'][] = $row;
-        
-        $totalCombinedPrice += $row['listed_price'];
-        $totalCombinedCount++;
-        
-        $vehicleMatched = true;
-    }
-}
-
-            if ($vehicleMatched) {
-                $row['match_level'] = $matchLevel;
-                $row['vehicle_match_level'] = 'type_condition';
-                $matchedListings[] = $row;
+                if ($condition === $listingCondition && 
+                    !empty($type) && 
+                    !empty($listingType) && 
+                    str_contains($listingType, $type) && 
+                    $trailerCondition === $listingTrailer) {
+                    
+                    $vehicleStats[$index]['total_price'] += $row['listed_price'];
+                    $vehicleStats[$index]['count']++;
+                    $vehicleStats[$index]['matches'][] = $row;
+                    $vehicleStats[$index]['vehicle_match_level'] = 'strict';
+                    
+                    $totalCombinedPrice += $row['listed_price'];
+                    $totalCombinedCount++;
+                    
+                    $strictMatchesFound = true;
+                    $row['match_level'] = $matchLevel;
+                    $row['vehicle_match_level'] = 'strict';
+                    $strictMatchedListings[] = $row;
+                }
             }
         }
     }
 
-    // Calculate averages
+    $neededMatches = max(0, 10 - count($strictMatchedListings));
+    
+    if ($neededMatches > 0) {
+        foreach ($listingData as $row) {
+            if (count($defaultMatchedListings) >= $neededMatches) {
+                break; // Stop when we have enough
+            }
+            
+        $listingOriginParts = explode(',', str_replace(' ', '', $row['originzsc']));
+        $listingDestParts = explode(',', str_replace(' ', '', $row['destinationzsc']));
+        
+        $listingOriginCity = trim($listingOriginParts[0] ?? '');
+        $listingOriginState = trim($listingOriginParts[1] ?? '');
+        $listingOriginZip = trim($listingOriginParts[2] ?? '');
+        
+        $listingDestCity = trim($listingDestParts[0] ?? '');
+        $listingDestState = trim($listingDestParts[1] ?? '');
+        $listingDestZip = trim($listingDestParts[2] ?? '');
+
+        $originMatch = false;
+        $destMatch = false;
+    
+        if (!empty($originZip) && !empty($listingOriginZip) && !empty($destZip) && !empty($listingDestZip)) {
+            if ($originZip === $listingOriginZip && $destZip === $listingDestZip) {
+                $originMatch = true;
+                $destMatch = true;
+                $matchLevel = 'zip';
+            }
+        }
+
+        if (!$originMatch && !empty($originZip) && !empty($destCity)) {
+            if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
+                $originMatch = true;
+                $destMatch = true;
+                $matchLevel = $matchLevel ?: 'zip-city';
+            }
+        }
+
+        if (!$originMatch && !empty($originCity) && !empty($listingOriginCity)) {
+            if (strcasecmp($originCity, $listingOriginCity) === 0) {
+                $originMatch = true;
+                $matchLevel = $matchLevel ?: 'city';
+            }
+        }
+        
+        if (!$destMatch && !empty($destCity) && !empty($listingDestCity)) {
+            if (strcasecmp($destCity, $listingDestCity) === 0) {
+                $destMatch = true;
+                $matchLevel = $matchLevel ?: 'city';
+            }
+        }
+        
+        if (!$originMatch && !empty($originState) && !empty($listingOriginState)) {
+            if (strcasecmp($originState, $listingOriginState) === 0) {
+                $originMatch = true;
+                $matchLevel = $matchLevel ?: 'state';
+            }
+        }
+        
+        if (!$destMatch && !empty($destState) && !empty($listingDestState)) {
+            if (strcasecmp($destState, $listingDestState) === 0) {
+                $destMatch = true;
+                $matchLevel = $matchLevel ?: 'state';
+            }
+        }
+
+            if ($originMatch && $destMatch) {
+                foreach ($Vehicles as $index => $vehicle) {
+                    $type = strtolower(trim($vehicle['Vehicle_Type'] ?? ''));
+                    
+                    $listingCondition = strtolower(trim($row['condition'] ?? '1'));
+                    $listingTrailer = strtolower(trim($row['transport'] ?? '1'));
+                    $listingType = strtolower(trim($row['type'] ?? 'car'));
+
+                    if ($listingCondition === '1' && 
+                        (empty($type) || empty($listingType) || 
+                         str_contains($listingType, 'car') || 
+                         str_contains($listingType, 'suv') || 
+                         str_contains($listingType, 'pickup')) && 
+                        $listingTrailer === '1') {
+                        
+                        // Check if this listing was already matched in strict phase
+                        $alreadyMatched = false;
+                        foreach ($strictMatchedListings as $strictMatch) {
+                            if ($strictMatch['id'] == $row['id']) { // Assuming each row has unique 'id'
+                                $alreadyMatched = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!$alreadyMatched) {
+                            $vehicleStats[$index]['total_price'] += $row['listed_price'];
+                            $vehicleStats[$index]['count']++;
+                            $vehicleStats[$index]['matches'][] = $row;
+                            $vehicleStats[$index]['vehicle_match_level'] = 'default';
+                            
+                            $totalCombinedPrice += $row['listed_price'];
+                            $totalCombinedCount++;
+                            
+                            $row['match_level'] = $matchLevel;
+                            $row['vehicle_match_level'] = 'default';
+                            $defaultMatchedListings[] = $row;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    $matchedListings = array_merge($strictMatchedListings, $defaultMatchedListings);
+
     foreach ($vehicleStats as &$stats) {
         $stats['average_price'] = $stats['count'] > 0 
             ? round($stats['total_price'] / $stats['count'], 2)
@@ -314,13 +664,34 @@ class PriceInsightController extends Controller
         'count' => count($matchedListings),
         'match_level' => $matchLevel,
         'vehicle_stats' => $vehicleStats,
-        'overall_average_price' => $overallAverage
+        'overall_average_price' => $overallAverage,
+
+        'washington_success2' => true,
+        'matches2' => $matchedListings2,
+        'miles2' => $Miles,
+        'count2' => count($matchedListings2),
+        'match_level2' => $matchLevel2,
+        'vehicle_stats2' => $vehicleStats2,
+        'overall_average_price2' => $overallAverage2
     ]);
+
 }
  else {
 
-        $Origin = $request->Origin;
-        $Destination = $request->Destination;
+        $Origin = str_replace(' ', '', $request->Origin);
+        $Destination = str_replace(' ', '', $request->Destination);
+
+        $originParts = explode(',', $Origin);
+        $destParts = explode(',', $Destination);
+
+        $originCity = trim($originParts[0] ?? '');
+        $originState = trim($originParts[1] ?? '');
+        $originZip = trim($originParts[2] ?? '');
+
+        $destCity = trim($destParts[0] ?? '');
+        $destState = trim($destParts[1] ?? '');
+        $destZip = trim($destParts[2] ?? '');
+
         $Vehicles = $request->Vehicles;
         $TrailerType = $request->TrailerType;
         $Miles = $request->Miles;
@@ -349,10 +720,19 @@ class PriceInsightController extends Controller
     
         $response_vt = Http::get('https://price.shipa1.com/api/vehicle-type-data');
         $vehicleData = $response_vt->json();
+
+        $response_zce = Http::get('https://price.shipa1.com/api/zip-code-exceptions-data');
+        $zipcodeData = $response_zce->json();
+
+        $response_se = Http::get('https://price.shipa1.com/api/state-exceptions-data');
+        $stateData = $response_se->json();
     
         $vehicleDetails = [];
         $totalVehicleAdjustment = 0;
-    
+
+        $zipmatched = false;
+        $statematched = false;
+
         foreach ($Vehicles as $vehicle) {
             $vehicleAdjustment = 0;
             $vehicleType = $vehicle['Vehicle_Type'];
@@ -397,6 +777,102 @@ class PriceInsightController extends Controller
                 $matchedPrice = $matchedPrice * $pricingData[0]['enclosed_transport'];
             } else {
                 Log::error("Enclosed pricing key missing in API response");
+            }
+        }
+
+        if (!empty($originZip) && !empty($destZip)) {
+            foreach ($zipcodeData as $data) {
+                if (isset($data['destination_zipcode']) && isset($data['origin_zipcode']) && (trim($data['origin_zipcode']) === $originZip && trim($data['destination_zipcode']) === $destZip)) {
+                    if (isset($data['value']) && isset($data['operation_type'])) {
+                        if (strtolower($data['operation_type']) === 'add') {
+                            $matchedPrice += $data['value'];
+                            $zipmatched = true;
+                        } elseif (strtolower($data['operation_type']) === 'sub') {
+                            $matchedPrice -= $data['value'];
+                            $zipmatched = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!$zipmatched && !empty($originZip)) {
+            foreach ($zipcodeData as $data) {
+                if (isset($data['origin_zipcode']) && trim($data['origin_zipcode']) == $originZip) {
+                    if (isset($data['value']) && isset($data['operation_type'])) {
+                        if (strtolower($data['operation_type']) === 'add') {
+                            $matchedPrice += $data['value'];
+                            $zipmatched = true;
+                        } elseif (strtolower($data['operation_type']) === 'sub') {
+                            $matchedPrice -= $data['value'];
+                            $zipmatched = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!$zipmatched && !empty($destZip)) {
+            foreach ($zipcodeData as $data) {
+                if (isset($data['destination_zipcode']) && trim($data['destination_zipcode']) == $destZip) {
+                    if (isset($data['value']) && isset($data['operation_type'])) {
+                        if (strtolower($data['operation_type']) === 'add') {
+                            $matchedPrice += $data['value'];
+                            $zipmatched = true;
+                        } elseif (strtolower($data['operation_type']) === 'sub') {
+                            $matchedPrice -= $data['value'];
+                            $zipmatched = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!empty($originState) && !empty($destState)) {
+            foreach ($stateData as $data) {
+                if (isset($data['destination_state']) && isset($data['origin_state']) && ($data['origin_state'] == $originState && $data['destination_state'] == $destState)) {
+                    if (isset($data['value']) && isset($data['operation_type'])) {
+                        if (strtolower($data['operation_type']) === 'add') {
+                            $matchedPrice += $data['value'];
+                            $statematched = true;
+                        } elseif (strtolower($data['operation_type']) === 'sub') {
+                            $matchedPrice -= $data['value'];
+                            $statematched = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!$statematched && !empty($originState)) {
+            foreach ($stateData as $data) {
+                if (isset($data['origin_state']) && $data['origin_state'] == $originState) {
+                    if (isset($data['value']) && isset($data['operation_type'])) {
+                        if (strtolower($data['operation_type']) === 'add') {
+                            $matchedPrice += $data['value'];
+                            $statematched = true;
+                        } elseif (strtolower($data['operation_type']) === 'sub') {
+                            $matchedPrice -= $data['value'];
+                            $statematched = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!$statematched && !empty($destState)) {
+            foreach ($stateData as $data) {
+                if (isset($data['destination_state']) && $data['destination_state'] == $destState) {
+                    if (isset($data['value']) && isset($data['operation_type'])) {
+                        if (strtolower($data['operation_type']) === 'add') {
+                            $matchedPrice += $data['value'];
+                            $statematched = true;
+                        } elseif (strtolower($data['operation_type']) === 'sub') {
+                            $matchedPrice -= $data['value'];
+                            $statematched = true;
+                        }
+                    }
+                }
             }
         }
     
