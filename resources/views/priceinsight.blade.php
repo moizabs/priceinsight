@@ -560,7 +560,7 @@
       </select>
       @else
 
-      <select class="form-control "  name="type" id="vehicle_type">
+      <select class="form-control" name="type" id="vehicle_type">
       <option value="" selected disabled>Select Type</option>
 
       <option value="Car">Car</option>
@@ -582,7 +582,6 @@
       <option value="other_motorcycle">Other Motorcycle</option>
       <option value="other">Other</option>
       </select>
-      
       @endif
 
         <select class="form-control" name="inoperable" id="inoperable">
@@ -657,6 +656,8 @@
       </div>
     </div>
 
+    
+
 
     <div class="card" id="results-card">
       <!-- Skeleton Loading Animation -->
@@ -687,86 +688,47 @@
       <h2 class="card-title">Pricing Recommendation</h2>
       <h4>Estimated Carrier Price</h4>
 
-      <div class="price-display">
-        <div class="price-amount" id="Total_Amount">$0.00</div>
-        <div class="price-metrics">
+    <div class="price-display">
+      <div class="price-metric" id="tab-display-2" style="display: none">
+        <span>Dispatch Average</span>
+        <div class="price-amount" id="Total_Amount2">$0.00</div>
+      </div>
+
+      <div class="price-metric">
+        <span>New Listed Average</span>
+        <div class="price-amount" id="Total_Amount">$0.00</div>  
+      </div>
+
+      <div class="price-metrics">
         <div class="price-metric">
           <span id="Total_Miles">0.00 miles</span>
           <span id="Price_Per_Mile">$0.00/mile</span>
         </div>
         <div class="confidence-badge" id="C_Percentage">0% Moderate Confidence</div>
+      </div>
+    </div>
+
+
+
+      <div id="tab-display" style="display: none">
+        <!-- Tabs -->
+        <div class="tabs">
+          <div class="tab active" id="recent-move-tab">Recent Dispatches</div>
+          <div class="tab" id="super-load-tab">Listings on Day Dispatch</div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="price-boxes-container">
+          <!-- Recent Moves Content -->
+          <div id="recent-move-content"></div>
+          <!-- Super Loadboard Content (hidden by default) -->
+          <div id="super-load-content" style="display: none;"></div>
         </div>
       </div>
 
-      <!-- Tabs -->
-      <div class="tabs">
-        <div class="tab active" id="recent-move-tab">Recent Dispatches</div>
-        <div class="tab" id="super-load-tab">Listings on Day Dispatch</div>
-      </div>
-
-      <!-- Tab Content -->
-      <div class="price-boxes-container">
-        <!-- Recent Moves Content -->
-        <div id="recent-move-content">
-          
-          <div class="price-box">
-            <div class="price-box-row">
-              <div>
-                <div class="price-box-value">In Progress.. Coming Soon!</div>
-              </div>
-            </div>
-          </div>
-
-        {{-- <div class="price-box">
-          <div class="price-box-row">
-          <div>
-            <div class="price-box-value">Austin, TX 78701 → Dallas, TX 75201</div>
-            <div class="price-box-label">195 miles</div>
-          </div>
-          <div class="price-highlight">$210</div>
-          </div>
-          <div class="price-box-row">
-          <div>
-            <div class="price-box-value">2023 Ford F-150 (Pickup)</div>
-          </div>
-          <div class="price-box-label">$1.08/mi</div>
-          </div>
-          <div class="price-box-row">
-          <div class="price-box-label">
-            Dispatched May 1, 2025 • Delivered May 2, 2025
-          </div>
-          </div>
-        </div> --}}
-        </div>
-
-        <!-- Super Loadboard Content (hidden by default) -->
-        <div id="super-load-content" style="display: none;">
-        {{-- <div class="price-box">
-          <div class="price-box-row">
-          <div>
-            <div class="price-box-value">Chicago, IL 60601 → Indianapolis, IN 46201</div>
-            <div class="price-box-label">183 miles</div>
-          </div>
-          <div class="price-highlight">$175</div>
-          </div>
-          <div class="price-box-row">
-          <div>
-            <div class="price-box-value">2022 Toyota Camry (Sedan)</div>
-          </div>
-          <div class="price-box-label">$0.96/mi</div>
-          </div>
-          <div class="price-box-row">
-          <div class="price-box-label">
-            Posted April 30, 2025
-          </div>
-          </div>
-        </div> --}}
-        </div>
-      </div>
       </div>
     </div>
     </div>
-  </div>
   </div>
 
 
@@ -823,187 +785,220 @@
       return;
     }
 
-    // $.ajax({
-    //   url: "{{ route('get.zip.coordinates') }}",
-    //   type: "POST",
-    //   data: {
-    //   _token: "{{ csrf_token() }}",
-    //   origin_zip: OriginZip,
-    //   destination_zip: DestinationZip
-    //   },
-    //   success: function (coordResponse) {
-    //   if (coordResponse.success) {
-    //     const originLat = parseFloat(coordResponse.origin.lat);
-    //     const originLon = parseFloat(coordResponse.origin.lon);
-    //     const destLat = parseFloat(coordResponse.destination.lat);
-    //     const destLon = parseFloat(coordResponse.destination.lon);
+    $.ajax({
+      url: "{{ route('get.zip.coordinates') }}",
+      type: "POST",
+      data: {
+      _token: "{{ csrf_token() }}",
+      origin_zip: OriginZip,
+      destination_zip: DestinationZip
+      },
+      success: function (coordResponse) {
+      if (coordResponse.success) {
+        const originLat = parseFloat(coordResponse.origin.lat);
+        const originLon = parseFloat(coordResponse.origin.lon);
+        const destLat = parseFloat(coordResponse.destination.lat);
+        const destLon = parseFloat(coordResponse.destination.lon);
 
-    //     if (originLat && originLon && destLat && destLon) {
-    //     const mapContainer = document.getElementById('map');
+        if (originLat && originLon && destLat && destLon) {
+        const mapContainer = document.getElementById('map');
 
-    //     if (map) {
-    //       map.remove();
-    //       map = null;
-    //       mapContainer._leaflet_id = null;
-    //     }
+        if (map) {
+          map.remove();
+          map = null;
+          mapContainer._leaflet_id = null;
+        }
 
-    //     mapContainer.style.display = 'block';
+        mapContainer.style.display = 'block';
 
-    //     setTimeout(() => {
-    //       map = L.map(mapContainer, {
-    //       zoomControl: false,
-    //       preferCanvas: true
-    //       }).setView([(originLat + destLat) / 2, (originLon + destLon) / 2], 7);
+        setTimeout(() => {
+          map = L.map(mapContainer, {
+          zoomControl: false,
+          preferCanvas: true
+          }).setView([(originLat + destLat) / 2, (originLon + destLon) / 2], 7);
 
-    //       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    //       }).addTo(map);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          }).addTo(map);
 
-    //       L.control.zoom({
-    //       position: 'topright'
-    //       }).addTo(map);
+          L.control.zoom({
+          position: 'topright'
+          }).addTo(map);
 
-    //       const originIcon = L.divIcon({
-    //       html: `<div style="position: relative;">
-    //         <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    //         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#4CAF50"/>
-    //         </svg>
-    //         </div>`,
-    //       className: '',
-    //       iconSize: [28, 28],
-    //       iconAnchor: [14, 28]
-    //       });
+          const originIcon = L.divIcon({
+          html: `<div style="position: relative;">
+            <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#4CAF50"/>
+            </svg>
+            </div>`,
+          className: '',
+          iconSize: [28, 28],
+          iconAnchor: [14, 28]
+          });
 
-    //       const destIcon = L.divIcon({
-    //       html: `<div style="position: relative;">
-    //         <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    //         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#F44336"/>
-    //         </svg>
-    //         </div>`,
-    //       className: '',
-    //       iconSize: [28, 28],
-    //       iconAnchor: [14, 28]
-    //       });
+          const destIcon = L.divIcon({
+          html: `<div style="position: relative;">
+            <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#F44336"/>
+            </svg>
+            </div>`,
+          className: '',
+          iconSize: [28, 28],
+          iconAnchor: [14, 28]
+          });
 
-    //       const originMarker = L.marker([originLat, originLon], {
-    //       icon: originIcon,
-    //       zIndexOffset: 1000
-    //       }).addTo(map);
+          const originMarker = L.marker([originLat, originLon], {
+          icon: originIcon,
+          zIndexOffset: 1000
+          }).addTo(map);
 
-    //       const destMarker = L.marker([destLat, destLon], {
-    //       icon: destIcon,
-    //       zIndexOffset: 1000
-    //       }).addTo(map);
+          const destMarker = L.marker([destLat, destLon], {
+          icon: destIcon,
+          zIndexOffset: 1000
+          }).addTo(map);
 
-    //       if (routeControl) {
-    //       map.removeControl(routeControl);
-    //       }
+          if (routeControl) {
+          map.removeControl(routeControl);
+          }
 
-    //       getOpenRouteServiceRoute(originLon, originLat, destLon, destLat, function (error, routeData) {
-    //       if (error) {
-    //         alert('Route calculation failed: ' + error);
-    //         resetLoadingStates();
-    //         return;
-    //       }
+          getOpenRouteServiceRoute(originLon, originLat, destLon, destLat, function (error, routeData) {
+          if (error) {
+            alert('Route calculation failed: ' + error);
+            resetLoadingStates();
+            return;
+          }
 
-    //       map.eachLayer(layer => {
-    //         if (layer instanceof L.GeoJSON) {
-    //         map.removeLayer(layer);
-    //         }
-    //       });
+          map.eachLayer(layer => {
+            if (layer instanceof L.GeoJSON) {
+            map.removeLayer(layer);
+            }
+          });
 
-    //       const route = L.geoJSON(routeData, {
-    //         style: {
-    //         color: '#2196F3',
-    //         weight: 5,
-    //         opacity: 0.8
-    //         }
-    //       }).addTo(map);
+          const route = L.geoJSON(routeData, {
+            style: {
+            color: '#2196F3',
+            weight: 5,
+            opacity: 0.8
+            }
+          }).addTo(map);
 
-    //       const distance = routeData.features[0].properties.segments[0].distance; // in meters
-    //       const duration = routeData.features[0].properties.segments[0].duration; // in seconds
+          const distance = routeData.features[0].properties.segments[0].distance; // in meters
+          const duration = routeData.features[0].properties.segments[0].duration; // in seconds
 
-    //       document.getElementById('route-distance').textContent =
-    //         (distance / 1609.34).toFixed(1) + ' miles';
+          document.getElementById('route-distance').textContent =
+            (distance / 1609.34).toFixed(1) + ' miles';
 
-    //       var distanceMiles = (distance / 1609.34).toFixed(1);
+          var distanceMiles = (distance / 1609.34).toFixed(1);
 
-    //       const hours = Math.floor(duration / 3600);
-    //       const minutes = Math.round((duration % 3600) / 60);
-    //       document.getElementById('route-time').textContent =
-    //         `${hours > 0 ? hours + 'h ' : ''}${minutes}m`;
+          const hours = Math.floor(duration / 3600);
+          const minutes = Math.round((duration % 3600) / 60);
+          document.getElementById('route-time').textContent =
+            `${hours > 0 ? hours + 'h ' : ''}${minutes}m`;
 
-    //       const googleMapsUrl =
-    //         `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLon}&destination=${destLat},${destLon}&travelmode=driving`;
-    //       document.getElementById('view-google-maps').href = googleMapsUrl;
+          const googleMapsUrl =
+            `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLon}&destination=${destLat},${destLon}&travelmode=driving`;
+          document.getElementById('view-google-maps').href = googleMapsUrl;
 
-    //       calculatePriceInsights(distanceMiles);
+          calculatePriceInsights(distanceMiles);
 
-    //       const group = new L.featureGroup([originMarker, destMarker, route]);
-    //       map.fitBounds(group.getBounds().pad(0.2));
+          const group = new L.featureGroup([originMarker, destMarker, route]);
+          map.fitBounds(group.getBounds().pad(0.2));
 
-    //       if (firstLoad) {
-    //         setTimeout(() => {
-    //         map.invalidateSize();
-    //         map.fitBounds(group.getBounds().pad(0.2));
-    //         firstLoad = false;
-    //         }, 300);
-    //       }
+          if (firstLoad) {
+            setTimeout(() => {
+            map.invalidateSize();
+            map.fitBounds(group.getBounds().pad(0.2));
+            firstLoad = false;
+            }, 300);
+          }
 
-    //       document.getElementById('map-loading').style.display = 'none';
-    //       document.getElementById('map_showing').style.display = 'block';
-    //       });
-    //     }, 50);
-    //     } else {
-    //     handleMapError();
-    //     }
-    //   } else {
-    //     alert('ZIP coordinates not found!');
-    //     resetLoadingStates();
-    //   }
-    //   },
-    //   error: function () {
-    //   alert('ZIP lookup failed.');
-    //   resetLoadingStates();
-    //   }
-    // });
+          document.getElementById('map-loading').style.display = 'none';
+          document.getElementById('map_showing').style.display = 'block';
+          });
+        }, 50);
+        } else {
+        handleMapError();
+        }
+      } else {
+        alert('ZIP coordinates not found!');
+        resetLoadingStates();
+      }
+      },
+      error: function () {
+      alert('ZIP lookup failed.');
+      resetLoadingStates();
+      }
+    });
     }
 
-    // function handleMapError() {
-    // document.getElementById('map').innerHTML = `
-    // <div style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#666; gap: 12px;">
-    // <i class="fas fa-map-marked-alt" style="font-size: 32px;"></i>
-    // <div>Map data not available</div>
-    // </div>`;
-    // document.getElementById('map-loading').style.display = 'none';
-    // resetLoadingStates();
-    // }
+    function handleMapError() {
+    document.getElementById('map').innerHTML = `
+    <div style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#666; gap: 12px;">
+    <i class="fas fa-map-marked-alt" style="font-size: 32px;"></i>
+    <div>Map data not available</div>
+    </div>`;
+    document.getElementById('map-loading').style.display = 'none';
+    resetLoadingStates();
+    }
 
-    // function getOpenRouteServiceRoute(startLon, startLat, endLon, endLat, callback) {
-    // const apiKey = '5b3ce3597851110001cf62486c1c0826305046b1a5c542d06c3f15af';
-    // const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${startLon},${startLat}&end=${endLon},${endLat}`;
+    function getOpenRouteServiceRoute(startLon, startLat, endLon, endLat, callback) {
+    const apiKey = '5b3ce3597851110001cf62486c1c0826305046b1a5c542d06c3f15af';
+    const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${startLon},${startLat}&end=${endLon},${endLat}`;
 
-    // fetch(url)
-    //   .then(response => {
-    //   if (!response.ok) {
-    //     throw new Error('Network response was not ok');
-    //   }
-    //   return response.json();
-    //   })
-    //   .then(data => {
-    //   callback(null, data);
-    //   })
-    //   .catch(error => {
-    //   callback(error.message || 'Failed to get route');
-    //   });
-    // }
+    fetch(url)
+      .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+      })
+      .then(data => {
+      callback(null, data);
+      })
+      .catch(error => {
+      callback(error.message || 'Failed to get route');
+      });
+    }
 
     function resetLoadingStates() {
-    document.getElementById('loading-skeleton').style.display = 'none';
-    document.getElementById('results-content').style.display = 'block';
-    document.getElementById('map-loading').style.display = 'none';
-    document.getElementById('calculate-btn').disabled = false;
-    document.getElementById('calculate-btn').innerHTML = 'Calculate Price';
+        document.getElementById('loading-skeleton').style.display = 'none';
+        document.getElementById('results-content').style.display = 'block';
+        document.getElementById('map-loading').style.display = 'none';
+        document.getElementById('calculate-btn').disabled = false;
+        document.getElementById('calculate-btn').innerHTML = 'Calculate Price';
+    }
+
+    function DisplaySwitch() {
+        document.getElementById('tab-display-2').style.display = 'block';
+        document.getElementById('tab-display').style.display = 'block';
+
+        tabSwitch();
+    }
+
+    function resetDisplaySwitch() {
+        document.getElementById('tab-display-2').style.display = 'none';
+        document.getElementById('tab-display').style.display = 'none';
+    }
+
+    function tabSwitch(){
+      const recentMoveTab = document.getElementById('recent-move-tab');
+      const superLoadTab = document.getElementById('super-load-tab');
+      const recentMoveContent = document.getElementById('recent-move-content');
+      const superLoadContent = document.getElementById('super-load-content');
+
+    superLoadTab.addEventListener('click', function () {
+      recentMoveTab.classList.remove('active');
+      superLoadTab.classList.add('active');
+      recentMoveContent.style.display = 'none';
+      superLoadContent.style.display = 'block';
+    });
+
+    recentMoveTab.addEventListener('click', function () {
+      recentMoveTab.classList.add('active');
+      superLoadTab.classList.remove('active');
+      recentMoveContent.style.display = 'block';
+      superLoadContent.style.display = 'none';
+    });
     }
 
     function calculatePriceInsights(distanceMiles) {
@@ -1052,6 +1047,7 @@
       },
       success: function (response) {
       if (response.success) {
+        resetDisplaySwitch;
         document.getElementById('Total_Amount').textContent = "$" + response.price;
         document.getElementById('Total_Miles').textContent = response.miles + " miles";
         document.getElementById('Price_Per_Mile').textContent = "$" + response.price_per_mile + "/mile";
@@ -1065,7 +1061,125 @@
         resetLoadingStates();
 
       } else if (response.washington_success) {
-    document.getElementById('Total_Miles').textContent = response.miles + " miles";
+
+
+      DisplaySwitch();
+  // Dispatch Listing
+
+    const listingsContainer2 = document.getElementById('recent-move-content');
+    listingsContainer2.innerHTML = '';
+
+    if (response.count2 > 0) {
+        let sumOfAverages2 = 0;
+        let averagesText2 = [];
+        
+        response.vehicle_stats2.forEach((stats, index) => {
+            const vehicle = stats.vehicle;
+            const avgPrice = stats.average_price.toFixed(2);
+            console.log(`Average for ${vehicle.Year} ${vehicle.Make} ${vehicle.Model}: $${avgPrice}`);
+            
+            if (stats.average_price > 0) {
+                sumOfAverages2 += stats.average_price;
+                averagesText2.push(`$${avgPrice}`);
+            }
+        });
+
+        if (averagesText2.length > 0) {
+            document.getElementById('Total_Amount2').textContent = 
+                (`$${sumOfAverages2.toFixed(2)}` ?? '00.00');
+        } else {
+            document.getElementById('Total_Amount2').textContent = "$0.00";
+        }
+
+        // const pricePerMile2 = sumOfAverages2 > 0 ? (sumOfAverages2 / response.miles2).toFixed(2) : 0;
+        // document.getElementById('Price_Per_Mile2').textContent = `$${pricePerMile2} /mile`;
+
+        window.sortedMatches = [...response.matches2].sort((a, b) => {
+            return new Date(b.created_at) - new Date(a.created_at);
+        });
+
+        window.shownListings2 = 0;
+        const batchSize2 = 10;
+
+        window.showMoreListings2 = function() {
+            const remainingListings2 = window.sortedMatches.length - window.shownListings2;
+            const listingsToShow2 = Math.min(batchSize2, remainingListings2);
+            const endIndex2 = window.shownListings2 + listingsToShow2;
+
+            const existingButton2 = document.getElementById('show-more-button2');
+            if (existingButton2) {
+                existingButton2.remove();
+            }
+
+            for (let i = window.shownListings2; i < endIndex2; i++) {
+                const listing = window.sortedMatches[i];
+                const postedDate = new Date(listing.created_at).toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                const listingPricePerMile2 = (listing.listed_price / response.miles2).toFixed(2);
+
+                const listingHTML2 = `
+                    <div class="price-box">
+                        <div class="price-box-row">
+                            <div>
+                                <div class="price-box-value">${listing.originzsc.replace(/,/g, ', ')} → ${listing.destinationzsc.replace(/,/g, ', ')}</div>
+                                <div class="price-box-label">${response.miles2} miles</div>
+                            </div>
+                            <div class="price-highlight">$${listing.listed_price}</div>
+                        </div>
+                        <div class="price-box-row">
+                            <div>
+                                <div class="price-box-value">
+                                    ${listing.ymk} 
+                                    (${listing.condition == 1 ? 'Running' : (listing.condition == 2 ? 'Not Running' : 'Running')}) 
+                                    (${listing.transport == 1 ? 'Open' : (listing.transport == 2 ? 'Enclosed' : 'Open')})
+                                    - ${listing.type ?? 'Car'}
+                                </div>
+                            </div>
+                            <div class="price-box-label">$${listingPricePerMile2}/mile</div>
+                        </div>
+                        <div class="price-box-row">
+                            <div class="price-box-label">
+                                Posted ${postedDate}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                listingsContainer2.insertAdjacentHTML('beforeend', listingHTML2);
+            }
+
+            window.shownListings2 = endIndex2;
+
+            const remaining2 = window.sortedMatches.length - window.shownListings2;
+            if (remaining2 > 0) {
+                const showMoreHTML2 = `
+                    <div class="show-more-container">
+                        <button id="show-more-button" class="show-more-button" onclick="showMoreListings2()">
+                            Show More (${remaining2} remaining)
+                        </button>
+                    </div>
+                `;
+                listingsContainer2.insertAdjacentHTML('beforeend', showMoreHTML2);
+            }
+        };
+
+        window.showMoreListings2();
+
+    } else {
+        listingsContainer2.innerHTML = '<p>No matching listings found</p>';
+        document.getElementById('Total_Amount2').textContent = "$0.00";
+        // document.getElementById('Price_Per_Mile2').textContent = "$0.00/Miles";
+    }
+
+    // resetLoadingStates();
+
+  // Listed Listing
+
+  document.getElementById('Total_Miles').textContent = response.miles + " miles";
 
     const confidencePercentage = Math.floor(Math.random() * 31) + 70;
     let confidenceLevel = confidencePercentage >= 85 ? 'High Confidence' : 'Moderate Confidence';
@@ -1099,28 +1213,23 @@
         const pricePerMile = sumOfAverages > 0 ? (sumOfAverages / response.miles).toFixed(2) : 0;
         document.getElementById('Price_Per_Mile').textContent = `$${pricePerMile} /mile`;
 
-        // Store the sorted matches globally
         window.sortedMatches = [...response.matches].sort((a, b) => {
             return new Date(b.created_at) - new Date(a.created_at);
         });
 
-        // Track how many listings we've shown
         window.shownListings = 0;
         const batchSize = 10;
 
-        // Function to show more listings
         window.showMoreListings = function() {
             const remainingListings = window.sortedMatches.length - window.shownListings;
             const listingsToShow = Math.min(batchSize, remainingListings);
             const endIndex = window.shownListings + listingsToShow;
 
-            // Remove existing show more button if it exists
             const existingButton = document.getElementById('show-more-button');
             if (existingButton) {
                 existingButton.remove();
             }
 
-            // Add new listings
             for (let i = window.shownListings; i < endIndex; i++) {
                 const listing = window.sortedMatches[i];
                 const postedDate = new Date(listing.created_at).toLocaleDateString('en-US', {
@@ -1164,7 +1273,6 @@
 
             window.shownListings = endIndex;
 
-            // Add show more button at the bottom if there are more listings
             const remaining = window.sortedMatches.length - window.shownListings;
             if (remaining > 0) {
                 const showMoreHTML = `
@@ -1178,10 +1286,10 @@
             }
         };
 
-        // Show initial batch
         window.showMoreListings();
 
     } else {
+        DisplaySwitch();
         listingsContainer.innerHTML = '<p>No matching listings found</p>';
         document.getElementById('Total_Amount').textContent = "$0.00";
         document.getElementById('Price_Per_Mile').textContent = "$0.00/Miles";
@@ -1205,25 +1313,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-
-    const recentMoveTab = document.getElementById('recent-move-tab');
-    const superLoadTab = document.getElementById('super-load-tab');
-    const recentMoveContent = document.getElementById('recent-move-content');
-    const superLoadContent = document.getElementById('super-load-content');
-
-    superLoadTab.addEventListener('click', function () {
-      recentMoveTab.classList.remove('active');
-      superLoadTab.classList.add('active');
-      recentMoveContent.style.display = 'none';
-      superLoadContent.style.display = 'block';
-    });
-
-    recentMoveTab.addEventListener('click', function () {
-      recentMoveTab.classList.add('active');
-      superLoadTab.classList.remove('active');
-      recentMoveContent.style.display = 'block';
-      superLoadContent.style.display = 'none';
-    });
 
     function updateVehicleNumbers() {
       const forms = document.querySelectorAll(".vehicle-form");
@@ -1309,7 +1398,7 @@
 
     document.getElementById("calculate-btn").addEventListener("click", function () {
       get_insight_value();
-      calculatePriceInsights(150);
+      // calculatePriceInsights(150);
     });
 
       updateVehicleNumbers();

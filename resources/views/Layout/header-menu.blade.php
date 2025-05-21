@@ -142,15 +142,15 @@
         <div class="form-header"></div>
         <div class="nav-menu">
           {{-- <span><a href="">Vehicle</a></span> --}}
-          <button class="menu-option">
+          <a href="{{ route('dashboard') }}" class="menu-option">
             Vehicle
-          </button>
-          <button class="menu-option">
+          </a>
+          <a href="{{ route('heavy.dashboard') }}" class="menu-option">
             Heavy
-          </button>
-          <button class="menu-option">
+          </a>
+          <a href="{{ route('freight.dashboard') }}" class="menu-option">
             Freight
-          </button>
+          </a>
           {{-- <span><a href="">Heavy</a></span>
           <span><a href="">Freight</a></span> --}}
         </div>
