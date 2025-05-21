@@ -42,7 +42,7 @@
                                 <select name="zipcode_route_type" id="zipcode_route_type" class="form-control"
                                     style="width: auto;" required>
                                     <option value="">Please Select</option>
-                                    <option value="Any">Any</option>
+                                    {{-- <option value="Any">Any</option> --}}
                                     <option value="Origin">Origin</option>
                                     <option value="Destination">Destination</option>
                                     <option value="Route">Route</option>
@@ -224,7 +224,7 @@
                         <select name="modal_route_type" id="modal_route_type" class="form-control" style="width: auto;"
                             required>
                             <option value="">Please Select</option>
-                            <option value="Any">Any</option>
+                            {{-- <option value="Any">Any</option> --}}
                             <option value="Origin">Origin</option>
                             <option value="Destination">Destination</option>
                             <option value="Route">Route</option>

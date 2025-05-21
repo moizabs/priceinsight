@@ -15,20 +15,19 @@ class SettingController extends Controller
         //
     }
 
-
     public function toggleWashington(Request $request)
-{
-    $setting = Setting::first();
+    {
+        $setting = Setting::first();
+        
+        if (!$setting) {
+            $setting = new Setting();
+        }
+        
+        $setting->Washington_data = $request->washington_data;
+        $setting->save();
 
-    if (!$setting) {
-        $setting = new Setting();
+        return response()->json(['message' => 'Washington_data updated']);
     }
-
-    $setting->Washington_data = $request->washington_data;
-    $setting->save();
-
-    return response()->json(['message' => 'Washington_data updated']);
-}
 
     /**
      * Show the form for creating a new resource.

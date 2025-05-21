@@ -39,16 +39,14 @@ class PricingOptionsController extends Controller
             'DepositHide' => 'nullable',
         ]);
 
-        $userId = Auth::guard('authorized')->user()->id;
-
-        PricingOptions::updateOrCreate(['user_id' => $userId], 
-        [
-            'disabled_vehicle' => $request->vehicle_size,
-            'in_operable' => $request->in_operable,
-            'enclosed_transport' => $request->enclosed,
-            'deposit_amount' => $request->deposit_amount,
-            'hide_deposit' => $request->DepositHide
-        ]);
+        $pricingOption = PricingOptions::first();
+        $pricingOption->disabled_vehicle = $request->vehicle_size;
+        $pricingOption->in_operable = $request->in_operable;
+        $pricingOption->enclosed_transport = $request->enclosed;
+        $pricingOption->deposit_amount = $request->deposit_amount;
+        $pricingOption->hide_deposit = $request->DepositHide;
+        $pricingOption->user_id = Auth::guard('authorized')->user()->id;
+        $pricingOption->save();
 
         return response()->json([
             'success' => true,

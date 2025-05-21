@@ -109,7 +109,7 @@
                             <div class="col-lg-2">
                                 <select name="route_type" id="route_type" class="form-control" style="width: auto;">
                                     <option value="">Select Type</option>
-                                    <option value="Any">Any</option>
+                                    {{-- <option value="Any">Any</option> --}}
                                     <option value="Route">Route</option>
                                     <option value="Origin">Origin</option>
                                     <option value="Destination">Destination</option>
@@ -318,7 +318,7 @@
                         <select name="modal_route_type" id="modal_route_type" class="form-control" style="width: auto;"
                             required>
                             <option value="">Please Select</option>
-                            <option value="Any">Any</option>
+                            {{-- <option value="Any">Any</option> --}}
                             <option value="Origin">Origin</option>
                             <option value="Destination">Destination</option>
                             <option value="Route">Route</option>
