@@ -175,7 +175,7 @@
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     position: relative;
-    min-height: 300px;
+    min-height: auto;
     }
 
     .card-title {
