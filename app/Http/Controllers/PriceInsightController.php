@@ -208,14 +208,14 @@ class PriceInsightController extends Controller
         $destMatch = false;
     
         if (!empty($originZip) && !empty($listingOriginZip) && !empty($destZip) && !empty($listingDestZip)) {
-            if ($originZip === $listingOriginZip && $destZip === $listingDestZip) {
+            if (($originZip === $listingOriginZip && $destZip === $listingDestZip) || ($originZip === $listingDestZip && $destZip === $listingOriginZip)) {
                 $originMatch = true;
                 $destMatch = true;
                 $matchLevel2 = 'zip';
             }
         }
 
-        if (!$originMatch && !empty($originZip) && !empty($destCity)) {
+        if (!$originMatch && !$destMatch && !empty($originZip) && !empty($destCity)) {
             if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
                 $originMatch = true;
                 $destMatch = true;
@@ -223,29 +223,43 @@ class PriceInsightController extends Controller
             }
         }
 
-        if (!$originMatch && !empty($originCity) && !empty($listingOriginCity)) {
-            if (strcasecmp($originCity, $listingOriginCity) === 0) {
+        if (
+            !$originMatch &&
+            !empty($originCity) &&
+            !empty($listingOriginCity) &&
+            !$destMatch &&
+            !empty($destCity) &&
+            !empty($listingDestCity)
+        ) {
+            $directMatch = strcasecmp($originCity, $listingOriginCity) === 0 &&
+                           strcasecmp($destCity, $listingDestCity) === 0;
+
+            $reverseMatch = strcasecmp($originCity, $listingDestCity) === 0 &&
+                            strcasecmp($destCity, $listingOriginCity) === 0;
+
+            if ($directMatch || $reverseMatch) {
                 $originMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'city';
-            }
-        }
-        
-        if (!$destMatch && !empty($destCity) && !empty($listingDestCity)) {
-            if (strcasecmp($destCity, $listingDestCity) === 0) {
                 $destMatch = true;
                 $matchLevel2 = $matchLevel2 ?: 'city';
             }
         }
-        
-        if (!$originMatch && !empty($originState) && !empty($listingOriginState)) {
-            if (strcasecmp($originState, $listingOriginState) === 0) {
+
+        if (
+            !$originMatch &&
+            !empty($originState) &&
+            !empty($listingOriginState) &&
+            !$destMatch &&
+            !empty($destState) &&
+            !empty($listingDestState)
+        ) {
+            $directMatch = strcasecmp($originState, $listingOriginState) === 0 &&
+                           strcasecmp($destState, $listingDestState) === 0;
+
+            $reverseMatch = strcasecmp($originState, $listingDestState) === 0 &&
+                            strcasecmp($destState, $listingOriginState) === 0;
+
+            if ($directMatch || $reverseMatch) {
                 $originMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'state';
-            }
-        }
-        
-        if (!$destMatch && !empty($destState) && !empty($listingDestState)) {
-            if (strcasecmp($destState, $listingDestState) === 0) {
                 $destMatch = true;
                 $matchLevel2 = $matchLevel2 ?: 'state';
             }
@@ -264,10 +278,14 @@ class PriceInsightController extends Controller
                 $type = strtolower(trim($vehicle['Vehicle_Type'] ?? ''));
                 $trailerCondition = strtolower($Trailer_Type === 'Open' ? '1' : '2');
                 
-                $listingCondition = strtolower(trim($row['condition']));
-                $listingTrailer = strtolower(trim($row['transport']));
-                $listingType = strtolower(trim($row['type']));
-
+                $listingCondition = strtolower(trim(preg_replace('/\*\^+/', '', $row['condition'])));
+                $listingTrailer = strtolower(trim(preg_replace('/\*\^+/', '', $row['transport'])));
+                $listingType = strtolower(trim(preg_replace('/\*\^+/', '', $row['type'])));
+                
+                // $listingCondition = strtolower(trim($row['condition']));
+                // $listingTrailer = strtolower(trim($row['transport']));
+                // $listingType = strtolower(trim($row['type']));
+                 
                 if ($condition === $listingCondition && 
                     !empty($type) && 
                     !empty($listingType) && 
@@ -298,7 +316,7 @@ class PriceInsightController extends Controller
             if (count($defaultMatchedListings2) >= $neededMatches2) {
                 break;
             }
-            
+        
         $listingOriginParts = explode(',', str_replace(' ', '', $row['originzsc']));
         $listingDestParts = explode(',', str_replace(' ', '', $row['destinationzsc']));
         
@@ -309,19 +327,19 @@ class PriceInsightController extends Controller
         $listingDestCity = trim($listingDestParts[0] ?? '');
         $listingDestState = trim($listingDestParts[1] ?? '');
         $listingDestZip = trim($listingDestParts[2] ?? '');
-
+        
         $originMatch = false;
         $destMatch = false;
     
         if (!empty($originZip) && !empty($listingOriginZip) && !empty($destZip) && !empty($listingDestZip)) {
-            if ($originZip === $listingOriginZip && $destZip === $listingDestZip) {
+            if (($originZip === $listingOriginZip && $destZip === $listingDestZip) || ($originZip === $listingDestZip && $destZip === $listingOriginZip)) {
                 $originMatch = true;
                 $destMatch = true;
                 $matchLevel2 = 'zip';
             }
         }
 
-        if (!$originMatch && !empty($originZip) && !empty($destCity)) {
+        if (!$originMatch && !$destMatch && !empty($originZip) && !empty($destCity)) {
             if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
                 $originMatch = true;
                 $destMatch = true;
@@ -329,29 +347,43 @@ class PriceInsightController extends Controller
             }
         }
 
-        if (!$originMatch && !empty($originCity) && !empty($listingOriginCity)) {
-            if (strcasecmp($originCity, $listingOriginCity) === 0) {
+        if (
+            !$originMatch &&
+            !empty($originCity) &&
+            !empty($listingOriginCity) &&
+            !$destMatch &&
+            !empty($destCity) &&
+            !empty($listingDestCity)
+        ) {
+            $directMatch = strcasecmp($originCity, $listingOriginCity) === 0 &&
+                           strcasecmp($destCity, $listingDestCity) === 0;
+
+            $reverseMatch = strcasecmp($originCity, $listingDestCity) === 0 &&
+                            strcasecmp($destCity, $listingOriginCity) === 0;
+
+            if ($directMatch || $reverseMatch) {
                 $originMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'city';
-            }
-        }
-        
-        if (!$destMatch && !empty($destCity) && !empty($listingDestCity)) {
-            if (strcasecmp($destCity, $listingDestCity) === 0) {
                 $destMatch = true;
                 $matchLevel2 = $matchLevel2 ?: 'city';
             }
         }
-        
-        if (!$originMatch && !empty($originState) && !empty($listingOriginState)) {
-            if (strcasecmp($originState, $listingOriginState) === 0) {
+
+        if (
+            !$originMatch &&
+            !empty($originState) &&
+            !empty($listingOriginState) &&
+            !$destMatch &&
+            !empty($destState) &&
+            !empty($listingDestState)
+        ) {
+            $directMatch = strcasecmp($originState, $listingOriginState) === 0 &&
+                           strcasecmp($destState, $listingDestState) === 0;
+
+            $reverseMatch = strcasecmp($originState, $listingDestState) === 0 &&
+                            strcasecmp($destState, $listingOriginState) === 0;
+
+            if ($directMatch || $reverseMatch) {
                 $originMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'state';
-            }
-        }
-        
-        if (!$destMatch && !empty($destState) && !empty($listingDestState)) {
-            if (strcasecmp($destState, $listingDestState) === 0) {
                 $destMatch = true;
                 $matchLevel2 = $matchLevel2 ?: 'state';
             }
@@ -361,9 +393,13 @@ class PriceInsightController extends Controller
                 foreach ($Vehicles as $index => $vehicle) {
                     $type = strtolower(trim($vehicle['Vehicle_Type'] ?? ''));
                     
-                    $listingCondition = strtolower(trim($row['condition'] ?? '1'));
-                    $listingTrailer = strtolower(trim($row['transport'] ?? '1'));
-                    $listingType = strtolower(trim($row['type'] ?? 'car'));
+                    // $listingCondition = strtolower(trim($row['condition'] ?? '1'));
+                    // $listingTrailer = strtolower(trim($row['transport'] ?? '1'));
+                    // $listingType = strtolower(trim($row['type'] ?? 'car'));
+
+                    $listingCondition = strtolower(trim(preg_replace('/\*\^+/', '', $row['condition'] ?? '1')));
+                    $listingTrailer = strtolower(trim(preg_replace('/\*\^+/', '', $row['transport'] ?? '1')));
+                    $listingType = strtolower(trim(preg_replace('/\*\^+/', '', $row['type'] ?? 'car')));
 
                     if ($listingCondition === '1' && 
                         (empty($type) || empty($listingType) || 
@@ -453,46 +489,60 @@ class PriceInsightController extends Controller
         $destMatch = false;
     
         if (!empty($originZip) && !empty($listingOriginZip) && !empty($destZip) && !empty($listingDestZip)) {
-            if ($originZip === $listingOriginZip && $destZip === $listingDestZip) {
+            if (($originZip === $listingOriginZip && $destZip === $listingDestZip) || ($originZip === $listingDestZip && $destZip === $listingOriginZip)) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel = 'zip';
+                $matchLevel2 = 'zip';
             }
         }
 
-        if (!$originMatch && !empty($originZip) && !empty($destCity)) {
+        if (!$originMatch && !$destMatch && !empty($originZip) && !empty($destCity)) {
             if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel = $matchLevel ?: 'zip-city';
+                $matchLevel2 = $matchLevel2 ?: 'zip-city';
             }
         }
 
-        if (!$originMatch && !empty($originCity) && !empty($listingOriginCity)) {
-            if (strcasecmp($originCity, $listingOriginCity) === 0) {
+        if (
+            !$originMatch &&
+            !empty($originCity) &&
+            !empty($listingOriginCity) &&
+            !$destMatch &&
+            !empty($destCity) &&
+            !empty($listingDestCity)
+        ) {
+            $directMatch = strcasecmp($originCity, $listingOriginCity) === 0 &&
+                           strcasecmp($destCity, $listingDestCity) === 0;
+
+            $reverseMatch = strcasecmp($originCity, $listingDestCity) === 0 &&
+                            strcasecmp($destCity, $listingOriginCity) === 0;
+
+            if ($directMatch || $reverseMatch) {
                 $originMatch = true;
-                $matchLevel = $matchLevel ?: 'city';
-            }
-        }
-        
-        if (!$destMatch && !empty($destCity) && !empty($listingDestCity)) {
-            if (strcasecmp($destCity, $listingDestCity) === 0) {
                 $destMatch = true;
-                $matchLevel = $matchLevel ?: 'city';
+                $matchLevel2 = $matchLevel2 ?: 'city';
             }
         }
-        
-        if (!$originMatch && !empty($originState) && !empty($listingOriginState)) {
-            if (strcasecmp($originState, $listingOriginState) === 0) {
+
+        if (
+            !$originMatch &&
+            !empty($originState) &&
+            !empty($listingOriginState) &&
+            !$destMatch &&
+            !empty($destState) &&
+            !empty($listingDestState)
+        ) {
+            $directMatch = strcasecmp($originState, $listingOriginState) === 0 &&
+                           strcasecmp($destState, $listingDestState) === 0;
+
+            $reverseMatch = strcasecmp($originState, $listingDestState) === 0 &&
+                            strcasecmp($destState, $listingOriginState) === 0;
+
+            if ($directMatch || $reverseMatch) {
                 $originMatch = true;
-                $matchLevel = $matchLevel ?: 'state';
-            }
-        }
-        
-        if (!$destMatch && !empty($destState) && !empty($listingDestState)) {
-            if (strcasecmp($destState, $listingDestState) === 0) {
                 $destMatch = true;
-                $matchLevel = $matchLevel ?: 'state';
+                $matchLevel2 = $matchLevel2 ?: 'state';
             }
         }
 
@@ -509,9 +559,13 @@ class PriceInsightController extends Controller
                 $type = strtolower(trim($vehicle['Vehicle_Type'] ?? ''));
                 $trailerCondition = strtolower($Trailer_Type === 'Open' ? '1' : '2');
                 
-                $listingCondition = strtolower(trim($row['condition']));
-                $listingTrailer = strtolower(trim($row['transport']));
-                $listingType = strtolower(trim($row['type']));
+                $listingCondition = strtolower(trim(preg_replace('/\*\^+/', '', $row['condition'])));
+                $listingTrailer = strtolower(trim(preg_replace('/\*\^+/', '', $row['transport'])));
+                $listingType = strtolower(trim(preg_replace('/\*\^+/', '', $row['type'])));
+
+                // $listingCondition = strtolower(trim($row['condition']));
+                // $listingTrailer = strtolower(trim($row['transport']));
+                // $listingType = strtolower(trim($row['type']));
 
                 if ($condition === $listingCondition && 
                     !empty($type) && 
@@ -559,56 +613,74 @@ class PriceInsightController extends Controller
         $destMatch = false;
     
         if (!empty($originZip) && !empty($listingOriginZip) && !empty($destZip) && !empty($listingDestZip)) {
-            if ($originZip === $listingOriginZip && $destZip === $listingDestZip) {
+            if (($originZip === $listingOriginZip && $destZip === $listingDestZip) || ($originZip === $listingDestZip && $destZip === $listingOriginZip)) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel = 'zip';
+                $matchLevel2 = 'zip';
             }
         }
 
-        if (!$originMatch && !empty($originZip) && !empty($destCity)) {
+        if (!$originMatch && !$destMatch && !empty($originZip) && !empty($destCity)) {
             if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel = $matchLevel ?: 'zip-city';
+                $matchLevel2 = $matchLevel2 ?: 'zip-city';
             }
         }
 
-        if (!$originMatch && !empty($originCity) && !empty($listingOriginCity)) {
-            if (strcasecmp($originCity, $listingOriginCity) === 0) {
+        if (
+            !$originMatch &&
+            !empty($originCity) &&
+            !empty($listingOriginCity) &&
+            !$destMatch &&
+            !empty($destCity) &&
+            !empty($listingDestCity)
+        ) {
+            $directMatch = strcasecmp($originCity, $listingOriginCity) === 0 &&
+                           strcasecmp($destCity, $listingDestCity) === 0;
+
+            $reverseMatch = strcasecmp($originCity, $listingDestCity) === 0 &&
+                            strcasecmp($destCity, $listingOriginCity) === 0;
+
+            if ($directMatch || $reverseMatch) {
                 $originMatch = true;
-                $matchLevel = $matchLevel ?: 'city';
-            }
-        }
-        
-        if (!$destMatch && !empty($destCity) && !empty($listingDestCity)) {
-            if (strcasecmp($destCity, $listingDestCity) === 0) {
                 $destMatch = true;
-                $matchLevel = $matchLevel ?: 'city';
+                $matchLevel2 = $matchLevel2 ?: 'city';
             }
         }
-        
-        if (!$originMatch && !empty($originState) && !empty($listingOriginState)) {
-            if (strcasecmp($originState, $listingOriginState) === 0) {
+
+        if (
+            !$originMatch &&
+            !empty($originState) &&
+            !empty($listingOriginState) &&
+            !$destMatch &&
+            !empty($destState) &&
+            !empty($listingDestState)
+        ) {
+            $directMatch = strcasecmp($originState, $listingOriginState) === 0 &&
+                           strcasecmp($destState, $listingDestState) === 0;
+
+            $reverseMatch = strcasecmp($originState, $listingDestState) === 0 &&
+                            strcasecmp($destState, $listingOriginState) === 0;
+
+            if ($directMatch || $reverseMatch) {
                 $originMatch = true;
-                $matchLevel = $matchLevel ?: 'state';
-            }
-        }
-        
-        if (!$destMatch && !empty($destState) && !empty($listingDestState)) {
-            if (strcasecmp($destState, $listingDestState) === 0) {
                 $destMatch = true;
-                $matchLevel = $matchLevel ?: 'state';
+                $matchLevel2 = $matchLevel2 ?: 'state';
             }
         }
 
             if ($originMatch && $destMatch) {
                 foreach ($Vehicles as $index => $vehicle) {
                     $type = strtolower(trim($vehicle['Vehicle_Type'] ?? ''));
+
+                    $listingCondition = strtolower(trim(preg_replace('/\*\^+/', '', $row['condition'] ?? '1')));
+                    $listingTrailer = strtolower(trim(preg_replace('/\*\^+/', '', $row['transport'] ?? '1')));
+                    $listingType = strtolower(trim(preg_replace('/\*\^+/', '', $row['type'] ?? 'car')));
                     
-                    $listingCondition = strtolower(trim($row['condition'] ?? '1'));
-                    $listingTrailer = strtolower(trim($row['transport'] ?? '1'));
-                    $listingType = strtolower(trim($row['type'] ?? 'car'));
+                    // $listingCondition = strtolower(trim($row['condition'] ?? '1'));
+                    // $listingTrailer = strtolower(trim($row['transport'] ?? '1'));
+                    // $listingType = strtolower(trim($row['type'] ?? 'car'));
 
                     if ($listingCondition === '1' && 
                         (empty($type) || empty($listingType) || 

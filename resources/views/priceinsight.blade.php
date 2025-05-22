@@ -694,9 +694,9 @@
         <div class="price-amount" id="Total_Amount2">$0.00</div>
       </div>
 
-      <div class="price-metric">
+      <div class="price-metric" id='tab-display-3' style="display: none" >
         <span>New Listed Average</span>
-        <div class="price-amount" id="Total_Amount">$0.00</div>  
+        <div class="price-amount" id="Total_Amount" >$0.00</div>  
       </div>
 
       <div class="price-metrics">
@@ -726,11 +726,12 @@
         </div>
       </div>
 
+
+
       </div>
     </div>
     </div>
   </div>
-
 
   <!-- Include required libraries -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
@@ -738,13 +739,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
 
   <script>
 
     document.addEventListener('DOMContentLoaded', function () {
-      document.getElementById('results-card').style.display = 'none';
-      document.getElementById('welcome-card').style.display = 'block';
+    document.getElementById('results-card').style.display = 'none';
+    document.getElementById('welcome-card').style.display = 'block';
     });
 
 
@@ -985,12 +985,16 @@
       const superLoadTab = document.getElementById('super-load-tab');
       const recentMoveContent = document.getElementById('recent-move-content');
       const superLoadContent = document.getElementById('super-load-content');
+      const recentPrice = document.getElementById('tab-display-2');
+      const loadPrice = document.getElementById('tab-display-3');
 
     superLoadTab.addEventListener('click', function () {
       recentMoveTab.classList.remove('active');
       superLoadTab.classList.add('active');
       recentMoveContent.style.display = 'none';
       superLoadContent.style.display = 'block';
+      recentPrice.style.display = 'none';
+      loadPrice.style.display = 'block';
     });
 
     recentMoveTab.addEventListener('click', function () {
@@ -998,6 +1002,8 @@
       superLoadTab.classList.remove('active');
       recentMoveContent.style.display = 'block';
       superLoadContent.style.display = 'none';
+      recentPrice.style.display = 'block';
+      loadPrice.style.display = 'none';
     });
     }
 
@@ -1398,7 +1404,7 @@
 
     document.getElementById("calculate-btn").addEventListener("click", function () {
       get_insight_value();
-      // calculatePriceInsights(150);
+      calculatePriceInsights(150);
     });
 
       updateVehicleNumbers();
