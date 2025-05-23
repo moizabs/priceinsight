@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\PricePerMile;
 use App\Models\PricingOptions;
 use App\Models\Setting;
+use App\Models\SheetDetails;
 use App\Models\StateExceptions;
 use App\Models\VehicleTypeSetting;
 use App\Models\Washington;
@@ -73,19 +74,19 @@ class ApiController extends Controller
 
     public function api_dispatch_listing_data()
     {
-        $data = Washington::select([
+        $data = SheetDetails::select([
             'id',
             'originzsc',
             'destinationzsc', 
             'ymk',
-            'listed_price',
+            'price',
             'created_at',
             'pstatus',
             'condition',
             'type',
             'transport'
         ])
-        ->whereIn('pstatus', [10, 11, 12, 13, 18])
+        // ->whereIn('pstatus', [10, 11, 12, 13, 18])
         ->get();
         return response()->json($data);
     }

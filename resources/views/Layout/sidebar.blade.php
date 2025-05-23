@@ -55,6 +55,10 @@
                     <a href="{{ route('washington.index') }}">Day Dispatch Data</a>
                 </li>
 
+                <li class="{{ request()->routeIs('washington.dispatch') ? 'active' : '' }}" id="lastActivity">
+                    <a href="{{ route('washington.dispatch') }}">Dispatch Listing</a>
+                </li>
+
             </ul>
         </nav>
     </div>

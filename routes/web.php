@@ -12,6 +12,7 @@ use App\Http\Controllers\WashingtonController;
 use App\Http\Controllers\ZipCodeExceptionsController;
 use App\Http\Controllers\OtpController;
 use App\Http\Middleware\UserMiddleware as AuthorizedGuardMiddleware;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 
@@ -91,8 +92,14 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
     Route::get('/washington-listing', [WashingtonController::class, 'index'])->name('washington.index');
     Route::get('/get-all-washington-listing', [WashingtonController::class, 'getAllWashingtonListing'])->name('get.all.washington.listing');
 
+
+    Route::get('/washington-dispatch-listing', [WashingtonController::class, 'dispatchListing'])->name('washington.dispatch');
+    Route::get('/get-all-dispatch-listing', [WashingtonController::class, 'getAllDispatchListing'])->name('get.all.dispatch.listing');
+
     // Setting
     Route::post('/settings/toggle-washington', [SettingController::class, 'toggleWashington'])->name('settings.toggleWashington');
+
+    
 
     // Route::get('/exceptions-list', function () {
     //     return view('exceptions_list');
