@@ -76,6 +76,7 @@ class ApiController extends Controller
     {
         $data = SheetDetails::select([
             'id',
+            'orderId',
             'originzsc',
             'destinationzsc', 
             'ymk',
