@@ -585,9 +585,9 @@
       @endif
 
         <select class="form-control" name="inoperable" id="inoperable">
-        <option value="" selected disabled>Select Inoperable</option>
-        <option value="No">No</option>
-        <option value="Yes">Yes</option>
+        <option value="" selected disabled>Select Condition</option>
+        <option value="No">Operable</option>
+        <option value="Yes">Inoperable</option>
         </select>
         <button class="btn btn-danger delete-vehicle-btn">
         Remove
@@ -1123,7 +1123,7 @@
                     year: 'numeric'
                 });
 
-                const listingPricePerMile2 = (listing.listed_price / response.miles2).toFixed(2);
+                const listingPricePerMile2 = (listing.price / response.miles2).toFixed(2);
 
                 const listingHTML2 = `
                     <div class="price-box">
@@ -1132,7 +1132,7 @@
                                 <div class="price-box-value">${listing.originzsc.replace(/,/g, ', ')} → ${listing.destinationzsc.replace(/,/g, ', ')}</div>
                                 <div class="price-box-label">${response.miles2} miles</div>
                             </div>
-                            <div class="price-highlight">$${listing.listed_price}</div>
+                            <div class="price-highlight">$${listing.price}</div>
                         </div>
                         <div class="price-box-row">
                             <div>
@@ -1140,14 +1140,14 @@
                                     ${listing.ymk} 
                                     (${listing.condition == 1 ? 'Running' : (listing.condition == 2 ? 'Not Running' : 'Running')}) 
                                     (${listing.transport == 1 ? 'Open' : (listing.transport == 2 ? 'Enclosed' : 'Open')})
-                                    - ${listing.type ?? 'Car'}
+                                    - ${listing.type ?? 'Car'} - (${listing.orderId})
                                 </div>
                             </div>
                             <div class="price-box-label">$${listingPricePerMile2}/mile</div>
                         </div>
                         <div class="price-box-row">
                             <div class="price-box-label">
-                                Posted ${postedDate}
+                                Dispatch ${postedDate}
                             </div>
                         </div>
                     </div>

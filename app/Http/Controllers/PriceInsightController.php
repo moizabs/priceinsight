@@ -292,12 +292,12 @@ class PriceInsightController extends Controller
                     str_contains($listingType, $type) && 
                     $trailerCondition === $listingTrailer) {
                     
-                    $vehicleStats2[$index]['total_price'] += $row['listed_price'];
+                    $vehicleStats2[$index]['total_price'] += $row['price'];
                     $vehicleStats2[$index]['count']++;
                     $vehicleStats2[$index]['matches'][] = $row;
                     $vehicleStats2[$index]['vehicle_match_level'] = 'strict';
                     
-                    $totalCombinedPrice2 += $row['listed_price'];
+                    $totalCombinedPrice2 += $row['price'];
                     $totalCombinedCount2++;
                     
                     $strictMatchesFound2 = true;
@@ -418,12 +418,12 @@ class PriceInsightController extends Controller
                         }
                         
                         if (!$alreadyMatched) {
-                            $vehicleStats2[$index]['total_price'] += $row['listed_price'];
+                            $vehicleStats2[$index]['total_price'] += $row['price'];
                             $vehicleStats2[$index]['count']++;
                             $vehicleStats2[$index]['matches'][] = $row;
                             $vehicleStats2[$index]['vehicle_match_level'] = 'default';
                             
-                            $totalCombinedPrice2 += $row['listed_price'];
+                            $totalCombinedPrice2 += $row['price'];
                             $totalCombinedCount2++;
                             
                             $row['match_level'] = $matchLevel2;
@@ -966,10 +966,8 @@ class PriceInsightController extends Controller
                 'level' => $confidenceLevel
             ]
         ]);
-        }
-        
+        }   
     }
-
 
      public function getCoordinates(Request $request) {
       $originZip = $request->input('origin_zip');
