@@ -1173,7 +1173,7 @@
             if (remaining2 > 0) {
                 const showMoreHTML2 = `
                     <div class="show-more-container">
-                        <button id="show-more-button2" class="show-more-button" onclick="showMoreListings2()">
+                        <button id="show-more-button" class="show-more-button" onclick="showMoreListings2()">
                             Show More (${remaining2} remaining)
                         </button>
                     </div>
