@@ -175,7 +175,7 @@ class PriceInsightController extends Controller
     $matchedListings2 = [];
     $strictMatchedListings2 = [];
     $defaultMatchedListings2 = [];
-    $matchLevel2 = null;
+    $dispatchMatchLevel = null;
     $vehicleStats2 = [];
     $totalCombinedPrice2 = 0;
     $totalCombinedCount2 = 0;
@@ -211,7 +211,7 @@ class PriceInsightController extends Controller
             if (($originZip === $listingOriginZip && $destZip === $listingDestZip) || ($originZip === $listingDestZip && $destZip === $listingOriginZip)) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = 'zip';
+                $dispatchMatchLevel = 'zip';
             }
         }
 
@@ -219,7 +219,7 @@ class PriceInsightController extends Controller
             if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'zip-city';
+                $dispatchMatchLevel = $dispatchMatchLevel ?: 'zip-city';
             }
         }
 
@@ -240,7 +240,7 @@ class PriceInsightController extends Controller
             if ($directMatch || $reverseMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'city';
+                $dispatchMatchLevel = $dispatchMatchLevel ?: 'city';
             }
         }
 
@@ -261,13 +261,13 @@ class PriceInsightController extends Controller
             if ($directMatch || $reverseMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'state';
+                $dispatchMatchLevel = $dispatchMatchLevel ?: 'state';
             }
         }
 
         if ($originMatch && $destMatch) {
             if (empty($Vehicles)) {
-                $row['match_level'] = $matchLevel2;
+                $row['match_level'] = $dispatchMatchLevel;
                 $row['vehicle_match_level'] = 'none_required';
                 $matchedListings2[] = $row;
                 continue;
@@ -301,7 +301,7 @@ class PriceInsightController extends Controller
                     $totalCombinedCount2++;
                     
                     $strictMatchesFound2 = true;
-                    $row['match_level'] = $matchLevel2;
+                    $row['match_level'] = $dispatchMatchLevel;
                     $row['vehicle_match_level'] = 'strict';
                     $strictMatchedListings2[] = $row;
                 }
@@ -335,7 +335,7 @@ class PriceInsightController extends Controller
             if (($originZip === $listingOriginZip && $destZip === $listingDestZip) || ($originZip === $listingDestZip && $destZip === $listingOriginZip)) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = 'zip';
+                $dispatchMatchLevel = 'zip';
             }
         }
 
@@ -343,7 +343,7 @@ class PriceInsightController extends Controller
             if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'zip-city';
+                $dispatchMatchLevel = $dispatchMatchLevel ?: 'zip-city';
             }
         }
 
@@ -364,7 +364,7 @@ class PriceInsightController extends Controller
             if ($directMatch || $reverseMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'city';
+                $dispatchMatchLevel = $dispatchMatchLevel ?: 'city';
             }
         }
 
@@ -385,7 +385,7 @@ class PriceInsightController extends Controller
             if ($directMatch || $reverseMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'state';
+                $dispatchMatchLevel = $dispatchMatchLevel ?: 'state';
             }
         }
 
@@ -426,7 +426,7 @@ class PriceInsightController extends Controller
                             $totalCombinedPrice2 += $row['price'];
                             $totalCombinedCount2++;
                             
-                            $row['match_level'] = $matchLevel2;
+                            $row['match_level'] = $dispatchMatchLevel;
                             $row['vehicle_match_level'] = 'default';
                             $defaultMatchedListings2[] = $row;
                         }
@@ -492,7 +492,7 @@ class PriceInsightController extends Controller
             if (($originZip === $listingOriginZip && $destZip === $listingDestZip) || ($originZip === $listingDestZip && $destZip === $listingOriginZip)) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = 'zip';
+                $matchLevel = 'zip';
             }
         }
 
@@ -500,7 +500,7 @@ class PriceInsightController extends Controller
             if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'zip-city';
+                $matchLevel = $matchLevel ?: 'zip-city';
             }
         }
 
@@ -521,7 +521,7 @@ class PriceInsightController extends Controller
             if ($directMatch || $reverseMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'city';
+                $matchLevel = $matchLevel ?: 'city';
             }
         }
 
@@ -542,7 +542,7 @@ class PriceInsightController extends Controller
             if ($directMatch || $reverseMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'state';
+                $matchLevel = $matchLevel ?: 'state';
             }
         }
 
@@ -616,7 +616,7 @@ class PriceInsightController extends Controller
             if (($originZip === $listingOriginZip && $destZip === $listingDestZip) || ($originZip === $listingDestZip && $destZip === $listingOriginZip)) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = 'zip';
+                $matchLevel = 'zip';
             }
         }
 
@@ -624,7 +624,7 @@ class PriceInsightController extends Controller
             if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'zip-city';
+                $matchLevel = $matchLevel ?: 'zip-city';
             }
         }
 
@@ -645,7 +645,7 @@ class PriceInsightController extends Controller
             if ($directMatch || $reverseMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'city';
+                $matchLevel = $matchLevel ?: 'city';
             }
         }
 
@@ -666,7 +666,7 @@ class PriceInsightController extends Controller
             if ($directMatch || $reverseMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel2 = $matchLevel2 ?: 'state';
+                $matchLevel = $matchLevel ?: 'state';
             }
         }
 
@@ -742,7 +742,7 @@ class PriceInsightController extends Controller
         'matches2' => $matchedListings2,
         'miles2' => $Miles,
         'count2' => count($matchedListings2),
-        'match_level2' => $matchLevel2,
+        'match_level2' => $dispatchMatchLevel,
         'vehicle_stats2' => $vehicleStats2,
         'overall_average_price2' => $overallAverage2
     ]);
@@ -966,7 +966,7 @@ class PriceInsightController extends Controller
                 'level' => $confidenceLevel
             ]
         ]);
-        }   
+        }
     }
 
      public function getCoordinates(Request $request) {

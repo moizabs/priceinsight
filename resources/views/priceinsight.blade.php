@@ -689,6 +689,13 @@
       <h4>Estimated Carrier Price</h4>
 
     <div class="price-display">
+
+      <div class="price-metric" id="tab-display-5" style="display: none">
+        <span>Average Price</span>
+        <div class="price-amount" id="Total_Amount5">$0.00</div>
+      </div>
+
+      
       <div class="price-metric" id="tab-display-2" style="display: none">
         <span>Dispatch Average</span>
         <div class="price-amount" id="Total_Amount2">$0.00</div>
@@ -1051,8 +1058,9 @@
       },
       success: function (response) {
       if (response.success) {
+
         resetDisplaySwitch;
-        document.getElementById('Total_Amount').textContent = "$" + response.price;
+        document.getElementById('Total_Amount5').textContent = "$" + response.price;
         document.getElementById('Total_Miles').textContent = response.miles + " miles";
         document.getElementById('Price_Per_Mile').textContent = "$" + response.price_per_mile + "/mile";
 
@@ -1062,13 +1070,16 @@
         document.getElementById('C_Percentage').textContent =
         confidencePercentage + "% " + confidenceLevel;
 
+        $('#tab-display-5').css('display', 'block');
+
         resetLoadingStates();
 
       } else if (response.washington_success) {
 
 
       DisplaySwitch();
-  // Dispatch Listing
+
+    // Dispatch Listing
 
     const listingsContainer2 = document.getElementById('recent-move-content');
     listingsContainer2.innerHTML = '';
@@ -1162,7 +1173,7 @@
             if (remaining2 > 0) {
                 const showMoreHTML2 = `
                     <div class="show-more-container">
-                        <button id="show-more-button" class="show-more-button" onclick="showMoreListings2()">
+                        <button id="show-more-button2" class="show-more-button" onclick="showMoreListings2()">
                             Show More (${remaining2} remaining)
                         </button>
                     </div>
@@ -1175,7 +1186,7 @@
 
     } else {
         listingsContainer2.innerHTML = '<p>No matching listings found</p>';
-        document.getElementById('Total_Amount2').textContent = "$0.00";
+        document.getElementById('Total_Amount5').textContent = "$0.00";
         // document.getElementById('Price_Per_Mile2').textContent = "$0.00/Miles";
     }
 
@@ -1402,7 +1413,7 @@
 
     document.getElementById("calculate-btn").addEventListener("click", function () {
       get_insight_value();
-      calculatePriceInsights(150);
+      // calculatePriceInsights(150);
     });
 
       updateVehicleNumbers();
