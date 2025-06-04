@@ -84,6 +84,7 @@
                                         <th class="text-center font-weight-bold">Trailer Type</th>
                                         <th class="text-center font-weight-bold">Entered By</th>
                                         <th class="text-center font-weight-bold">Created at</th>
+                                        <th class="text-center font-weight-bold">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -106,7 +107,6 @@
                                     data-dismiss="modal">&times;</button>
                             </div>
                             <div class="modal-body">
-                                <input type="hidden" id="edit_id">
                                 <div class="form-group">
                                     <label>Origin Location</label>
                                     <input type="text" placeholder="Origin"
@@ -199,6 +199,100 @@
                     </div>
                 </div>
 
+
+
+<!-- Edit Modal -->
+                <div class="modal fade" id="editModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5>Edit Dispatch Price</h5>
+                                <button type="button" class="close" id="closemodal"
+                                    data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="edit_id">
+                                <div class="form-group">
+                                    <label>Origin Location</label>
+                                    <input type="text" placeholder="Origin" value=""
+                                        class="form-control Origin_ZipCode typeahead" id="originE" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Destination Location</label>
+                                    <input type="text" placeholder="Destination" value=""
+                                        class="form-control Dest_ZipCode typeahead" id="destinationE" required>
+                                    {{-- <input type="number" id="edit_end_range" class="form-control"> --}}
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Vehicle Type</label>
+
+                                    <select class="form-control" name="type" id="vehicle_typeE">
+                                        <option value="" selected disabled>Select Type</option>
+
+                                        <option value="Car">Car</option>
+                                        <option value="motorcycle">Motorcycle</option>
+                                        <option value="3_wheel_sidecar">3 Wheel Sidecar</option>
+                                        <option value="3_wheel_motorcycle">3 Wheel Motorcycle</option>
+                                        <option value="atv">ATV</option>
+                                        <option value="SUV">SUV</option>
+                                        <option value="Mid SUV">Mid SUV</option>
+                                        <option value="Large SUV">Large SUV</option>
+                                        <option value="Van">Van</option>
+                                        <option value="Mini Van">Mini Van</option>
+                                        <option value="Cargo Van">Cargo Van</option>
+                                        <option value="Passenger Van">Passenger Van</option>
+                                        <option value="Pickup">Pickup</option>
+                                        <option value="Pickup Dually">Pickup Dually</option>
+                                        <option value="Box Truck Dually">Box Truck Dually</option>
+                                        <option value="other_vehicle">Other Vehicle</option>
+                                        <option value="other_motorcycle">Other Motorcycle</option>
+                                        <option value="other">Other</option>
+                                    </select>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Vehicle Condition</label>
+
+                                    <select class="form-control" name="inoperable" id="inoperableE">
+                                        <option value="" selected disabled>Select Condition</option>
+                                        <option value="1">Operable</option>
+                                        <option value="2">Inoperable</option>
+                                    </select>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Trailer Type</label><br />
+                                    <label class="radio-option">
+                                        <input type="radio" name="trailer-typeE" value="1" checked>
+                                        Open
+                                    </label>
+
+                                    <label class="radio-option">
+                                        <input type="radio" name="trailer-typeE" value="2">
+                                        Enclosed
+                                    </label>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>Price</label>
+                                    <input type="number" id="dispatch_priceE" value="" class="form-control">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="editRecord" class="btn btn-primary">Edit Price</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
                 <div class="modal fade" id="statusErrorsModal" tabindex="-1" role="dialog" data-bs-backdrop="static"
                     data-bs-keyboard="false">
                     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
@@ -288,6 +382,18 @@
                                     <td class="text-center">${item.transport}</td>
                                     <td class="text-center">${item.user}</td>
                                     <td class="text-center">${formatDate(item.entery_date)}</td>
+                                    <td class="text-center">
+                                        <a href="javascript:void(0);" class="editBtn" 
+                                            data-id="${item.id}" 
+                                            data-origin_location="${item.origin_location}" 
+                                            data-destination_location="${item.destination_location}"
+                                            data-dispatch_price="${item.dispatch_price}"
+                                            data-type="${item.type}"
+                                            data-condition="${item.conditionE}"
+                                            data-transport="${item.transportE}"
+                                            >Edit</a> |
+                                            <button class="deleteBtn" data-id="${item.id}">Delete</button>
+                                    </td>
                                 </tr>
                             `;
                         });
@@ -415,6 +521,51 @@
         });
 
 
+
+
+
+        // Edit record functionality
+            $(document).on('click', '.editBtn', function() {
+                $('#edit_id').val($(this).data('id'));
+                $('#originE').val($(this).data('origin_location'));
+                $('#destinationE').val($(this).data('destination_location'));
+                $('#vehicle_typeE').val($(this).data('type'));
+                $('#inoperableE').val($(this).data('condition'));
+                let trailerValue = $(this).data('transport'); // e.g. 1 or 2
+                $('input[name="trailer-typeE"][value="' + trailerValue + '"]').prop('checked', true);
+                $('#dispatch_priceE').val($(this).data('dispatch_price'));
+                $('#editModal').modal('show');
+            });
+
+            $(document).on('click', '#closemodal', function() {
+                $('#editModal').modal('hide');
+            });
+            
+            $('#editRecord').click(function() {
+                let id = $('#edit_id').val();
+                $.ajax({
+                    url: `/dispatch-listing/price/edit/${id}`,
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        origin_location: $('#originE').val(),
+                        destination_location: $('#destinationE').val(),
+                        vehicle_type: $('#vehicle_typeE').val(),
+                        vehicle_condition: $('#inoperableE').val(),
+                        trailer_type: $('input[name="trailer-typeE"]:checked').val(),
+                        dispatch_price: $('#dispatch_priceE').val(),
+                    },
+                    success: function(res) {
+                        $('#editModal').modal('hide');
+                        loadzipcoderules();
+                        showSuccess('Price record updated successfully');
+                    },
+                    error: function(xhr) {
+                        showError(xhr.responseJSON?.message || 'Error updating record');
+                    }
+                });
+            });
+
         function showError(message) {
                 $('#errorMessage').text(message);
                 var errorModal = new bootstrap.Modal(document.getElementById('statusErrorsModal'));
@@ -484,6 +635,24 @@
         });
 
         loadzipcoderules();
+
+        $(document).on('click', '.deleteBtn', function () {
+                let id = $(this).data('id');
+                $.ajax({
+                    url: `/dispatch-listing/price/delete/${id}`,
+                    type: "DELETE",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                    },
+                    success: function (res) {
+                        loadzipcoderules();
+                        showSuccess('Dispatch Listing Price record deleted successfully');
+                    },
+                    error: function (xhr) {
+                        showError(xhr.responseJSON?.message || 'Error updating record');
+                    }
+                });
+            });
     </script>
 
     @include('Layout.footer')

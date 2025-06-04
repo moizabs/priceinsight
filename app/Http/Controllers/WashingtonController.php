@@ -100,6 +100,7 @@ class WashingtonController extends Controller
 {
     try {
         $records = SheetDetails::select([
+            'id',
             'originzsc',
             'destinationzsc', 
             'ymk',
@@ -128,6 +129,7 @@ class WashingtonController extends Controller
 
         $data = $records->map(function ($item) {
             return [
+                'id' => $item->id,
                 'origin_location' => $item->originzsc ?? 'N/A',
                 'destination_location' => $item->destinationzsc ?? 'N/A',
                 'vehicle_info' => $item->ymk ?? 'N/A',
@@ -135,6 +137,8 @@ class WashingtonController extends Controller
                 'dispatch_price' => $item->price ?? '0.00',
                 'type' => $item->type ?? 'Unknown',
                 'user' => $item->authorized_user->name ?? 'Washington',
+                'transportE' => $item->transport,
+                'conditionE' => $item->condition,
                 'condition' => match($item->condition) {
                     '1' => 'Operable',
                     '2' => 'Inoperable',
@@ -220,6 +224,40 @@ public function dispatchListingPriceAdd(Request $request)
         ]);
     }
 
+
+
+    public function dispatchListingPriceEdit(Request $request, $id)
+    {
+        $request->validate([
+            'origin_location' => 'required',
+            'destination_location' => 'required',
+            'vehicle_type' => 'required',
+            'vehicle_condition' => 'required',
+            'trailer_type' => 'required',
+            'dispatch_price' => 'required',
+        ]);
+    
+        $dp = SheetDetails::findOrFail($id);
+        $dp->originzsc = $request->origin_location;
+        $dp->destinationzsc = $request->destination_location;
+        $dp->condition = $request->vehicle_condition;
+        $dp->type = $request->vehicle_type;
+        $dp->transport = $request->trailer_type;
+        $dp->price = $request->dispatch_price;
+        $dp->user_id = Auth::guard('authorized')->user()->id;
+        $dp->save();
+    
+        return response()->json(['success' => true]);
+    }
+    
+
+    public function dispatchListingPriceDelete($id)
+    {
+        $DID = $id;
+        SheetDetails::destroy($DID);
+
+        return response()->json(['success' => true]);
+    }
 
 // Dispatch
 //  10 => 'Scheduled',

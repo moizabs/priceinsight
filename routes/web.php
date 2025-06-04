@@ -97,6 +97,8 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
     Route::get('/washington-dispatch-listing', [WashingtonController::class, 'dispatchListing'])->name('washington.dispatch');
     Route::get('/get-all-dispatch-listing', [WashingtonController::class, 'getAllDispatchListing'])->name('get.all.dispatch.listing');
     Route::post('/dispatch-listing/price/add', [WashingtonController::class, 'dispatchListingPriceAdd'])->name('dispatch.listing.price.add');
+    Route::post('/dispatch-listing/price/edit/{id}', [WashingtonController::class, 'dispatchListingPriceEdit'])->name('dispatch.listing.price.edit');
+    Route::delete('/dispatch-listing/price/delete/{id}', [WashingtonController::class, 'dispatchListingPriceDelete'])->name('dispatch.listing.price.delete');
 
 
     // Setting
