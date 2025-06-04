@@ -134,6 +134,7 @@ class WashingtonController extends Controller
                 'price' => $item->listed_price ?? '0.00',
                 'dispatch_price' => $item->price ?? '0.00',
                 'type' => $item->type ?? 'Unknown',
+                'user' => $item->authorized_user->name ?? 'Washington',
                 'condition' => match($item->condition) {
                     '1' => 'Operable',
                     '2' => 'Inoperable',

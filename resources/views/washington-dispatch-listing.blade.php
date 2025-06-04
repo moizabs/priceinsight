@@ -82,6 +82,7 @@
                                         <th class="text-center font-weight-bold">Vehicle Type</th>
                                         <th class="text-center font-weight-bold">Vehicle Condition</th>
                                         <th class="text-center font-weight-bold">Trailer Type</th>
+                                        <th class="text-center font-weight-bold">Entered By</th>
                                         <th class="text-center font-weight-bold">Created at</th>
                                     </tr>
                                 </thead>
@@ -285,6 +286,7 @@
                                     <td class="text-center">${item.type}</td>
                                     <td class="text-center">${item.condition}</td>
                                     <td class="text-center">${item.transport}</td>
+                                    <td class="text-center">${item.user}</td>
                                     <td class="text-center">${formatDate(item.entery_date)}</td>
                                 </tr>
                             `;
