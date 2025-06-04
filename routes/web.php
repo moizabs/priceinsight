@@ -52,6 +52,7 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
     Route::get('/get-price-per-mile', [PricePerMileController::class, 'getAll'])->name('get.price.per.mile');
     Route::post('/price-per-mile/update/{id}', [PricePerMileController::class, 'update']);
     Route::post('/adjust-prices', [PricePerMileController::class, 'adjustPrices'])->name('adjust.price.per.mile');
+    Route::delete('/price-per-mile/delete/{id}', [PricePerMileController::class, 'destroy']);
     // Route::post('/reset-prices', [PricePerMileController::class, 'resetPrices'])->name('reset.price.per.mile');
     // Route::delete('/price-per-mile/delete/{id}', [PricePerMileController::class, 'destroy']);
 
@@ -95,6 +96,8 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
 
     Route::get('/washington-dispatch-listing', [WashingtonController::class, 'dispatchListing'])->name('washington.dispatch');
     Route::get('/get-all-dispatch-listing', [WashingtonController::class, 'getAllDispatchListing'])->name('get.all.dispatch.listing');
+    Route::post('/dispatch-listing/price/add', [WashingtonController::class, 'dispatchListingPriceAdd'])->name('dispatch.listing.price.add');
+
 
     // Setting
     Route::post('/settings/toggle-washington', [SettingController::class, 'toggleWashington'])->name('settings.toggleWashington');

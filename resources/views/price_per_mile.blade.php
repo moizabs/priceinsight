@@ -338,7 +338,8 @@
                                             data-id="${item.id}" 
                                             data-start="${item.start_range}" 
                                             data-end="${item.end_range}" 
-                                            data-price="${item.price}">Edit</a>
+                                            data-price="${item.price}">Edit</a> |
+                                            <button class="deleteBtn" id="deleteBtnn" data-id="${item.id}">Delete</button>
                                     </td>
                                 </tr>`;
                             });
@@ -443,7 +444,32 @@
             
             // Initial load
             loadAllRecords();
+
+            $(document).on('click', '.deleteBtn', function () {
+                let id = $(this).data('id');
+                $.ajax({
+                    url: `/price-per-mile/delete/${id}`,
+                    type: "DELETE",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                    },
+                    success: function (res) {
+                        loadAllRecords();
+                        var successModal = new bootstrap.Modal(document.getElementById('statusSuccessModal'));
+                        successModal.show();
+                    },
+                    error: function (xhr) {
+                        var errorModal = new bootstrap.Modal(document.getElementById('statusErrorsModal'));
+                        errorModal.show();
+                    }
+                });
+            });
         });
+
+            
+
+
+        
     </script>
 
     @include('Layout.footer')

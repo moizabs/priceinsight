@@ -136,8 +136,10 @@ class PricePerMileController extends Controller
      */
     public function destroy($id)
     {
-        // PricePerMile::destroy($id);
-        // return response()->json(['success' => true]);
+        $PDid = $id;
+        PricePerMile::destroy($PDid);
+
+        return response()->json(['success' => true]);
     }
 
 }

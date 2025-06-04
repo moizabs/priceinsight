@@ -24,4 +24,14 @@ class SheetDetails extends Model
     {
         return $this->belongsTo(Washington::class, 'orderId', 'id');
     }
+
+    /**
+     * Get the authorized_user that owns the AllListing
+     *
+     * @return BelongsTo
+     */
+    public function authorized_user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

@@ -6,6 +6,7 @@ use App\Models\SheetDetails;
 use App\Models\Washington;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -104,12 +105,17 @@ class WashingtonController extends Controller
             'ymk',
             'listed_price',
             'price',
+            'condition',
+            'type',
+            'transport',
+            'user_id',
             'created_at',
             'pstatus'
         ])
         ->whereNotNull('price')
         ->where('price', '!=', '')
         ->orderBy('created_at', 'desc')
+        ->with('authorized_user')
         ->get();
 
         if ($records->isEmpty()) {
@@ -127,6 +133,17 @@ class WashingtonController extends Controller
                 'vehicle_info' => $item->ymk ?? 'N/A',
                 'price' => $item->listed_price ?? '0.00',
                 'dispatch_price' => $item->price ?? '0.00',
+                'type' => $item->type ?? 'Unknown',
+                'condition' => match($item->condition) {
+                    '1' => 'Operable',
+                    '2' => 'Inoperable',
+                    default => 'Unknown'
+                },
+                'transport' => match($item->transport) {
+                    '1' => 'Open',
+                    '2' => 'Enclosed',
+                    default => 'Unknown'
+                },
                 'status' => match($item->pstatus) {
                     0 => 'New',
                     1 => 'Interested',
@@ -169,6 +186,38 @@ class WashingtonController extends Controller
     } 
 }
 
+
+
+public function dispatchListingPriceAdd(Request $request)
+    {
+        $request->validate([
+            'origin_location' => 'required',
+            'destination_location' => 'required',
+            'vehicle_year' => 'required',
+            'vehicle_make' => 'required',
+            'vehicle_model' => 'required',
+            'vehicle_type' => 'required',
+            'vehicle_condition' => 'required',
+            'trailer_type' => 'required',
+            'dispatch_price' => 'required',
+        ]);
+    
+        $dp = new SheetDetails();
+        $dp->originzsc = $request->origin_location;
+        $dp->destinationzsc = $request->destination_location;
+        $dp->ymk = $request->vehicle_year . ' ' . $request->vehicle_make . ' ' . $request->vehicle_model;
+        $dp->condition = $request->vehicle_condition;
+        $dp->type = $request->vehicle_type;
+        $dp->transport = $request->trailer_type;
+        $dp->pstatus = 10;
+        $dp->price = $request->dispatch_price;
+        $dp->user_id = Auth::guard('authorized')->user()->id;
+        $dp->save();
+    
+        return response()->json([
+            'success' => true,
+        ]);
+    }
 
 
 // Dispatch
