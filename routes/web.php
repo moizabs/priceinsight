@@ -100,11 +100,13 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
     Route::post('/dispatch-listing/price/edit/{id}', [WashingtonController::class, 'dispatchListingPriceEdit'])->name('dispatch.listing.price.edit');
     Route::delete('/dispatch-listing/price/delete/{id}', [WashingtonController::class, 'dispatchListingPriceDelete'])->name('dispatch.listing.price.delete');
 
+        Route::post('/dispatch-listing/upload', [WashingtonController::class, 'uploadCSV'])->name('dispatch.listing.upload');
+
 
     // Setting
     Route::post('/settings/toggle-washington', [SettingController::class, 'toggleWashington'])->name('settings.toggleWashington');
 
-    
+
 
     // Route::get('/exceptions-list', function () {
     //     return view('exceptions_list');

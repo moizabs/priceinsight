@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class WashingtonController extends Controller
 {
@@ -258,6 +259,119 @@ public function dispatchListingPriceAdd(Request $request)
 
         return response()->json(['success' => true]);
     }
+
+
+
+
+    public function uploadCSV(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'csv_file' => 'required|file|mimes:csv,txt|max:2048'
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid file. Please upload a valid CSV file.'
+        ], 400);
+    }
+
+    $file = $request->file('csv_file');
+    $filePath = $file->getRealPath();
+    
+    try {
+        $data = array_map('str_getcsv', file($filePath));
+        $header = array_shift($data);
+        
+        // Validate headers
+        $requiredHeaders = [
+            'origin_location', 'destination_location', 'vehicle_year', 
+            'vehicle_make', 'vehicle_model', 'vehicle_type', 
+            'vehicle_condition', 'trailer_type', 'dispatch_price'
+        ];
+        
+        foreach ($requiredHeaders as $requiredHeader) {
+            if (!in_array($requiredHeader, $header)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid CSV format. Missing required column: ' . $requiredHeader
+                ], 400);
+            }
+        }
+        
+        $successCount = 0;
+        $errorCount = 0;
+        $errors = [];
+        
+        DB::beginTransaction();
+        
+        foreach ($data as $row) {
+            $row = array_combine($header, $row);
+            
+            try {
+                // Validate and process each row
+                $validator = Validator::make($row, [
+                    'origin_location' => 'required|string',
+                    'destination_location' => 'required|string',
+                    'vehicle_year' => 'required|numeric|min:1900|max:2025',
+                    'vehicle_make' => 'required|string',
+                    'vehicle_model' => 'required|string',
+                    'vehicle_type' => 'required|string',
+                    'vehicle_condition' => 'required|in:1,2',
+                    'trailer_type' => 'required|in:1,2',
+                    'dispatch_price' => 'required|numeric|min:0'
+                ]);
+                
+                if ($validator->fails()) {
+                    $errorCount++;
+                    $errors[] = 'Row ' . ($successCount + $errorCount) . ': ' . implode(', ', $validator->errors()->all());
+                    continue;
+                }
+          
+                // Create new dispatch listing record
+                SheetDetails::create([
+                    'originzsc' => $row['origin_location'],
+                    'destinationzsc' => $row['destination_location'],
+                    'ymk' => $row['vehicle_year'] . ' ' . $row['vehicle_make'] . ' ' . $row['vehicle_model'],
+                    'type' => $row['vehicle_type'],
+                    'condition' => $row['vehicle_condition'],
+                    'transport' => $row['trailer_type'],
+                    'pstatus' => 10,
+                    'price' => $row['dispatch_price'],
+                    'user_id' => Auth::guard('authorized')->user()->id
+                ]);
+                
+                $successCount++;
+                
+            } catch (\Exception $e) {
+                $errorCount++;
+                $errors[] = 'Row ' . ($successCount + $errorCount) . ': ' . $e->getMessage();
+            }
+        }
+        
+        DB::commit();
+        
+        $message = "Successfully imported {$successCount} records.";
+        if ($errorCount > 0) {
+            $message .= " {$errorCount} records failed. Errors: " . implode('; ', $errors);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => $message
+        ]);
+        
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json([
+            'success' => false,
+            'message' => 'Error processing CSV: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+
+
 
 // Dispatch
 //  10 => 'Scheduled',

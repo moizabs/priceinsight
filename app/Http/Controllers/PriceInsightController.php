@@ -168,8 +168,6 @@ class PriceInsightController extends Controller
     $listingData = $listingFetching->json();
 
 
-
-
     // Dispatch Listing
 
     $matchedListings2 = [];
@@ -208,7 +206,7 @@ class PriceInsightController extends Controller
         $destMatch = false;
     
         if (!empty($originZip) && !empty($listingOriginZip) && !empty($destZip) && !empty($listingDestZip)) {
-            if (($originZip === $listingOriginZip && $destZip === $listingDestZip) || ($originZip === $listingDestZip && $destZip === $listingOriginZip)) {
+            if (($originZip === $listingOriginZip && $destZip === $listingDestZip)) {
                 $originMatch = true;
                 $destMatch = true;
                 $dispatchMatchLevel = 'zip';
@@ -219,7 +217,7 @@ class PriceInsightController extends Controller
             if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
                 $originMatch = true;
                 $destMatch = true;
-                $dispatchMatchLevel = $dispatchMatchLevel ?: 'zip-city';
+                $dispatchMatchLevel = 'zip-city';
             }
         }
 
@@ -234,13 +232,13 @@ class PriceInsightController extends Controller
             $directMatch = strcasecmp($originCity, $listingOriginCity) === 0 &&
                            strcasecmp($destCity, $listingDestCity) === 0;
 
-            $reverseMatch = strcasecmp($originCity, $listingDestCity) === 0 &&
-                            strcasecmp($destCity, $listingOriginCity) === 0;
+            // $reverseMatch = strcasecmp($originCity, $listingDestCity) === 0 &&
+            //                 strcasecmp($destCity, $listingOriginCity) === 0;
 
-            if ($directMatch || $reverseMatch) {
+            if ($directMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $dispatchMatchLevel = $dispatchMatchLevel ?: 'city';
+                $dispatchMatchLevel = 'city';
             }
         }
 
@@ -255,13 +253,13 @@ class PriceInsightController extends Controller
             $directMatch = strcasecmp($originState, $listingOriginState) === 0 &&
                            strcasecmp($destState, $listingDestState) === 0;
 
-            $reverseMatch = strcasecmp($originState, $listingDestState) === 0 &&
-                            strcasecmp($destState, $listingOriginState) === 0;
+            // $reverseMatch = strcasecmp($originState, $listingDestState) === 0 &&
+            //                 strcasecmp($destState, $listingOriginState) === 0;
 
-            if ($directMatch || $reverseMatch) {
+            if ($directMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $dispatchMatchLevel = $dispatchMatchLevel ?: 'state';
+                $dispatchMatchLevel = 'state';
             }
         }
 
@@ -332,7 +330,7 @@ class PriceInsightController extends Controller
         $destMatch = false;
     
         if (!empty($originZip) && !empty($listingOriginZip) && !empty($destZip) && !empty($listingDestZip)) {
-            if (($originZip === $listingOriginZip && $destZip === $listingDestZip) || ($originZip === $listingDestZip && $destZip === $listingOriginZip)) {
+            if (($originZip === $listingOriginZip && $destZip === $listingDestZip)) {
                 $originMatch = true;
                 $destMatch = true;
                 $dispatchMatchLevel = 'zip';
@@ -343,7 +341,7 @@ class PriceInsightController extends Controller
             if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
                 $originMatch = true;
                 $destMatch = true;
-                $dispatchMatchLevel = $dispatchMatchLevel ?: 'zip-city';
+                $dispatchMatchLevel = 'zip-city';
             }
         }
 
@@ -358,13 +356,13 @@ class PriceInsightController extends Controller
             $directMatch = strcasecmp($originCity, $listingOriginCity) === 0 &&
                            strcasecmp($destCity, $listingDestCity) === 0;
 
-            $reverseMatch = strcasecmp($originCity, $listingDestCity) === 0 &&
-                            strcasecmp($destCity, $listingOriginCity) === 0;
+            // $reverseMatch = strcasecmp($originCity, $listingDestCity) === 0 &&
+            //                 strcasecmp($destCity, $listingOriginCity) === 0;
 
-            if ($directMatch || $reverseMatch) {
+            if ($directMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $dispatchMatchLevel = $dispatchMatchLevel ?: 'city';
+                $dispatchMatchLevel = 'city';
             }
         }
 
@@ -379,23 +377,19 @@ class PriceInsightController extends Controller
             $directMatch = strcasecmp($originState, $listingOriginState) === 0 &&
                            strcasecmp($destState, $listingDestState) === 0;
 
-            $reverseMatch = strcasecmp($originState, $listingDestState) === 0 &&
-                            strcasecmp($destState, $listingOriginState) === 0;
+            // $reverseMatch = strcasecmp($originState, $listingDestState) === 0 &&
+            //                 strcasecmp($destState, $listingOriginState) === 0;
 
-            if ($directMatch || $reverseMatch) {
+            if ($directMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $dispatchMatchLevel = $dispatchMatchLevel ?: 'state';
+                $dispatchMatchLevel = 'state';
             }
         }
 
             if ($originMatch && $destMatch) {
                 foreach ($Vehicles as $index => $vehicle) {
                     $type = strtolower(trim($vehicle['Vehicle_Type'] ?? ''));
-                    
-                    // $listingCondition = strtolower(trim($row['condition'] ?? '1'));
-                    // $listingTrailer = strtolower(trim($row['transport'] ?? '1'));
-                    // $listingType = strtolower(trim($row['type'] ?? 'car'));
 
                     $listingCondition = strtolower(trim(preg_replace('/\*\^+/', '', $row['condition'] ?? '1')));
                     $listingTrailer = strtolower(trim(preg_replace('/\*\^+/', '', $row['transport'] ?? '1')));
@@ -445,7 +439,7 @@ class PriceInsightController extends Controller
     }
 
     $overallAverage2 = $totalCombinedCount2 > 0 
-        ? round($totalCombinedPrice2 / $totalCombinedCount2, 2)
+        ? round($totalCombinedPrice2 / 10, 2)
         : 0;
 
 
@@ -489,7 +483,7 @@ class PriceInsightController extends Controller
         $destMatch = false;
     
         if (!empty($originZip) && !empty($listingOriginZip) && !empty($destZip) && !empty($listingDestZip)) {
-            if (($originZip === $listingOriginZip && $destZip === $listingDestZip) || ($originZip === $listingDestZip && $destZip === $listingOriginZip)) {
+            if (($originZip === $listingOriginZip && $destZip === $listingDestZip)) {
                 $originMatch = true;
                 $destMatch = true;
                 $matchLevel = 'zip';
@@ -500,7 +494,7 @@ class PriceInsightController extends Controller
             if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel = $matchLevel ?: 'zip-city';
+                $matchLevel = 'zip-city';
             }
         }
 
@@ -515,13 +509,13 @@ class PriceInsightController extends Controller
             $directMatch = strcasecmp($originCity, $listingOriginCity) === 0 &&
                            strcasecmp($destCity, $listingDestCity) === 0;
 
-            $reverseMatch = strcasecmp($originCity, $listingDestCity) === 0 &&
-                            strcasecmp($destCity, $listingOriginCity) === 0;
+            // $reverseMatch = strcasecmp($originCity, $listingDestCity) === 0 &&
+            //                 strcasecmp($destCity, $listingOriginCity) === 0;
 
-            if ($directMatch || $reverseMatch) {
+            if ($directMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel = $matchLevel ?: 'city';
+                $matchLevel = 'city';
             }
         }
 
@@ -536,13 +530,13 @@ class PriceInsightController extends Controller
             $directMatch = strcasecmp($originState, $listingOriginState) === 0 &&
                            strcasecmp($destState, $listingDestState) === 0;
 
-            $reverseMatch = strcasecmp($originState, $listingDestState) === 0 &&
-                            strcasecmp($destState, $listingOriginState) === 0;
+            // $reverseMatch = strcasecmp($originState, $listingDestState) === 0 &&
+            //                 strcasecmp($destState, $listingOriginState) === 0;
 
-            if ($directMatch || $reverseMatch) {
+            if ($directMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel = $matchLevel ?: 'state';
+                $matchLevel = 'state';
             }
         }
 
@@ -562,10 +556,6 @@ class PriceInsightController extends Controller
                 $listingCondition = strtolower(trim(preg_replace('/\*\^+/', '', $row['condition'])));
                 $listingTrailer = strtolower(trim(preg_replace('/\*\^+/', '', $row['transport'])));
                 $listingType = strtolower(trim(preg_replace('/\*\^+/', '', $row['type'])));
-
-                // $listingCondition = strtolower(trim($row['condition']));
-                // $listingTrailer = strtolower(trim($row['transport']));
-                // $listingType = strtolower(trim($row['type']));
 
                 if ($condition === $listingCondition && 
                     !empty($type) && 
@@ -613,7 +603,7 @@ class PriceInsightController extends Controller
         $destMatch = false;
     
         if (!empty($originZip) && !empty($listingOriginZip) && !empty($destZip) && !empty($listingDestZip)) {
-            if (($originZip === $listingOriginZip && $destZip === $listingDestZip) || ($originZip === $listingDestZip && $destZip === $listingOriginZip)) {
+            if (($originZip === $listingOriginZip && $destZip === $listingDestZip)) {
                 $originMatch = true;
                 $destMatch = true;
                 $matchLevel = 'zip';
@@ -624,7 +614,7 @@ class PriceInsightController extends Controller
             if ($originZip === $listingOriginZip && strcasecmp($destCity, $listingDestCity) === 0) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel = $matchLevel ?: 'zip-city';
+                $matchLevel = 'zip-city';
             }
         }
 
@@ -639,13 +629,13 @@ class PriceInsightController extends Controller
             $directMatch = strcasecmp($originCity, $listingOriginCity) === 0 &&
                            strcasecmp($destCity, $listingDestCity) === 0;
 
-            $reverseMatch = strcasecmp($originCity, $listingDestCity) === 0 &&
-                            strcasecmp($destCity, $listingOriginCity) === 0;
+            // $reverseMatch = strcasecmp($originCity, $listingDestCity) === 0 &&
+            //                 strcasecmp($destCity, $listingOriginCity) === 0;
 
-            if ($directMatch || $reverseMatch) {
+            if ($directMatch) {
                 $originMatch = true;
                 $destMatch = true;
-                $matchLevel = $matchLevel ?: 'city';
+                $matchLevel = 'city';
             }
         }
 
@@ -660,10 +650,10 @@ class PriceInsightController extends Controller
             $directMatch = strcasecmp($originState, $listingOriginState) === 0 &&
                            strcasecmp($destState, $listingDestState) === 0;
 
-            $reverseMatch = strcasecmp($originState, $listingDestState) === 0 &&
-                            strcasecmp($destState, $listingOriginState) === 0;
+            // $reverseMatch = strcasecmp($originState, $listingDestState) === 0 &&
+            //                 strcasecmp($destState, $listingOriginState) === 0;
 
-            if ($directMatch || $reverseMatch) {
+            if ($directMatch) {
                 $originMatch = true;
                 $destMatch = true;
                 $matchLevel = $matchLevel ?: 'state';
@@ -744,7 +734,9 @@ class PriceInsightController extends Controller
         'count2' => count($matchedListings2),
         'match_level2' => $dispatchMatchLevel,
         'vehicle_stats2' => $vehicleStats2,
-        'overall_average_price2' => $overallAverage2
+        'overall_average_price2' => $overallAverage2,
+        'origin2' => $Origin,
+        'destination2' => $Destination
     ]);
 
 }
@@ -839,22 +831,12 @@ class PriceInsightController extends Controller
                 'adjustment' => $vehicleAdjustment
             ];
         }
-    
+
         $matchedPrice += $totalVehicleAdjustment;
-    
-        if ($TrailerType == 'Enclosed') {
-            if (is_array($pricingData) && array_key_exists('enclosed_transport', $pricingData)) {
-                $matchedPrice = $matchedPrice * $pricingData['enclosed_transport'];
-            } elseif (isset($pricingData[0]['enclosed_transport'])) {
-                $matchedPrice = $matchedPrice * $pricingData[0]['enclosed_transport'];
-            } else {
-                Log::error("Enclosed pricing key missing in API response");
-            }
-        }
 
         if (!empty($originZip) && !empty($destZip)) {
             foreach ($zipcodeData as $data) {
-                if (isset($data['destination_zipcode']) && isset($data['origin_zipcode']) && (trim($data['origin_zipcode']) === $originZip && trim($data['destination_zipcode']) === $destZip)) {
+                if (isset($data['destination_zipcode']) && isset($data['origin_zipcode']) && $data['route_type'] === 'Route' && (trim($data['origin_zipcode']) === $originZip && trim($data['destination_zipcode']) === $destZip)) {
                     if (isset($data['value']) && isset($data['operation_type'])) {
                         if (strtolower($data['operation_type']) === 'add') {
                             $matchedPrice += $data['value'];
@@ -870,7 +852,7 @@ class PriceInsightController extends Controller
 
         if (!$zipmatched && !empty($originZip)) {
             foreach ($zipcodeData as $data) {
-                if (isset($data['origin_zipcode']) && trim($data['origin_zipcode']) == $originZip) {
+                if (isset($data['origin_zipcode']) && $data['route_type'] === 'Origin' && trim($data['origin_zipcode']) === $originZip) {
                     if (isset($data['value']) && isset($data['operation_type'])) {
                         if (strtolower($data['operation_type']) === 'add') {
                             $matchedPrice += $data['value'];
@@ -886,7 +868,7 @@ class PriceInsightController extends Controller
 
         if (!$zipmatched && !empty($destZip)) {
             foreach ($zipcodeData as $data) {
-                if (isset($data['destination_zipcode']) && trim($data['destination_zipcode']) == $destZip) {
+                if (isset($data['destination_zipcode']) && $data['route_type'] === 'Destination' && trim($data['destination_zipcode']) === $destZip) {
                     if (isset($data['value']) && isset($data['operation_type'])) {
                         if (strtolower($data['operation_type']) === 'add') {
                             $matchedPrice += $data['value'];
@@ -902,7 +884,7 @@ class PriceInsightController extends Controller
 
         if (!empty($originState) && !empty($destState)) {
             foreach ($stateData as $data) {
-                if (isset($data['destination_state']) && isset($data['origin_state']) && ($data['origin_state'] == $originState && $data['destination_state'] == $destState)) {
+                if (isset($data['destination_state']) && isset($data['origin_state']) && $data['route_type'] === 'Route' && ($data['origin_state'] == $originState && $data['destination_state'] == $destState)) {
                     if (isset($data['value']) && isset($data['operation_type'])) {
                         if (strtolower($data['operation_type']) === 'add') {
                             $matchedPrice += $data['value'];
@@ -918,7 +900,7 @@ class PriceInsightController extends Controller
 
         if (!$statematched && !empty($originState)) {
             foreach ($stateData as $data) {
-                if (isset($data['origin_state']) && $data['origin_state'] == $originState) {
+                if (isset($data['origin_state']) && $data['route_type'] === 'Origin' && $data['origin_state'] == $originState) {
                     if (isset($data['value']) && isset($data['operation_type'])) {
                         if (strtolower($data['operation_type']) === 'add') {
                             $matchedPrice += $data['value'];
@@ -934,7 +916,7 @@ class PriceInsightController extends Controller
 
         if (!$statematched && !empty($destState)) {
             foreach ($stateData as $data) {
-                if (isset($data['destination_state']) && $data['destination_state'] == $destState) {
+                if (isset($data['destination_state']) && $data['route_type'] === 'Destination' && $data['destination_state'] == $destState) {
                     if (isset($data['value']) && isset($data['operation_type'])) {
                         if (strtolower($data['operation_type']) === 'add') {
                             $matchedPrice += $data['value'];
@@ -947,7 +929,17 @@ class PriceInsightController extends Controller
                 }
             }
         }
-    
+        
+        if ($TrailerType == 'Enclosed') {
+            if (is_array($pricingData) && array_key_exists('enclosed_transport', $pricingData)) {
+                $matchedPrice = $matchedPrice * $pricingData['enclosed_transport'];
+            } elseif (isset($pricingData[0]['enclosed_transport'])) {
+                $matchedPrice = $matchedPrice * $pricingData[0]['enclosed_transport'];
+            } else {
+                Log::error("Enclosed pricing key missing in API response");
+            }
+        }
+
         $PricePerMile = $matchedPrice / $Miles;
         $formattedPricePerMile = number_format($PricePerMile, 2);
     
@@ -958,7 +950,7 @@ class PriceInsightController extends Controller
             'success' => true,
             'miles' => $Miles,
             'base_price' => $priceData[0]['price'],
-            'price' => $matchedPrice,
+            'price' => number_format($matchedPrice, 2),
             'price_per_mile' => $formattedPricePerMile,
             'vehicle_adjustment_total' => $totalVehicleAdjustment,
             'confidence' => [

@@ -60,13 +60,32 @@
                         <strong>Dispatch Listing</strong>
                     </div>
 
-                    {{-- <div class="card-body card-block">
-                        <button name="add" class="btn-primary btn-sm pull-right addBtn" style="margin-left: 15px">Add
+                    {{-- <div class="card-body card-block"> --}}
+                        {{-- <button name="add" class="btn-primary btn-sm pull-right addBtn" style="margin-left: 15px">Add
                             Records</button> --}}
 
                         {{-- <a href="{{ route('add.price.per.mile') }}" name="add"
                             class="btn-primary btn-sm pull-right">Upload CSV</a> --}}
+                    {{-- </div> --}}
+
+
+                    <div class="card-body card-block">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <button name="add" class="btn-primary btn-sm pull-right addBtn" style="margin-left: 15px">
+                                Add Records
+                            </button>
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#uploadModal">
+                                Upload CSV
+                            </button>
+                            <a href="{{ asset('sample_dispatch_listing.csv') }}" class="btn btn-secondary btn-sm ml-2">
+                                Download Sample CSV
+                            </a>
+                        </div>
                     </div>
+                </div>
 
                     <div class="card-body card-block">
                         <div class="table-responsive table--no-card m-b-30">
@@ -337,6 +356,40 @@
                     </div>
                 </div>
 
+
+                <!-- Upload CSV Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">Upload Dispatch Listing CSV</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="csvFile">Select CSV File</label>
+                        <input type="file" class="form-control-file" id="csvFile" name="csv_file" accept=".csv" required>
+                        <small class="form-text text-muted">
+                            File must be in CSV format with proper headers. <a href="{{ asset('sample_dispatch_listing.csv') }}">Download sample CSV</a>
+                        </small>
+                    </div>
+                    <div class="progress" style="display: none;">
+                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div id="uploadStatus" class="mt-2"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="uploadBtn">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="copyright">
@@ -353,6 +406,75 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
 
     <script>
+
+
+
+
+$('#uploadForm').on('submit', function(e) {
+    e.preventDefault();
+    
+    let formData = new FormData();
+    let file = $('#csvFile')[0].files[0];
+    formData.append('csv_file', file);
+    formData.append('_token', '{{ csrf_token() }}');
+    
+    $('.progress').show();
+    $('#uploadStatus').html('');
+    $('#uploadBtn').prop('disabled', true);
+    
+    $.ajax({
+        url: "{{ route('dispatch.listing.upload') }}",
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        xhr: function() {
+            let xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener('progress', function(e) {
+                if (e.lengthComputable) {
+                    let percent = Math.round((e.loaded / e.total) * 100);
+                    $('.progress-bar').css('width', percent + '%').attr('aria-valuenow', percent);
+                }
+            });
+            return xhr;
+        },
+        success: function(response) {
+            if (response.success) {
+                $('#uploadStatus').html('<div class="alert alert-success">' + response.message + '</div>');
+                loadzipcoderules();
+                setTimeout(function() {
+                    $('#uploadModal').modal('hide');
+                    $('.progress').hide();
+                    $('#uploadBtn').prop('disabled', false);
+                }, 1500);
+            } else {
+                $('#uploadStatus').html('<div class="alert alert-danger">' + response.message + '</div>');
+                $('#uploadBtn').prop('disabled', false);
+            }
+        },
+        error: function(xhr) {
+            let errorMsg = 'An error occurred during upload.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMsg = xhr.responseJSON.message;
+            }
+            $('#uploadStatus').html('<div class="alert alert-danger">' + errorMsg + '</div>');
+            $('#uploadBtn').prop('disabled', false);
+        }
+    });
+});
+
+// Reset form when modal is closed
+$('#uploadModal').on('hidden.bs.modal', function() {
+    $('#uploadForm')[0].reset();
+    $('.progress').hide();
+    $('.progress-bar').css('width', '0%');
+    $('#uploadStatus').html('');
+    $('#uploadBtn').prop('disabled', false);
+});
+
+
+
+
         let currentPage = 1;
         const recordsPerPage = 10;
 

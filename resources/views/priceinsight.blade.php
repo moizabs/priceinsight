@@ -1075,12 +1075,9 @@
         resetLoadingStates();
 
       } else if (response.washington_success) {
-
-
-      DisplaySwitch();
+    DisplaySwitch();
 
     // Dispatch Listing
-
     const listingsContainer2 = document.getElementById('recent-move-content');
     listingsContainer2.innerHTML = '';
 
@@ -1106,18 +1103,26 @@
             document.getElementById('Total_Amount2').textContent = "$0.00";
         }
 
-        // const pricePerMile2 = sumOfAverages2 > 0 ? (sumOfAverages2 / response.miles2).toFixed(2) : 0;
-        // document.getElementById('Price_Per_Mile2').textContent = `$${pricePerMile2} /mile`;
-
-        window.sortedMatches = [...response.matches2].sort((a, b) => {
-            return new Date(b.created_at) - new Date(a.created_at);
+        window.sortedMatches2 = [...response.matches2].sort((a, b) => {
+            
+            const searchOrigin = response.origin2 || '';
+            const searchDest = response.destination2 || '';
+            
+            const aIsExactMatch = a.originzsc === searchOrigin && a.destinationzsc === searchDest;
+            const bIsExactMatch = b.originzsc === searchOrigin && b.destinationzsc === searchDest;
+            
+            if (aIsExactMatch === bIsExactMatch) {
+                return new Date(b.created_at) - new Date(a.created_at);
+            }
+            
+            return aIsExactMatch ? -1 : 1;
         });
 
         window.shownListings2 = 0;
         const batchSize2 = 10;
 
-        window.showMoreListings2 = function() {
-            const remainingListings2 = window.sortedMatches.length - window.shownListings2;
+        window.showMoreListingsdispatch = function() {
+            const remainingListings2 = window.sortedMatches2.length - window.shownListings2;
             const listingsToShow2 = Math.min(batchSize2, remainingListings2);
             const endIndex2 = window.shownListings2 + listingsToShow2;
 
@@ -1127,54 +1132,50 @@
             }
 
             for (let i = window.shownListings2; i < endIndex2; i++) {
-                const listing = window.sortedMatches[i];
+                const listing = window.sortedMatches2[i];
                 const postedDate = new Date(listing.created_at).toLocaleDateString('en-US', {
                     month: 'long',
                     day: 'numeric',
                     year: 'numeric'
                 });
 
-                const listingPricePerMile2 = (listing.price / response.miles2).toFixed(2);
-
                 const listingHTML2 = `
-                    <div class="price-box">
-                        <div class="price-box-row">
-                            <div>
-                                <div class="price-box-value">${listing.originzsc.replace(/,/g, ', ')} → ${listing.destinationzsc.replace(/,/g, ', ')}</div>
-                                <div class="price-box-label">${response.miles2} miles</div>
-                            </div>
-                            <div class="price-highlight">$${listing.price}</div>
-                        </div>
-                        <div class="price-box-row">
-                            <div>
-                                <div class="price-box-value">
-                                    ${listing.ymk} 
-                                    (${listing.condition == 1 ? 'Running' : (listing.condition == 2 ? 'Not Running' : 'Running')}) 
-                                    (${listing.transport == 1 ? 'Open' : (listing.transport == 2 ? 'Enclosed' : 'Open')})
-                                    - ${listing.type ?? 'Car'} - (${listing.orderId})
-                                </div>
-                            </div>
-                            <div class="price-box-label">$${listingPricePerMile2}/mile</div>
-                        </div>
-                        <div class="price-box-row">
-                            <div class="price-box-label">
-                                Dispatch ${postedDate}
-                            </div>
-                        </div>
-                    </div>
-                `;
+    <div class="price-box">
+        <div class="price-box-row">
+            <div>
+                <div class="price-box-value">${(listing.originzsc || '').replace(/,/g, ', ')} → ${(listing.destinationzsc || '').replace(/,/g, ', ')}</div>
+            </div>
+            <div class="price-highlight"><h5>$${listing.price || '0.00'}</h5></div>
+        </div>
+        <div class="price-box-row">
+            <div>
+                <div class="price-box-value">
+                    ${listing.ymk || ''} <br/> 
+                    (${listing.condition == 1 ? 'Running' : (listing.condition == 2 ? 'Not Running' : 'Running')}) 
+                    (${listing.transport == 1 ? 'Open' : (listing.transport == 2 ? 'Enclosed' : 'Open')})
+                    - ${listing.type ?? 'Car'} - (${listing.orderId || 'N/A'})
+                </div>
+            </div>
+        </div>
+        <div class="price-box-row">
+            <div class="price-box-label">
+                Dispatch ${postedDate}
+            </div>
+        </div>
+    </div>
+`;
                 
                 listingsContainer2.insertAdjacentHTML('beforeend', listingHTML2);
             }
 
             window.shownListings2 = endIndex2;
 
-            const remaining2 = window.sortedMatches.length - window.shownListings2;
+            const remaining2 = window.sortedMatches2.length - window.shownListings2;
             if (remaining2 > 0) {
                 const showMoreHTML2 = `
                     <div class="show-more-container">
-                        <button id="show-more-button" class="show-more-button" onclick="showMoreListings2()">
-                            Show More (${remaining2} remaining)
+                        <button id="show-more-button2" class="show-more-button" onclick="showMoreListingsdispatch()">
+                            Show More (${remaining2} remaining - ${response.match_level2})
                         </button>
                     </div>
                 `;
@@ -1182,19 +1183,15 @@
             }
         };
 
-        window.showMoreListings2();
+        window.showMoreListingsdispatch();
 
     } else {
         listingsContainer2.innerHTML = '<p>No matching listings found</p>';
-        document.getElementById('Total_Amount5').textContent = "$0.00";
-        // document.getElementById('Price_Per_Mile2').textContent = "$0.00/Miles";
+        document.getElementById('Total_Amount2').textContent = "$0.00";
     }
 
-    // resetLoadingStates();
-
-  // Listed Listing
-
-  document.getElementById('Total_Miles').textContent = response.miles + " miles";
+    // Listed Listing
+    document.getElementById('Total_Miles').textContent = response.miles + " miles";
 
     const confidencePercentage = Math.floor(Math.random() * 31) + 70;
     let confidenceLevel = confidencePercentage >= 85 ? 'High Confidence' : 'Moderate Confidence';
@@ -1229,8 +1226,22 @@
         document.getElementById('Price_Per_Mile').textContent = `$${pricePerMile} /mile`;
 
         window.sortedMatches = [...response.matches].sort((a, b) => {
-            return new Date(b.created_at) - new Date(a.created_at);
+            
+            const searchOrigin2 = response.origin2 || '';
+            const searchDest2 = response.destination2 || '';
+            
+            const aIsExactMatch2 = a.originzsc === searchOrigin2 && a.destinationzsc === searchDest2;
+            const bIsExactMatch2 = b.originzsc === searchOrigin2 && b.destinationzsc === searchDest2;
+            
+            if (aIsExactMatch2 === bIsExactMatch2) {
+                return new Date(b.created_at) - new Date(a.created_at);
+            }
+            return aIsExactMatch2 ? -1 : 1;
         });
+
+        // window.sortedMatches = [...response.matches].sort((a, b) => {
+        //     return new Date(b.created_at) - new Date(a.created_at);
+        // });
 
         window.shownListings = 0;
         const batchSize = 10;
@@ -1260,20 +1271,18 @@
                         <div class="price-box-row">
                             <div>
                                 <div class="price-box-value">${listing.originzsc.replace(/,/g, ', ')} → ${listing.destinationzsc.replace(/,/g, ', ')}</div>
-                                <div class="price-box-label">${response.miles} miles</div>
                             </div>
-                            <div class="price-highlight">$${listing.listed_price}</div>
+                            <div class="price-highlight"><h5>$${listing.listed_price}</h5></div>
                         </div>
                         <div class="price-box-row">
                             <div>
                                 <div class="price-box-value">
-                                    ${listing.ymk} 
+                                    ${listing.ymk} <br/>
                                     (${listing.condition == 1 ? 'Running' : (listing.condition == 2 ? 'Not Running' : 'Running')}) 
                                     (${listing.transport == 1 ? 'Open' : (listing.transport == 2 ? 'Enclosed' : 'Open')})
                                     - ${listing.type ?? 'Car'}
                                 </div>
                             </div>
-                            <div class="price-box-label">$${listingPricePerMile}/mile</div>
                         </div>
                         <div class="price-box-row">
                             <div class="price-box-label">
@@ -1293,7 +1302,7 @@
                 const showMoreHTML = `
                     <div class="show-more-container">
                         <button id="show-more-button" class="show-more-button" onclick="showMoreListings()">
-                            Show More (${remaining} remaining)
+                            Show More (${remaining} remaining - ${response.match_level})
                         </button>
                     </div>
                 `;

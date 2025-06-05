@@ -13,6 +13,18 @@ class SheetDetails extends Model
     use HasFactory;
     use Notifiable;
 
+    protected $fillable = [
+        'originzsc',
+        'destinationzsc',
+        'ymk', 
+        'type',
+        'condition',
+        'transport',
+        'pstatus',
+        'price',
+        'user_id',
+    ];
+
     public $table = 'sheet_details';
 
      /**
