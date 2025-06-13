@@ -68,11 +68,9 @@
                             class="btn-primary btn-sm pull-right">Upload CSV</a> --}}
                     {{-- </div> --}}
 
-
                     <div class="card-body card-block">
-
                         
-                    {{-- <div class="row mb-3">
+                    <div class="row mb-3">
                         <div class="col-md-8">
                             <button name="add" class="btn-primary btn-sm pull-right addBtn" style="margin-left: 15px">
                                 Add Records
@@ -86,7 +84,7 @@
                                 Download Sample CSV
                             </a>
                         </div>
-                    </div> --}}
+                    </div>
                     
                 </div>
 
