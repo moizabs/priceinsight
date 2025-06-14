@@ -52,11 +52,11 @@
                 </li>
 
                 <li class="{{ request()->routeIs('washington.index') ? 'active' : '' }}" id="lastActivity">
-                    <a href="{{ route('washington.index') }}">Day Dispatch Data</a>
+                    <a href="{{ route('washington.index') }}">Listing Data</a>
                 </li>
 
                 <li class="{{ request()->routeIs('washington.dispatch') ? 'active' : '' }}" id="lastActivity">
-                    <a href="{{ route('washington.dispatch') }}">Dispatch Listing</a>
+                    <a href="{{ route('washington.dispatch') }}">Dispatch Data</a>
                 </li>
 
             </ul>

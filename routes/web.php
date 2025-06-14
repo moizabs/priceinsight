@@ -92,6 +92,11 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
     //  Washington Data
     Route::get('/washington-listing', [WashingtonController::class, 'index'])->name('washington.index');
     Route::get('/get-all-washington-listing', [WashingtonController::class, 'getAllWashingtonListing'])->name('get.all.washington.listing');
+    Route::post('/listed-listing/price/add', [WashingtonController::class, 'listedListingPriceAdd'])->name('listed.listing.price.add');
+    Route::post('/listed-listing/price/edit/{id}', [WashingtonController::class, 'listedListingPriceEdit'])->name('listed.listing.price.edit');
+    Route::delete('/listed-listing/price/delete/{id}', [WashingtonController::class, 'listedListingPriceDelete'])->name('listed.listing.price.delete');
+    
+    Route::post('/listed-listing/upload', [WashingtonController::class, 'listeduploadCSV'])->name('listed.listing.upload');
 
 
     Route::get('/washington-dispatch-listing', [WashingtonController::class, 'dispatchListing'])->name('washington.dispatch');
@@ -100,7 +105,7 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
     Route::post('/dispatch-listing/price/edit/{id}', [WashingtonController::class, 'dispatchListingPriceEdit'])->name('dispatch.listing.price.edit');
     Route::delete('/dispatch-listing/price/delete/{id}', [WashingtonController::class, 'dispatchListingPriceDelete'])->name('dispatch.listing.price.delete');
 
-        Route::post('/dispatch-listing/upload', [WashingtonController::class, 'uploadCSV'])->name('dispatch.listing.upload');
+    Route::post('/dispatch-listing/upload', [WashingtonController::class, 'uploadCSV'])->name('dispatch.listing.upload');
 
 
     // Setting

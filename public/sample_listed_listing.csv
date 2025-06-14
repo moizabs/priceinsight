@@ -1,0 +1,19 @@
+origin_location,destination_location,vehicle_year,vehicle_make,vehicle_model,vehicle_type,vehicle_condition,trailer_type,listed_price
+"Blandford, MA, 01008","Greenfield, MA, 01301",2015,Honda,Civic,Car,1,2,250
+"Blandford, MA, 01008","Greenfield, MA, 01301",2020,Toyota,Corolla,motorcycle,2,1,100
+"Blandford, MA, 01008","Greenfield, MA, 01301",2025,Audi,A2,3_wheel_sidecar,1,2,150
+"Blandford, MA, 01008","Greenfield, MA, 01301",2011,Suzuki,Cultus,3_wheel_motorcycle,2,1,300
+"Blandford, MA, 01008","Greenfield, MA, 01301",2015,Honda,Civic,atv,1,2,250
+"Blandford, MA, 01008","Greenfield, MA, 01301",2020,Toyota,Corolla,SUV,2,1,100
+"Blandford, MA, 01008","Greenfield, MA, 01301",2025,Audi,A2,Mid SUV,1,2,150
+"Blandford, MA, 01008","Greenfield, MA, 01301",2011,Suzuki,Cultus,Large SUV,2,1,300
+"Blandford, MA, 01008","Greenfield, MA, 01301",2015,Honda,Civic,Van,1,2,250
+"Blandford, MA, 01008","Greenfield, MA, 01301",2020,Toyota,Corolla,Mini Van,2,1,100
+"Blandford, MA, 01008","Greenfield, MA, 01301",2025,Audi,A2,Cargo Van,1,2,150
+"Blandford, MA, 01008","Greenfield, MA, 01301",2011,Suzuki,Cultus,Passenger Van,2,1,300
+"Blandford, MA, 01008","Greenfield, MA, 01301",2015,Honda,Civic,Pickup,1,2,250
+"Blandford, MA, 01008","Greenfield, MA, 01301",2020,Toyota,Corolla,Pickup Dually,2,1,100
+"Blandford, MA, 01008","Greenfield, MA, 01301",2025,Audi,A2,Box Truck Dually,1,2,150
+"Blandford, MA, 01008","Greenfield, MA, 01301",2011,Suzuki,Cultus,other_vehicle,2,1,300
+"Blandford, MA, 01008","Greenfield, MA, 01301",2025,Audi,A2,other_motorcycle,1,2,150
+"Blandford, MA, 01008","Greenfield, MA, 01301",2011,Suzuki,Cultus,other,2,1,300

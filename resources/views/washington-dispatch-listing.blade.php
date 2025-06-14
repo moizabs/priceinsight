@@ -61,32 +61,36 @@
                     </div>
 
                     {{-- <div class="card-body card-block"> --}}
-                        {{-- <button name="add" class="btn-primary btn-sm pull-right addBtn" style="margin-left: 15px">Add
+                        {{-- <button name="add" class="btn-primary btn-sm pull-right addBtn"
+                            style="margin-left: 15px">Add
                             Records</button> --}}
 
                         {{-- <a href="{{ route('add.price.per.mile') }}" name="add"
                             class="btn-primary btn-sm pull-right">Upload CSV</a> --}}
-                    {{-- </div> --}}
+                        {{-- </div> --}}
 
                     <div class="card-body card-block">
-                        
-                    <div class="row mb-3">
-                        <div class="col-md-8">
-                            <button name="add" class="btn-primary btn-sm pull-right addBtn" style="margin-left: 15px">
-                                Add Records
-                            </button>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <button name="add" class="btn-primary btn-sm pull-right addBtn"
+                                    style="margin-left: 15px">
+                                    Add Records
+                                </button>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    data-target="#uploadModal">
+                                    Upload CSV
+                                </button>
+                                <a href="{{ asset('sample_dispatch_listing.csv') }}"
+                                    class="btn btn-secondary btn-sm ml-2">
+                                    Download Sample CSV
+                                </a>
+                            </div>
                         </div>
-                        <div class="col-md-4 text-right">
-                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#uploadModal">
-                                Upload CSV
-                            </button>
-                            <a href="{{ asset('sample_dispatch_listing.csv') }}" class="btn btn-secondary btn-sm ml-2">
-                                Download Sample CSV
-                            </a>
-                        </div>
+
                     </div>
-                    
-                </div>
 
                     <div class="card-body card-block">
                         <div class="table-responsive table--no-card m-b-30">
@@ -97,7 +101,6 @@
                                         <th class="text-center font-weight-bold">Origin Location</th>
                                         <th class="text-center font-weight-bold">Destination Location</th>
                                         <th class="text-center font-weight-bold">Vehicle Information</th>
-                                        <th class="text-center font-weight-bold">Listed Price</th>
                                         <th class="text-center font-weight-bold">Dispatch Price</th>
                                         <th class="text-center font-weight-bold">Vehicle Type</th>
                                         <th class="text-center font-weight-bold">Vehicle Condition</th>
@@ -114,7 +117,6 @@
                         </div>
                         <div class="pagination-container" id="paginationContainer"></div>
                     </div>
-
                 </div>
 
                 <!-- Add Modal -->
@@ -208,7 +210,7 @@
 
 
                                 <div class="form-group">
-                                    <label>Price</label>
+                                    <label>Dispatch Price</label>
                                     <input type="number" id="dispatch_price" class="form-control">
                                 </div>
                             </div>
@@ -221,7 +223,7 @@
 
 
 
-<!-- Edit Modal -->
+                <!-- Edit Modal -->
                 <div class="modal fade" id="editModal" tabindex="-1">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -298,7 +300,7 @@
 
 
                                 <div class="form-group">
-                                    <label>Price</label>
+                                    <label>Dispatch Price</label>
                                     <input type="number" id="dispatch_priceE" value="" class="form-control">
                                 </div>
                             </div>
@@ -359,37 +361,41 @@
 
 
                 <!-- Upload CSV Modal -->
-<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="uploadModalLabel">Upload Dispatch Listing CSV</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="uploadForm" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="csvFile">Select CSV File</label>
-                        <input type="file" class="form-control-file" id="csvFile" name="csv_file" accept=".csv" required>
-                        <small class="form-text text-muted">
-                            File must be in CSV format with proper headers. <a href="{{ asset('sample_dispatch_listing.csv') }}">Download sample CSV</a>
-                        </small>
+                <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="uploadModalLabel">Upload Dispatch Listing CSV</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form id="uploadForm" enctype="multipart/form-data">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="csvFile">Select CSV File</label>
+                                        <input type="file" class="form-control-file" id="csvFile" name="csv_file"
+                                            accept=".csv" required>
+                                        <small class="form-text text-muted">
+                                            File must be in CSV format with proper headers. <a
+                                                href="{{ asset('sample_dispatch_listing.csv') }}">Download sample
+                                                CSV</a>
+                                        </small>
+                                    </div>
+                                    <div class="progress" style="display: none;">
+                                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <div id="uploadStatus" class="mt-2"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" id="uploadBtn">Upload</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <div class="progress" style="display: none;">
-                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-                    </div>
-                    <div id="uploadStatus" class="mt-2"></div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="uploadBtn">Upload</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
                 <div class="row">
                     <div class="col-md-12">
@@ -403,75 +409,71 @@
         </div>
     </div>
 
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
 
     <script>
 
+        $('#uploadForm').on('submit', function (e) {
+            e.preventDefault();
 
+            let formData = new FormData();
+            let file = $('#csvFile')[0].files[0];
+            formData.append('csv_file', file);
+            formData.append('_token', '{{ csrf_token() }}');
 
+            $('.progress').show();
+            $('#uploadStatus').html('');
+            $('#uploadBtn').prop('disabled', true);
 
-$('#uploadForm').on('submit', function(e) {
-    e.preventDefault();
-    
-    let formData = new FormData();
-    let file = $('#csvFile')[0].files[0];
-    formData.append('csv_file', file);
-    formData.append('_token', '{{ csrf_token() }}');
-    
-    $('.progress').show();
-    $('#uploadStatus').html('');
-    $('#uploadBtn').prop('disabled', true);
-    
-    $.ajax({
-        url: "{{ route('dispatch.listing.upload') }}",
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        xhr: function() {
-            let xhr = new window.XMLHttpRequest();
-            xhr.upload.addEventListener('progress', function(e) {
-                if (e.lengthComputable) {
-                    let percent = Math.round((e.loaded / e.total) * 100);
-                    $('.progress-bar').css('width', percent + '%').attr('aria-valuenow', percent);
+            $.ajax({
+                url: "{{ route('dispatch.listing.upload') }}",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                xhr: function () {
+                    let xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener('progress', function (e) {
+                        if (e.lengthComputable) {
+                            let percent = Math.round((e.loaded / e.total) * 100);
+                            $('.progress-bar').css('width', percent + '%').attr('aria-valuenow', percent);
+                        }
+                    });
+                    return xhr;
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $('#uploadStatus').html('<div class="alert alert-success">' + response.message + '</div>');
+                        loadzipcoderules();
+                        setTimeout(function () {
+                            $('#uploadModal').modal('hide');
+                            $('.progress').hide();
+                            $('#uploadBtn').prop('disabled', false);
+                        }, 1500);
+                    } else {
+                        $('#uploadStatus').html('<div class="alert alert-danger">' + response.message + '</div>');
+                        $('#uploadBtn').prop('disabled', false);
+                    }
+                },
+                error: function (xhr) {
+                    let errorMsg = 'An error occurred during upload.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    }
+                    $('#uploadStatus').html('<div class="alert alert-danger">' + errorMsg + '</div>');
+                    $('#uploadBtn').prop('disabled', false);
                 }
             });
-            return xhr;
-        },
-        success: function(response) {
-            if (response.success) {
-                $('#uploadStatus').html('<div class="alert alert-success">' + response.message + '</div>');
-                loadzipcoderules();
-                setTimeout(function() {
-                    $('#uploadModal').modal('hide');
-                    $('.progress').hide();
-                    $('#uploadBtn').prop('disabled', false);
-                }, 1500);
-            } else {
-                $('#uploadStatus').html('<div class="alert alert-danger">' + response.message + '</div>');
-                $('#uploadBtn').prop('disabled', false);
-            }
-        },
-        error: function(xhr) {
-            let errorMsg = 'An error occurred during upload.';
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                errorMsg = xhr.responseJSON.message;
-            }
-            $('#uploadStatus').html('<div class="alert alert-danger">' + errorMsg + '</div>');
-            $('#uploadBtn').prop('disabled', false);
-        }
-    });
-});
+        });
 
-// Reset form when modal is closed
-$('#uploadModal').on('hidden.bs.modal', function() {
-    $('#uploadForm')[0].reset();
-    $('.progress').hide();
-    $('.progress-bar').css('width', '0%');
-    $('#uploadStatus').html('');
-    $('#uploadBtn').prop('disabled', false);
-});
+        // Reset form when modal is closed
+        $('#uploadModal').on('hidden.bs.modal', function () {
+            $('#uploadForm')[0].reset();
+            $('.progress').hide();
+            $('.progress-bar').css('width', '0%');
+            $('#uploadStatus').html('');
+            $('#uploadBtn').prop('disabled', false);
+        });
 
 
 
@@ -498,7 +500,6 @@ $('#uploadModal').on('hidden.bs.modal', function() {
                                     <td class="text-center">${item.origin_location}</td>
                                     <td class="text-center">${item.destination_location}</td>
                                     <td class="text-center">${item.vehicle_info}</td>
-                                    <td class="text-center">$ ${item.price}</td>
                                     <td class="text-center">$ ${item.dispatch_price}</td>
                                     <td class="text-center">${item.type}</td>
                                     <td class="text-center">${item.condition}</td>
@@ -648,58 +649,58 @@ $('#uploadModal').on('hidden.bs.modal', function() {
 
 
         // Edit record functionality
-            $(document).on('click', '.editBtn', function() {
-                $('#edit_id').val($(this).data('id'));
-                $('#originE').val($(this).data('origin_location'));
-                $('#destinationE').val($(this).data('destination_location'));
-                $('#vehicle_typeE').val($(this).data('type'));
-                $('#inoperableE').val($(this).data('condition'));
-                let trailerValue = $(this).data('transport'); // e.g. 1 or 2
-                $('input[name="trailer-typeE"][value="' + trailerValue + '"]').prop('checked', true);
-                $('#dispatch_priceE').val($(this).data('dispatch_price'));
-                $('#editModal').modal('show');
-            });
+        $(document).on('click', '.editBtn', function () {
+            $('#edit_id').val($(this).data('id'));
+            $('#originE').val($(this).data('origin_location'));
+            $('#destinationE').val($(this).data('destination_location'));
+            $('#vehicle_typeE').val($(this).data('type'));
+            $('#inoperableE').val($(this).data('condition'));
+            let trailerValue = $(this).data('transport'); // e.g. 1 or 2
+            $('input[name="trailer-typeE"][value="' + trailerValue + '"]').prop('checked', true);
+            $('#dispatch_priceE').val($(this).data('dispatch_price'));
+            $('#editModal').modal('show');
+        });
 
-            $(document).on('click', '#closemodal', function() {
-                $('#editModal').modal('hide');
+        $(document).on('click', '#closemodal', function () {
+            $('#editModal').modal('hide');
+        });
+
+        $('#editRecord').click(function () {
+            let id = $('#edit_id').val();
+            $.ajax({
+                url: `/dispatch-listing/price/edit/${id}`,
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    origin_location: $('#originE').val(),
+                    destination_location: $('#destinationE').val(),
+                    vehicle_type: $('#vehicle_typeE').val(),
+                    vehicle_condition: $('#inoperableE').val(),
+                    trailer_type: $('input[name="trailer-typeE"]:checked').val(),
+                    dispatch_price: $('#dispatch_priceE').val(),
+                },
+                success: function (res) {
+                    $('#editModal').modal('hide');
+                    loadzipcoderules();
+                    showSuccess('Price record updated successfully');
+                },
+                error: function (xhr) {
+                    showError(xhr.responseJSON?.message || 'Error updating record');
+                }
             });
-            
-            $('#editRecord').click(function() {
-                let id = $('#edit_id').val();
-                $.ajax({
-                    url: `/dispatch-listing/price/edit/${id}`,
-                    type: "POST",
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        origin_location: $('#originE').val(),
-                        destination_location: $('#destinationE').val(),
-                        vehicle_type: $('#vehicle_typeE').val(),
-                        vehicle_condition: $('#inoperableE').val(),
-                        trailer_type: $('input[name="trailer-typeE"]:checked').val(),
-                        dispatch_price: $('#dispatch_priceE').val(),
-                    },
-                    success: function(res) {
-                        $('#editModal').modal('hide');
-                        loadzipcoderules();
-                        showSuccess('Price record updated successfully');
-                    },
-                    error: function(xhr) {
-                        showError(xhr.responseJSON?.message || 'Error updating record');
-                    }
-                });
-            });
+        });
 
         function showError(message) {
-                $('#errorMessage').text(message);
-                var errorModal = new bootstrap.Modal(document.getElementById('statusErrorsModal'));
-                errorModal.show();
-            }
-            
-            function showSuccess(message) {
-                $('#successMessage').text(message);
-                var successModal = new bootstrap.Modal(document.getElementById('statusSuccessModal'));
-                successModal.show();
-            }
+            $('#errorMessage').text(message);
+            var errorModal = new bootstrap.Modal(document.getElementById('statusErrorsModal'));
+            errorModal.show();
+        }
+
+        function showSuccess(message) {
+            $('#successMessage').text(message);
+            var successModal = new bootstrap.Modal(document.getElementById('statusSuccessModal'));
+            successModal.show();
+        }
 
 
         const path = "{{ route('autocomplete') }}";
@@ -760,22 +761,22 @@ $('#uploadModal').on('hidden.bs.modal', function() {
         loadzipcoderules();
 
         $(document).on('click', '.deleteBtn', function () {
-                let id = $(this).data('id');
-                $.ajax({
-                    url: `/dispatch-listing/price/delete/${id}`,
-                    type: "DELETE",
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                    },
-                    success: function (res) {
-                        loadzipcoderules();
-                        showSuccess('Dispatch Listing Price record deleted successfully');
-                    },
-                    error: function (xhr) {
-                        showError(xhr.responseJSON?.message || 'Error updating record');
-                    }
-                });
+            let id = $(this).data('id');
+            $.ajax({
+                url: `/dispatch-listing/price/delete/${id}`,
+                type: "DELETE",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                },
+                success: function (res) {
+                    loadzipcoderules();
+                    showSuccess('Dispatch Listing Price record deleted successfully');
+                },
+                error: function (xhr) {
+                    showError(xhr.responseJSON?.message || 'Error updating record');
+                }
             });
+        });
     </script>
 
     @include('Layout.footer')
