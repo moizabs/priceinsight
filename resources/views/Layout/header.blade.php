@@ -39,6 +39,7 @@
     <script src="https://www.google.com/recaptcha/api.js" 
     async defer></script>
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
         .modal#statusSuccessModal .modal-content, 
