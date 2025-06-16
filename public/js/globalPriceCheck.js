@@ -6,10 +6,8 @@ class GlobalPriceCheck {
     }
 
     initialize() {
-        // Start checking every 2 seconds
         this.checkInterval = setInterval(() => this.checkUnpricedRecords(), 3000);
         
-        // Set up modal event handlers
         $('#priceModal').on('hidden.bs.modal', () => {
             this.showNextRecord();
         });
@@ -32,11 +30,9 @@ class GlobalPriceCheck {
     }
 
     showRecordInModal(record) {
-        // Fill modal fields with record data (read-only except price)
         $('#porigin').val(record.originzsc).prop('readonly', true);
         $('#pdestination').val(record.destinationzsc).prop('readonly', true);
         
-        // Extract year, make, model from ymk field if needed
         const vehicleInfo = record.ymk ? record.ymk.split(' ') : ['', '', ''];
         $('#pyear_check').val(vehicleInfo[0] || '').prop('readonly', true);
         $('#pmake').val(vehicleInfo[1] || '').prop('readonly', true);
@@ -47,10 +43,8 @@ class GlobalPriceCheck {
         $(`input[name="ptrailer-type"][value="${record.transport || '1'}"]`).prop('checked', true);
         $('input[name="ptrailer-type"]').prop('disabled', true);
         
-        // Clear and focus price field
         $('#pdispatch_price').val('').prop('readonly', false).focus();
         
-        // Show modal
         $('#priceModal').modal('show');
     }
 
@@ -61,9 +55,6 @@ class GlobalPriceCheck {
             alert('Please enter a price');
             return;
         }
-
-        alert(this.currentRecord.id);
-        alert(price);
 
         try {
             const response = await fetch('/save-record-price', {
@@ -92,12 +83,11 @@ class GlobalPriceCheck {
     }
 
     showNextRecord() {
-        // Immediately check for next record
+       
         this.checkUnpricedRecords();
     }
 }
 
-// Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     new GlobalPriceCheck();
 });
