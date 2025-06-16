@@ -62,6 +62,9 @@ class GlobalPriceCheck {
             return;
         }
 
+        alert(this.currentRecord.id);
+        alert(price);
+
         try {
             const response = await fetch('/save-record-price', {
                 method: 'POST',
