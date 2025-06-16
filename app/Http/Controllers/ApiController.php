@@ -92,66 +92,66 @@ class ApiController extends Controller
         return response()->json($data);
     }
 
-    public function add_api_dispatch_listing_data(Request $request)
-{
-    try {
+//     public function add_api_dispatch_listing_data(Request $request)
+// {
+//     try {
 
-        $validatedData = $request->validate([
-            'origin' => 'required|string',
-            'destination' => 'required|string',
-            'trailer_type' => 'required|string',
-            'vehicles' => 'required|array|min:1',
-            'vehicles.*.Vehicle_Type' => 'required|string',
-            'vehicles.*.Inoperable' => 'required|string|in:Yes,No',
-            'vehicles.*.Year' => 'required|string',
-            'vehicles.*.Make' => 'required|string',
-            'vehicles.*.Model' => 'required|string'
-        ]);
+//         $validatedData = $request->validate([
+//             'origin' => 'required|string',
+//             'destination' => 'required|string',
+//             'trailer_type' => 'required|string',
+//             'vehicles' => 'required|array|min:1',
+//             'vehicles.*.Vehicle_Type' => 'required|string',
+//             'vehicles.*.Inoperable' => 'required|string|in:Yes,No',
+//             'vehicles.*.Year' => 'required|string',
+//             'vehicles.*.Make' => 'required|string',
+//             'vehicles.*.Model' => 'required|string'
+//         ]);
 
-        $insertedRecords = [];
+//         $insertedRecords = [];
 
-        foreach ($validatedData['vehicles'] as $vehicle) {
-            $condition = $vehicle['Inoperable'] === 'Yes' ? '2' : '1';
-            $ymk = $vehicle['Year'] . ' ' . $vehicle['Make'] . ' ' . $vehicle['Model'];
+//         foreach ($validatedData['vehicles'] as $vehicle) {
+//             $condition = $vehicle['Inoperable'] === 'Yes' ? '2' : '1';
+//             $ymk = $vehicle['Year'] . ' ' . $vehicle['Make'] . ' ' . $vehicle['Model'];
             
-            $dp = new SheetDetails();
-            $dp->originzsc = $validatedData['origin'];
-            $dp->destinationzsc = $validatedData['destination'];
-            $dp->ymk = $ymk;
-            $dp->condition = $condition;
-            $dp->type = $vehicle['Vehicle_Type'];
-            $dp->transport = $validatedData['trailer_type'] === 'Open' ? '1' : '2';
-            $dp->pstatus = 10;
-            $dp->save();
+//             $dp = new SheetDetails();
+//             $dp->originzsc = $validatedData['origin'];
+//             $dp->destinationzsc = $validatedData['destination'];
+//             $dp->ymk = $ymk;
+//             $dp->condition = $condition;
+//             $dp->type = $vehicle['Vehicle_Type'];
+//             $dp->transport = $validatedData['trailer_type'] === 'Open' ? '1' : '2';
+//             $dp->pstatus = 10;
+//             $dp->save();
             
-            $insertedRecords[] = $dp;
-        }
+//             $insertedRecords[] = $dp;
+//         }
         
-        return response()->json([
-            'success' => true,
-            'message' => 'Dispatch listing data added successfully',
-            'data' => $insertedRecords,
-            'count' => count($insertedRecords)
-        ], 201);
+//         return response()->json([
+//             'success' => true,
+//             'message' => 'Dispatch listing data added successfully',
+//             'data' => $insertedRecords,
+//             'count' => count($insertedRecords)
+//         ], 201);
 
-    } catch (\Illuminate\Validation\ValidationException $e) {
+//     } catch (\Illuminate\Validation\ValidationException $e) {
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Validation error',
-            'errors' => $e->errors()
-        ], 422);
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Validation error',
+//             'errors' => $e->errors()
+//         ], 422);
 
-    } catch (\Exception $e) {
+//     } catch (\Exception $e) {
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Server error',
-            'error' => $e->getMessage()
-        ], 500);
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Server error',
+//             'error' => $e->getMessage()
+//         ], 500);
 
-    }
-}
+//     }
+// }
 }
 
 

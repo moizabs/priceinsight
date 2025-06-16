@@ -14,7 +14,7 @@ Route::get('/zip-code-exceptions-data', 'ApiController@api_zip_code_exceptions')
 Route::get('/setting-data', 'ApiController@api_setting_data');
 Route::get('/listing-data', 'ApiController@api_listing_data');
 Route::get('/dispatch-listing-data', 'ApiController@api_dispatch_listing_data');
-Route::post('/add-dispatch-listing-data', 'ApiController@add_api_dispatch_listing_data');
+// Route::post('/add-dispatch-listing-data', 'ApiController@add_api_dispatch_listing_data');
 
 Route::post('/create-account', 'UserController@create_account');
 Route::get('/view-accounts', 'UserController@view_accounts');
