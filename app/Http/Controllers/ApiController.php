@@ -108,43 +108,30 @@ class ApiController extends Controller
             'vehicles.*.Model' => 'required|string'
         ]);
 
+        $insertedRecords = [];
 
-            $condition = $validatedData['Inoperable'] === 'Yes' ? '2' : '1';
-            $ymk = $validatedData['Year'] . ' ' . $validatedData['Make'] . ' ' . $validatedData['Model'];
+        foreach ($validatedData['vehicles'] as $vehicle) {
+            $condition = $vehicle['Inoperable'] === 'Yes' ? '2' : '1';
+            $ymk = $vehicle['Year'] . ' ' . $vehicle['Make'] . ' ' . $vehicle['Model'];
             
             $dp = new SheetDetails();
             $dp->originzsc = $validatedData['origin'];
             $dp->destinationzsc = $validatedData['destination'];
             $dp->ymk = $ymk;
             $dp->condition = $condition;
-            $dp->type = $validatedData['Vehicle_Type'];
+            $dp->type = $vehicle['Vehicle_Type'];
             $dp->transport = $validatedData['trailer_type'] === 'Open' ? '1' : '2';
             $dp->pstatus = 10;
             $dp->save();
             
-
-        // foreach ($validatedData['vehicles'] as $vehicle) {
-        //     $condition = $vehicle['Inoperable'] === 'Yes' ? '2' : '1';
-        //     $ymk = $vehicle['Year'] . ' ' . $vehicle['Make'] . ' ' . $vehicle['Model'];
-            
-        //     $dp = new SheetDetails();
-        //     $dp->originzsc = $validatedData['origin'];
-        //     $dp->destinationzsc = $validatedData['destination'];
-        //     $dp->ymk = $ymk;
-        //     $dp->condition = $condition;
-        //     $dp->type = $vehicle['Vehicle_Type'];
-        //     $dp->transport = $validatedData['trailer_type'] === 'Open' ? '1' : '2';
-        //     $dp->pstatus = 10;
-        //     $dp->save();
-            
-        //     $insertedRecords[] = $dp;
-        // }
+            $insertedRecords[] = $dp;
+        }
         
         return response()->json([
             'success' => true,
             'message' => 'Dispatch listing data added successfully',
-            'data' => $dp,
-            // 'count' => count($dp)
+            'data' => $insertedRecords,
+            'count' => count($insertedRecords)
         ], 201);
 
     } catch (\Illuminate\Validation\ValidationException $e) {
