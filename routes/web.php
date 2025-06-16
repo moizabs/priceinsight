@@ -11,7 +11,9 @@ use App\Http\Controllers\VehicleTypeSettingController;
 use App\Http\Controllers\WashingtonController;
 use App\Http\Controllers\ZipCodeExceptionsController;
 use App\Http\Controllers\OtpController;
+use App\Http\Controllers\SheetDetailsController;
 use App\Http\Middleware\UserMiddleware as AuthorizedGuardMiddleware;
+use App\Models\SheetDetails;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -112,6 +114,8 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
     Route::post('/settings/toggle-washington', [SettingController::class, 'toggleWashington'])->name('settings.toggleWashington');
 
 
+    Route::get('/get-unpriced-record', [SheetDetailsController::class, 'getUnpricedRecord'])->name('get.unpriced.record');
+    Route::post('/save-record-price', [SheetDetailsController::class, 'saveRecordPrice'])->name('save.record.price');
 
     // Route::get('/exceptions-list', function () {
     //     return view('exceptions_list');
