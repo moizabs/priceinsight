@@ -83,6 +83,10 @@
           </label>
         </div>
 
+        <div class="form-group">
+          <label>Listed  Price</label>
+          <input type="number" id="plisted_price" class="form-control">
+        </div>
 
         <div class="form-group">
           <label>Dispatch Price</label>

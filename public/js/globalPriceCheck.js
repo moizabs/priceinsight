@@ -44,15 +44,17 @@ class GlobalPriceCheck {
         $('input[name="ptrailer-type"]').prop('disabled', true);
         
         $('#pdispatch_price').val('').prop('readonly', false).focus();
+        $('#plisted_price').val('').prop('readonly', false).focus();
         
         $('#priceModal').modal('show');
     }
 
     async savePrice() {
         const price = $('#pdispatch_price').val();
+        const listed_price = $('#plisted_price').val();
         
-        if (!price) {
-            alert('Please enter a price');
+        if (!price && !listed_price) {
+            alert('Please enter both price');
             return;
         }
 
@@ -65,7 +67,8 @@ class GlobalPriceCheck {
                 },
                 body: JSON.stringify({
                     record_id: this.currentRecord.id,
-                    price: price
+                    price: price,
+                    listed_price: listed_price
                 })
             });
             
