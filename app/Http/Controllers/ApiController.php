@@ -93,7 +93,7 @@ class ApiController extends Controller
     }
 
     public function add_api_dispatch_listing_data(Request $request)
-{
+    {
     try {
 
         $validatedData = $request->validate([
@@ -152,6 +152,31 @@ class ApiController extends Controller
 
     }
 }
+
+
+
+public function price_check_dispatch_listing_data(Request $request)
+{
+    $data = SheetDetails::select([
+            'id',
+            'orderId',
+            'originzsc',
+            'destinationzsc', 
+            'ymk',
+            'price',
+            'created_at',
+            'pstatus',
+            'condition',
+            'type',
+            'transport'
+        ])
+        ->where('originzsc', $request->origin)
+        ->where('destinationzsc', $request->destination)
+        ->get();
+        return response()->json($data);
+}
+
+
 }
 
 
