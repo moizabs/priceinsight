@@ -19,23 +19,11 @@ class GlobalPriceCheck {
         try {
             const response = await fetch('/get-unpriced-record');
             const data = await response.json();
-
-            if ($('#priceModal').hasClass('show')) {
-
-                this.showNextRecord();
-                $('#priceModal').modal('hide');
-
-            } else {
-
+                        
+            if (data.record && !$('#priceModal').hasClass('show')) {
                 this.currentRecord = data.record;
                 this.showRecordInModal(data.record);
-                
             }
-            
-            // if (data.record && !$('#priceModal').hasClass('show')) {
-            //     this.currentRecord = data.record;
-            //     this.showRecordInModal(data.record);
-            // }
         } catch (error) {
             console.error('Error checking unpriced records:', error);
         }
