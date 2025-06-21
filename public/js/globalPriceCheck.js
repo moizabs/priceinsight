@@ -8,10 +8,8 @@ class GlobalPriceCheck {
     }
 
     initialize() {
-        // Check for new unpriced records every 3 seconds
         this.checkInterval = setInterval(() => this.checkUnpricedRecords(), 3000);
         
-        // Check for price updates from other sessions every 2 seconds
         this.priceUpdateInterval = setInterval(() => this.checkPriceUpdates(), 2000);
         
         $('#priceModal').on('hidden.bs.modal', () => {
@@ -39,6 +37,9 @@ class GlobalPriceCheck {
                     this.lastRecordId = data.record.id;
                     this.showRecordInModal(data.record);
                 }
+            } else {
+                $('#priceModal').modal('hide');
+                this.showNextRecord();
             }
         } catch (error) {
             console.error('Error checking unpriced records:', error);
