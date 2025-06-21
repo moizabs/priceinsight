@@ -1,12 +1,18 @@
 class GlobalPriceCheck {
     constructor() {
         this.checkInterval = null;
+        this.priceUpdateInterval = null;
         this.currentRecord = null;
+        this.lastRecordId = null;
         this.initialize();
     }
 
     initialize() {
+        // Check for new unpriced records every 3 seconds
         this.checkInterval = setInterval(() => this.checkUnpricedRecords(), 3000);
+        
+        // Check for price updates from other sessions every 2 seconds
+        this.priceUpdateInterval = setInterval(() => this.checkPriceUpdates(), 2000);
         
         $('#priceModal').on('hidden.bs.modal', () => {
             this.showNextRecord();
@@ -19,28 +25,50 @@ class GlobalPriceCheck {
         try {
             const response = await fetch('/get-unpriced-record');
             const data = await response.json();
-
-            if ($('#priceModal').hasClass('show')) {
-
-                $('#priceModal').modal('hide');
-
-            } else {
-
-                this.currentRecord = data.record;
-                this.showRecordInModal(data.record);
-                
-            }
             
-            // if (data.record && !$('#priceModal').hasClass('show')) {
-            //     this.currentRecord = data.record;
-            //     this.showRecordInModal(data.record);
-            // }
+            if (data.record) {
+                // If we have a new record different from current one
+                if (!this.currentRecord || this.currentRecord.id !== data.record.id) {
+                    // Close modal if open (in case another session already priced it)
+                    if ($('#priceModal').hasClass('show')) {
+                        $('#priceModal').modal('hide');
+                    }
+                    
+                    // Show new record
+                    this.currentRecord = data.record;
+                    this.lastRecordId = data.record.id;
+                    this.showRecordInModal(data.record);
+                }
+            }
         } catch (error) {
             console.error('Error checking unpriced records:', error);
         }
     }
 
+    async checkPriceUpdates() {
+        if (!this.currentRecord) return;
+        
+        try {
+            const response = await fetch(`/check-record-priced/${this.currentRecord.id}`);
+            const data = await response.json();
+            
+            if (data.priced) {
+                // If record was priced by someone else, close our modal
+                if ($('#priceModal').hasClass('show')) {
+                    $('#priceModal').modal('hide');
+                }
+                // Immediately check for next record
+                this.showNextRecord();
+            }
+        } catch (error) {
+            console.error('Error checking price updates:', error);
+        }
+    }
+
     showRecordInModal(record) {
+        // Only show if we don't already have a modal open
+        if ($('#priceModal').hasClass('show')) return;
+        
         $('#porigin').val(record.originzsc).prop('readonly', true);
         $('#pdestination').val(record.destinationzsc).prop('readonly', true);
         
@@ -55,7 +83,7 @@ class GlobalPriceCheck {
         $('input[name="ptrailer-type"]').prop('disabled', true);
         
         $('#pdispatch_price').val('').prop('readonly', false).focus();
-        $('#plisted_price').val('').prop('readonly', false).focus();
+        $('#plisted_price').val('').prop('readonly', false);
         
         $('#priceModal').modal('show');
     }
@@ -65,7 +93,7 @@ class GlobalPriceCheck {
         const listed_price = $('#plisted_price').val();
         
         if (!price && !listed_price) {
-            alert('Please enter both price');
+            alert('Please enter both prices');
             return;
         }
 
@@ -87,6 +115,8 @@ class GlobalPriceCheck {
             
             if (result.success) {
                 $('#priceModal').modal('hide');
+                // Immediately check for next record
+                this.showNextRecord();
             } else {
                 alert('Error saving price: ' + (result.message || 'Unknown error'));
             }
@@ -97,7 +127,7 @@ class GlobalPriceCheck {
     }
 
     showNextRecord() {
-       
+        this.currentRecord = null;
         this.checkUnpricedRecords();
     }
 }
