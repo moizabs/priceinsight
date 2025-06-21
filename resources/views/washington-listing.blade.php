@@ -39,6 +39,10 @@
         color: #ddd;
         pointer-events: none;
     }
+    .btn {
+   height: 35px;
+        ;
+}
 </style>
 
 <body>
@@ -63,7 +67,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-8">
                                     <button name="add" class="btn-primary btn-sm pull-right addBtn"
-                                        style="margin-left: 15px">
+                                        style="margin-right: -23px; height: 35px">
                                         Add Records
                                     </button>
                                 </div>

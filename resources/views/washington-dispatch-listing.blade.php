@@ -72,9 +72,9 @@
                     <div class="card-body card-block">
 
                         <div class="row mb-3">
-                            <div class="col-md-8">
+                            <div class="col-md-8 text-right">
                                 <button name="add" class="btn-primary btn-sm pull-right addBtn"
-                                    style="margin-left: 15px">
+                                    style="margin-right: -35px; height: 32px">
                                     Add Records
                                 </button>
                             </div>
