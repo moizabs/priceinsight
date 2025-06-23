@@ -101,6 +101,25 @@
 </div>
 
 
+<!-- Accept/Decline Modal -->
+<div class="modal fade" id="acceptDeclineModal" data-bs-backdrop="static" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>New Pricing Request Available! <span id="record-id"></span></h5>
+        {{-- <button type="button" class="close" data-dismiss="modal">&times;</button> --}}
+      </div>
+      <div class="modal-body">
+        <p>A new vehicle needs pricing. Do you want to accept this request?</p>
+        <p><strong>Note:</strong> Only the first to accept will get to price this vehicle.</p>
+      </div>
+      <div class="modal-footer">
+        <button id="declineBtn" class="btn btn-secondary">Decline</button>
+        <button id="acceptBtn" class="btn btn-primary">Accept</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -139,5 +158,5 @@
       $("#feedback-recaptcha").parent('.col-sm-12').after('<div class="text-danger col-sm-12 p-0 mb-2">Please check recaptcha, if you are not a robot!</div>');
     }
   })
-
+   
 </script>

@@ -19,7 +19,13 @@ Route::post('/price-check-dispatch-listing-data', 'ApiController@price_check_dis
 
 Route::post('/create-account', 'UserController@create_account');
 Route::get('/view-accounts', 'UserController@view_accounts');
+// Route::put('/edit-accounts', 'UserController@edit_accounts');
 Route::delete('/delete-account', 'UserController@delete_accounts');
+
+Route::get('/account/get-user', 'UserController@getAccountData');
+
+
+
 
 Route::get('/osrm-proxy', function(Request $request) {
     $url = "http://router.project-osrm.org/route/v1/driving/" . 

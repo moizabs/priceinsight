@@ -67,6 +67,49 @@ class UserController extends Controller
 }
 
 
+
+public function edit_account(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users,email',
+        ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status'  => 'error',
+            'message' => 'Validation failed',
+            'errors'  => $validator->errors()
+        ], 422);
+    }
+
+    try {
+        $validatedData = $validator->validated();
+        $user = User::create([
+            'name'         => $request->first_name . ' ' . $request->last_name,
+            'email'        => $validatedData['email'],
+            'account_role' => $request->role,
+            'phone_number' => $request->phone,
+            'password'     => Hash::make($request->password),
+        ]);
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Account created successfully',
+            'success'    => 'Account created successfully'
+        ], 201);
+
+    } catch (\Exception $e) {
+        Log::error('Account creation failed: ' . $e->getMessage());
+        
+        return response()->json([
+            'status'  => 'error',
+            'message' => 'Account creation failed',
+            'error'   => env('APP_DEBUG') ? $e->getMessage() : null
+        ], 500);
+    }
+}
+
+
 public function view_accounts(){
     try {
         
@@ -85,6 +128,20 @@ public function view_accounts(){
 
     }
 }
+
+
+public function getAccountData(Request $request)
+    {
+        $user = User::findOrFail($request->id);
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'phone_number' => $user->phone_number,
+        ]);
+    }
+
 
 
 public function delete_accounts(Request $request)

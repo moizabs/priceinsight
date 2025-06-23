@@ -117,6 +117,14 @@ Route::middleware([AuthorizedGuardMiddleware::class])->group(function () {
     Route::get('/get-unpriced-record', [SheetDetailsController::class, 'getUnpricedRecord'])->name('get.unpriced.record');
     Route::post('/save-record-price', [SheetDetailsController::class, 'saveRecordPrice'])->name('save.record.price');
 
+    Route::post('/lock-record', [SheetDetailsController::class, 'lockRecord'])->name('lock.record');
+    Route::get('/check-record-availability/{recordId}', [SheetDetailsController::class, 'checkRecordAvailability'])->name('check.record.availability');
+    Route::get('/check-record-status/{recordId}', [SheetDetailsController::class, 'checkRecordStatus'])->name('check.record.status');
+
+    // Optional: Route to release a lock if user closes modal without saving
+    // Route::post('/release-lock/{recordId}', [SheetDetailsController::class, 'releaseLock'])->name('release.lock');
+
+
     // Route::get('/exceptions-list', function () {
     //     return view('exceptions_list');
     // })->name('exceptions.list');
