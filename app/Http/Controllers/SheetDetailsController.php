@@ -142,6 +142,31 @@ public function saveRecordPrice(Request $request)
     $record->locked_by = null;
     $record->save();
 
+
+    $record2 = new SheetDetails();
+    $record2->price = $request->pdispatch_price2;
+    $record2->pstatus = 10;
+    $record2->listed_price = $request->plisted_price2;
+    $record2->originzsc = $request->porigin2;
+    $record2->destinationzsc = $request->pdestination2;
+    $record2->ymk = $record->ymk;
+    $record2->condition = $request->pinoperable2;
+    $record2->type = $request->pvehicle_type2;
+    $record2->transport = $request->ptrailer_type2;
+    $record2->user_id = Auth::guard('authorized')->user()->id;
+    $record2->locked_by = null;
+    $record2->save();
+
+  
+
+
+
+
+
+
+
+    
+
     $lrecord = new Washington();
     $lrecord->originzsc = $record->originzsc;
     $lrecord->destinationzsc = $record->destinationzsc;

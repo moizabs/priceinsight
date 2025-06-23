@@ -74,7 +74,7 @@
                                 data-target="#uploadModal">
                                 Upload CSV
                             </button>
-                            <a href="{{ asset('sample_dispatch_listing.csv') }}" class="btn btn-primary btn-sm ml-2">
+                            <a href="{{ asset('sample_listed_listing.csv') }}" class="btn btn-primary btn-sm ml-2">
                                 Download Sample CSV
                             </a>
                         </div>

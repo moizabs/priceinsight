@@ -41,6 +41,8 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    
+
     <style>
         .modal#statusSuccessModal .modal-content, 
     .modal#statusErrorsModal .modal-content {

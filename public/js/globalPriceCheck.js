@@ -241,15 +241,16 @@ class GlobalPriceCheck {
         $('#porigin').val(record.originzsc).prop('readonly', true);
         $('#pdestination').val(record.destinationzsc).prop('readonly', true);
         
-        const vehicleInfo = record.ymk ? record.ymk.split(' ') : ['', '', ''];
-        $('#pyear_check').val(vehicleInfo[0] || '').prop('readonly', true);
-        $('#pmake').val(vehicleInfo[1] || '').prop('readonly', true);
-        $('#pmodel').val(vehicleInfo[2] || '').prop('readonly', true);
+        // const vehicleInfo = record.ymk ? record.ymk.split(' ') : ['', '', ''];
+        // $('#pyear_check').val(vehicleInfo[0] || '').prop('readonly', true);
+        // $('#pmake').val(vehicleInfo[1] || '').prop('readonly', true);
+        // $('#pmodel').val(vehicleInfo[2] || '').prop('readonly', true);
         
         $('#pvehicle_type').val(record.type || '').prop('disabled', true);
-        $('#pinoperable').val(record.condition || '').prop('disabled', true);
-        $(`input[name="ptrailer-type"][value="${record.transport || '1'}"]`).prop('checked', true);
-        $('input[name="ptrailer-type"]').prop('disabled', true);
+        $('#pinoperable').prop('checked', record.condition == 1).prop('disabled', true);
+        $('#ptrailer-type').val(record.transport || '').prop('disabled', true);
+        // $(`input[name="ptrailer-type"][value="${record.transport || '1'}"]`).prop('checked', true);
+        // $('input[name="ptrailer-type"]').prop('disabled', true);
         
         $('#pdispatch_price').val('').prop('readonly', false).focus();
         $('#plisted_price').val('').prop('readonly', false);
@@ -258,8 +259,49 @@ class GlobalPriceCheck {
     }
 
     async savePrice() {
+        // 1st record
         const price = $('#pdispatch_price').val();
         const listed_price = $('#plisted_price').val();
+
+        // 2nd record
+        const porigin2 = $('#porigin2').val();
+        const pdestination2 = $('#pdestination2').val();
+        const pvehicle_type2 = $('#pvehicle_type2').val();
+        const ptrailer_type2 = $('#ptrailer-type2').val();
+        const pdispatch_price2 = $('#pdispatch_price2').val();
+        const plisted_price2 = $('#plisted_price2').val();
+        const pinoperable2 = $('#pinoperable2').val();
+
+
+        // 3rd record
+        const porigin3 = $('#porigin3').val();
+        const pdestination3 = $('#pdestination3').val();
+        const pvehicle_type3 = $('#pvehicle_type3').val();
+        const ptrailer_type3 = $('#ptrailer-type3').val();
+        const pdispatch_price3 = $('#pdispatch_price3').val();
+        const plisted_price3 = $('#plisted_price3').val();
+        const pinoperable3 = $('#pinoperable3').val();
+
+
+        // 4th record
+        const porigin4 = $('#porigin4').val();
+        const pdestination4 = $('#pdestination4').val();
+        const pvehicle_type4 = $('#pvehicle_type4').val();
+        const ptrailer_type4 = $('#ptrailer-type4').val();
+        const pdispatch_price4 = $('#pdispatch_price4').val();
+        const plisted_price4 = $('#plisted_price4').val();
+        const pinoperable4 = $('#pinoperable4').val();
+
+
+        // 5th record
+        const porigin5 = $('#porigin2').val();
+        const pdestination5 = $('#pdestination5').val();
+        const pvehicle_type5 = $('#pvehicle_type5').val();
+        const ptrailer_type5 = $('#ptrailer-type5').val();
+        const pdispatch_price5 = $('#pdispatch_price5').val();
+        const plisted_price5 = $('#plisted_price5').val();
+        const pinoperable5 = $('#pinoperable5').val();
+
         
         if (!price || !listed_price) {
             alert('Please enter both prices');
@@ -276,7 +318,46 @@ class GlobalPriceCheck {
                 body: JSON.stringify({
                     record_id: this.currentRecord.id,
                     price: price,
-                    listed_price: listed_price
+                    listed_price: listed_price,
+
+
+                    porigin2: porigin2,
+                    pdestination2: pdestination2,
+                    pvehicle_type2: pvehicle_type2,
+                    ptrailer_type2: ptrailer_type2,
+                    pdispatch_price2: pdispatch_price2,
+                    plisted_price2: plisted_price2,
+                    pinoperable2: pinoperable2,
+
+
+                    porigin3: porigin3,
+                    pdestination3: pdestination3,
+                    pvehicle_type3: pvehicle_type3,
+                    ptrailer_type3: ptrailer_type3,
+                    pdispatch_price3: pdispatch_price3,
+                    plisted_price3: plisted_price3,
+                    pinoperable3: pinoperable3,
+
+
+                    porigin4: porigin4,
+                    pdestination4: pdestination4,
+                    pvehicle_type4: pvehicle_type4,
+                    ptrailer_type4: ptrailer_type4,
+                    pdispatch_price4: pdispatch_price4,
+                    plisted_price4: plisted_price4,
+                    pinoperable4: pinoperable4,
+
+
+
+                    porigin5: porigin5,
+                    pdestination5: pdestination5,
+                    pvehicle_type5: pvehicle_type5,
+                    ptrailer_type5: ptrailer_type5,
+                    pdispatch_price5: pdispatch_price5,
+                    plisted_price5: plisted_price5,
+                    pinoperable5: pinoperable5,
+
+
                 })
             });
             
