@@ -131,7 +131,8 @@ public function view_accounts(){
 
 
 public function getAccountData($id)
-    {
+{
+    try {
         $user = User::findOrFail($id);
 
         return response()->json([
@@ -140,7 +141,13 @@ public function getAccountData($id)
             'email' => $user->email,
             'phone_number' => $user->phone_number,
         ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'User not found',
+            'message' => $e->getMessage()
+        ], 404);
     }
+}
 
 
 
