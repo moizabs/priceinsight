@@ -66,12 +66,12 @@
                     
                     <div class="card-body card-block">
                         <div class="row mb-3">
-                            <div class="col-md-6 text-right">
+                            {{-- <div class="col-md-6 text-right">
                                 <button name="add" class="btn-primary btn-sm addBtn2"
                                     style="margin-right: 5px;">
                                     Add Rec
                                 </button>
-                            </div>
+                            </div> --}}
                             <div class="col-md-8 text-right">
                                 <button name="add" class="btn-primary btn-sm addBtn"
                                     style="margin-right: -58px; height: 32px;" >
