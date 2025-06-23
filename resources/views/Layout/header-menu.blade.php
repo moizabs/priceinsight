@@ -73,17 +73,17 @@
 
   .toggle-switch input[type="checkbox"]:checked+.toggle-switch-handle {
     transform: translateX(40px);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 0 3px #001d4d;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 0 3px #2c3e50;
   }
 
   .toggle-switch input[type="checkbox"]:checked+.toggle-switch-background {
-    background-color: #001d4d;
-    box-shadow: inset 0 0 0 2px #001d4d;
+    background-color: #2c3e50;
+    box-shadow: inset 0 0 0 2px #2c3e50;
   }
 
   .toggle-switch input[type="checkbox"]:checked+.toggle-switch:before {
     content: "On";
-    color: #001d4d;
+    color: #2c3e50;
     right: -10px;
   }
 
