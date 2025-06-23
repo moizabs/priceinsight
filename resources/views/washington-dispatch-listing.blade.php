@@ -59,16 +59,7 @@
                     <div class="card-header text-black">
                         <strong>Dispatch Listing</strong>
                     </div>
-
-                    {{-- <div class="card-body card-block"> --}}
-                        {{-- <button name="add" class="btn-primary btn-sm pull-right addBtn"
-                            style="margin-left: 15px">Add
-                            Records</button> --}}
-
-                        {{-- <a href="{{ route('add.price.per.mile') }}" name="add"
-                            class="btn-primary btn-sm pull-right">Upload CSV</a> --}}
-                        {{-- </div> --}}
-
+                    
                     <div class="card-body card-block">
 
                         <div class="row mb-3">

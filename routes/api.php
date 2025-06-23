@@ -22,7 +22,7 @@ Route::get('/view-accounts', 'UserController@view_accounts');
 // Route::put('/edit-accounts', 'UserController@edit_accounts');
 Route::delete('/delete-account', 'UserController@delete_accounts');
 
-Route::get('/account/get-user', 'UserController@getAccountData');
+Route::get('/account/get-user/{id}', 'UserController@getAccountData');
 
 
 

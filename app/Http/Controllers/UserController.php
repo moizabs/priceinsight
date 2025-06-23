@@ -130,9 +130,9 @@ public function view_accounts(){
 }
 
 
-public function getAccountData(Request $request)
+public function getAccountData($id)
     {
-        $user = User::findOrFail($request->id);
+        $user = User::findOrFail($id);
 
         return response()->json([
             'id' => $user->id,
