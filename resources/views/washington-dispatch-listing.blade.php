@@ -39,6 +39,10 @@
         color: #ddd;
         pointer-events: none;
     }
+    .table{
+        color: black;
+    }
+  
 </style>
 
 <body>
@@ -60,43 +64,43 @@
                         <strong>Dispatch Listing</strong>
                     </div>
 
-                    {{-- <div class="card-body card-block"> --}}
-                        {{-- <button name="add" class="btn-primary btn-sm pull-right addBtn"
-                            style="margin-left: 15px">Add
-                            Records</button> --}}
+                   
+                    
 
-                        {{-- <a href="{{ route('add.price.per.mile') }}" name="add"
-                            class="btn-primary btn-sm pull-right">Upload CSV</a> --}}
-                        {{-- </div> --}}
 
                     <div class="card-body card-block">
-
                         <div class="row mb-3">
+                            <div class="col-md-6 text-right">
+                                <button name="add" class="btn-primary btn-sm addBtn2"
+                                    style="margin-right: 5px;">
+                                    Add Rec
+                                </button>
+                            </div>
                             <div class="col-md-8 text-right">
-                                <button name="add" class="btn-primary btn-sm pull-right addBtn"
-                                    style="margin-right: -35px; height: 32px">
+                                <button name="add" class="btn-primary btn-sm addBtn"
+                                    style="margin-right: -58px; height: 32px;" >
                                     Add Records
                                 </button>
                             </div>
                             <div class="col-md-4 text-right">
-                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
-                                    data-target="#uploadModal">
+                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#uploadModal" 
+                              >
                                     Upload CSV
                                 </button>
                                 <a href="{{ asset('sample_dispatch_listing.csv') }}"
-                                    class="btn btn-secondary btn-sm ml-2">
+                                    class="btn btn-primary btn-sm ml-2"  >
                                     Download Sample CSV
                                 </a>
                             </div>
                         </div>
 
-                    </div>
+                   
 
                     <div class="card-body card-block">
                         <div class="table-responsive table--no-card m-b-30">
-                            <table class="table table-borderless table-striped table-earning" id="contentMid">
-                                <thead>
-                                    <tr>
+                            <table class="table table-borderless table-striped table-earning " id="contentMid" >
+                                <thead class="custom-thead" style="background-color: #2c3e50;">
+                                    <tr  style="background-color: #2c3e50;">
                                         <th class="text-center font-weight-bold">Status</th>
                                         <th class="text-center font-weight-bold">Origin Location</th>
                                         <th class="text-center font-weight-bold">Destination Location</th>
@@ -118,6 +122,7 @@
                         <div class="pagination-container" id="paginationContainer"></div>
                     </div>
                 </div>
+                </div>
 
                 <!-- Add Modal -->
                 <div class="modal fade" id="addModal" tabindex="-1">
@@ -126,7 +131,7 @@
                             <div class="modal-header">
                                 <h5>Add Dispatch Price</h5>
                                 <button type="button" class="close" id="closemodal"
-                                    data-dismiss="modal">&times;</button>
+                                    data-dismiss="modal">&times;</button> 
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
@@ -160,7 +165,7 @@
                                     <label>Vehicle Type</label>
 
                                     <select class="form-control" name="type" id="vehicle_type">
-                                        <option value="" selected disabled>Select Type</option>
+                                        <option value="" selected disabled>Vechile Type</option>
 
                                         <option value="Car">Car</option>
                                         <option value="motorcycle">Motorcycle</option>
@@ -250,7 +255,7 @@
                                     <label>Vehicle Type</label>
 
                                     <select class="form-control" name="type" id="vehicle_typeE">
-                                        <option value="" selected disabled>Select Type</option>
+                                        <option value="" selected disabled>Vechile Type</option>
 
                                         <option value="Car">Car</option>
                                         <option value="motorcycle">Motorcycle</option>
@@ -408,7 +413,415 @@
             </div>
         </div>
     </div>
+    <!-- New modal check  -->
 
+<!-- Add Modal - Compact Single Row -->
+<div class="modal fade" id="addModal2" style="max-width: 1400px" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 80%; width: auto; padding: 0;">
+        <div class="modal-content">
+            <div class="modal-header"> <!-- Reduced header padding -->
+                <h5 class="modal-title">Add Prices</h5>
+            </div>
+            <div class="modal-body "> <!-- Reduced body padding -->
+                <!-- Single Compact Row -->
+                <div class="row px-1 mb-1"> <!-- gx-1 reduces horizontal gap, mb-1 reduces bottom margin -->
+                    <!-- Origin ZIP -->
+                       <div class="col-xl-2 col-lg-2 col-md-2 px-1"> <!-- px-1 reduces side padding -->
+                        <div class="form-group mb-1"> <!-- mb-1 reduces bottom margin -->
+                            <input type="text" placeholder="Origin ZIP" class="form-control" id="origine" required readonly>
+                        </div>
+                    </div>
+                    
+                    <!-- Destination ZIP -->
+                    <div class="col-xl-2 col-lg-3 col-md-6 px-1">
+                        <div class="form-group mb-1">
+                            <input type="text" placeholder="Destination ZIP" class="form-control" id="destination" required readonly>
+                        </div>
+                    </div>
+                    
+                    <!-- Vehicle Type -->
+                    <div class="col-xl-2 col-lg-3 col-md-6 px-1">
+                        <div class="form-group mb-1">
+                            <select class="form-control" id="vehicle_type" required readonly>
+                                <option value="" disabled selected>Vechile Type</option>
+                                        <option value="Car">Car</option>
+                                        <option value="motorcycle">Motorcycle</option>
+                                        <option value="3_wheel_sidecar">3 Wheel Sidecar</option>
+                                        <option value="3_wheel_motorcycle">3 Wheel Motorcycle</option>
+                                        <option value="atv">ATV</option>
+                                        <option value="SUV">SUV</option>
+                                        <option value="Mid SUV">Mid SUV</option>
+                                        <option value="Large SUV">Large SUV</option>
+                                        <option value="Van">Van</option>
+                                        <option value="Mini Van">Mini Van</option>
+                                        <option value="Cargo Van">Cargo Van</option>
+                                        <option value="Passenger Van">Passenger Van</option>
+                                        <option value="Pickup">Pickup</option>
+                                        <option value="Pickup Dually">Pickup Dually</option>
+                                        <option value="Box Truck Dually">Box Truck Dually</option>
+                                        <option value="other_vehicle">Other Vehicle</option>
+                                        <option value="other_motorcycle">Other Motorcycle</option>
+                                        <option value="other">Other</option>
+                             
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Trailer Type -->
+                    <div class="col-xl-2 col-lg-2 col-md-2 px-1">
+                        <div class="form-group mb-1">
+                            <select class="form-control" id="inoperable" required readonly>
+                                <option value="" disabled selected>Trailer Type</option>
+                                <option value="1">Open</option>
+                                <option value="2">Enclosed</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Dispatch Price -->
+                   <div class="col-xl-2 col-lg-2 col-md-4 px-1" style="max-width: 12.5%; flex: 0 0 12.5%;">
+                        <div class="form-group mb-1">
+                            <input type="number" placeholder="Dispatch Price" class="form-control" id="dispatch_price" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Listed Price -->
+                    <div class="col-xl-2 col-lg-2 col-md-4 px-1" style="max-width: 12.5%; flex: 0 0 12.5%;">
+                        <div class="form-group mb-1">
+                            <input type="number" placeholder="Listed Price" class="form-control" id="listed_price" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Inop Checkbox -->
+                    <div class="col-xl-1 col-lg-2 col-md-6 px-1">
+                        <div class="form-group mb-0"> <!-- mb-0 removes bottom margin -->
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="trailer-type" value="2">
+                                <label class="form-check-label">Inop</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+         <div class="row px-1 mb-1"> <!-- gx-1 reduces horizontal gap, mb-1 reduces bottom margin -->
+                    <!-- Origin ZIP -->
+                       <div class="col-xl-2 col-lg-2 col-md-2 px-1"> <!-- px-1 reduces side padding -->
+                        <div class="form-group mb-1"> <!-- mb-1 reduces bottom margin -->
+                            <input type="text" placeholder="Origin ZIP" class="form-control" id="origine" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Destination ZIP -->
+                    <div class="col-xl-2 col-lg-3 col-md-6 px-1">
+                        <div class="form-group mb-1">
+                            <input type="text" placeholder="Destination ZIP" class="form-control" id="destination" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Vehicle Type -->
+                    <div class="col-xl-2 col-lg-3 col-md-6 px-1">
+                        <div class="form-group mb-1">
+                            <select class="form-control" id="vehicle_type" required >
+                                <option value="" disabled selected>Vechile Type</option>
+                                        <option value="Car">Car</option>
+                                        <option value="motorcycle">Motorcycle</option>
+                                        <option value="3_wheel_sidecar">3 Wheel Sidecar</option>
+                                        <option value="3_wheel_motorcycle">3 Wheel Motorcycle</option>
+                                        <option value="atv">ATV</option>
+                                        <option value="SUV">SUV</option>
+                                        <option value="Mid SUV">Mid SUV</option>
+                                        <option value="Large SUV">Large SUV</option>
+                                        <option value="Van">Van</option>
+                                        <option value="Mini Van">Mini Van</option>
+                                        <option value="Cargo Van">Cargo Van</option>
+                                        <option value="Passenger Van">Passenger Van</option>
+                                        <option value="Pickup">Pickup</option>
+                                        <option value="Pickup Dually">Pickup Dually</option>
+                                        <option value="Box Truck Dually">Box Truck Dually</option>
+                                        <option value="other_vehicle">Other Vehicle</option>
+                                        <option value="other_motorcycle">Other Motorcycle</option>
+                                        <option value="other">Other</option>
+                             
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Trailer Type -->
+                    <div class="col-xl-2 col-lg-2 col-md-2 px-1">
+                        <div class="form-group mb-1">
+                            <select class="form-control" id="inoperable" required>
+                                <option value="" disabled selected>Trailer Type</option>
+                                <option value="1">Open</option>
+                                <option value="2">Enclosed</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Dispatch Price -->
+                   <div class="col-xl-2 col-lg-2 col-md-4 px-1" style="max-width: 12.5%; flex: 0 0 12.5%;">
+                        <div class="form-group mb-1">
+                            <input type="number" placeholder="Dispatch Price" class="form-control" id="dispatch_price" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Listed Price -->
+                    <div class="col-xl-2 col-lg-2 col-md-4 px-1" style="max-width: 12.5%; flex: 0 0 12.5%;">
+                        <div class="form-group mb-1">
+                            <input type="number" placeholder="Listed Price" class="form-control" id="listed_price" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Inop Checkbox -->
+                    <div class="col-xl-1 col-lg-2 col-md-6 px-1">
+                        <div class="form-group mb-0"> <!-- mb-0 removes bottom margin -->
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="trailer-type" value="2">
+                                <label class="form-check-label">Inop</label>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                     <div class="row px-1 mb-1"> <!-- gx-1 reduces horizontal gap, mb-1 reduces bottom margin -->
+                    <!-- Origin ZIP -->
+                       <div class="col-xl-2 col-lg-2 col-md-2 px-1"> <!-- px-1 reduces side padding -->
+                        <div class="form-group mb-1"> <!-- mb-1 reduces bottom margin -->
+                            <input type="text" placeholder="Origin ZIP" class="form-control" id="origine" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Destination ZIP -->
+                    <div class="col-xl-2 col-lg-3 col-md-6 px-1">
+                        <div class="form-group mb-1">
+                            <input type="text" placeholder="Destination ZIP" class="form-control" id="destination" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Vehicle Type -->
+                    <div class="col-xl-2 col-lg-3 col-md-6 px-1">
+                        <div class="form-group mb-1">
+                            <select class="form-control" id="vehicle_type" required >
+                                <option value="" disabled selected>Vechile Type</option>
+                                        <option value="Car">Car</option>
+                                        <option value="motorcycle">Motorcycle</option>
+                                        <option value="3_wheel_sidecar">3 Wheel Sidecar</option>
+                                        <option value="3_wheel_motorcycle">3 Wheel Motorcycle</option>
+                                        <option value="atv">ATV</option>
+                                        <option value="SUV">SUV</option>
+                                        <option value="Mid SUV">Mid SUV</option>
+                                        <option value="Large SUV">Large SUV</option>
+                                        <option value="Van">Van</option>
+                                        <option value="Mini Van">Mini Van</option>
+                                        <option value="Cargo Van">Cargo Van</option>
+                                        <option value="Passenger Van">Passenger Van</option>
+                                        <option value="Pickup">Pickup</option>
+                                        <option value="Pickup Dually">Pickup Dually</option>
+                                        <option value="Box Truck Dually">Box Truck Dually</option>
+                                        <option value="other_vehicle">Other Vehicle</option>
+                                        <option value="other_motorcycle">Other Motorcycle</option>
+                                        <option value="other">Other</option>
+                             
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Trailer Type -->
+                    <div class="col-xl-2 col-lg-2 col-md-2 px-1">
+                        <div class="form-group mb-1">
+                            <select class="form-control" id="inoperable" required>
+                                <option value="" disabled selected>Trailer Type</option>
+                                <option value="1">Open</option>
+                                <option value="2">Enclosed</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Dispatch Price -->
+                   <div class="col-xl-2 col-lg-2 col-md-4 px-1" style="max-width: 12.5%; flex: 0 0 12.5%;">
+                        <div class="form-group mb-1">
+                            <input type="number" placeholder="Dispatch Price" class="form-control" id="dispatch_price" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Listed Price -->
+                    <div class="col-xl-2 col-lg-2 col-md-4 px-1" style="max-width: 12.5%; flex: 0 0 12.5%;">
+                        <div class="form-group mb-1">
+                            <input type="number" placeholder="Listed Price" class="form-control" id="listed_price" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Inop Checkbox -->
+                    <div class="col-xl-1 col-lg-2 col-md-6 px-1">
+                        <div class="form-group mb-0"> <!-- mb-0 removes bottom margin -->
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="trailer-type" value="2">
+                                <label class="form-check-label">Inop</label>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+             <div class="row px-1 mb-1"> <!-- gx-1 reduces horizontal gap, mb-1 reduces bottom margin -->
+                    <!-- Origin ZIP -->
+                       <div class="col-xl-2 col-lg-2 col-md-2 px-1"> <!-- px-1 reduces side padding -->
+                        <div class="form-group mb-1"> <!-- mb-1 reduces bottom margin -->
+                            <input type="text" placeholder="Origin ZIP" class="form-control" id="origine" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Destination ZIP -->
+                    <div class="col-xl-2 col-lg-3 col-md-6 px-1">
+                        <div class="form-group mb-1">
+                            <input type="text" placeholder="Destination ZIP" class="form-control" id="destination" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Vehicle Type -->
+                    <div class="col-xl-2 col-lg-3 col-md-6 px-1">
+                        <div class="form-group mb-1">
+                            <select class="form-control" id="vehicle_type" required >
+                                <option value="" disabled selected>Vechile Type</option>
+                                        <option value="Car">Car</option>
+                                        <option value="motorcycle">Motorcycle</option>
+                                        <option value="3_wheel_sidecar">3 Wheel Sidecar</option>
+                                        <option value="3_wheel_motorcycle">3 Wheel Motorcycle</option>
+                                        <option value="atv">ATV</option>
+                                        <option value="SUV">SUV</option>
+                                        <option value="Mid SUV">Mid SUV</option>
+                                        <option value="Large SUV">Large SUV</option>
+                                        <option value="Van">Van</option>
+                                        <option value="Mini Van">Mini Van</option>
+                                        <option value="Cargo Van">Cargo Van</option>
+                                        <option value="Passenger Van">Passenger Van</option>
+                                        <option value="Pickup">Pickup</option>
+                                        <option value="Pickup Dually">Pickup Dually</option>
+                                        <option value="Box Truck Dually">Box Truck Dually</option>
+                                        <option value="other_vehicle">Other Vehicle</option>
+                                        <option value="other_motorcycle">Other Motorcycle</option>
+                                        <option value="other">Other</option>
+                             
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Trailer Type -->
+                    <div class="col-xl-2 col-lg-2 col-md-2 px-1">
+                        <div class="form-group mb-1">
+                            <select class="form-control" id="inoperable" required >
+                                <option value="" disabled selected>Trailer Type</option>
+                                <option value="1">Open</option>
+                                <option value="2">Enclosed</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Dispatch Price -->
+                   <div class="col-xl-2 col-lg-2 col-md-4 px-1" style="max-width: 12.5%; flex: 0 0 12.5%;">
+                        <div class="form-group mb-1">
+                            <input type="number" placeholder="Dispatch Price" class="form-control" id="dispatch_price" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Listed Price -->
+                    <div class="col-xl-2 col-lg-2 col-md-4 px-1" style="max-width: 12.5%; flex: 0 0 12.5%;">
+                        <div class="form-group mb-1">
+                            <input type="number" placeholder="Listed Price" class="form-control" id="listed_price" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Inop Checkbox -->
+                    <div class="col-xl-1 col-lg-2 col-md-6 px-1">
+                        <div class="form-group mb-0"> <!-- mb-0 removes bottom margin -->
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="trailer-type" value="2">
+                                <label class="form-check-label">Inop</label>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                     <div class="row px-1 mb-1"> <!-- gx-1 reduces horizontal gap, mb-1 reduces bottom margin -->
+                    <!-- Origin ZIP -->
+                       <div class="col-xl-2 col-lg-2 col-md-2 px-1"> <!-- px-1 reduces side padding -->
+                        <div class="form-group mb-1"> <!-- mb-1 reduces bottom margin -->
+                            <input type="text" placeholder="Origin ZIP" class="form-control" id="origine" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Destination ZIP -->
+                    <div class="col-xl-2 col-lg-3 col-md-6 px-1">
+                        <div class="form-group mb-1">
+                            <input type="text" placeholder="Destination ZIP" class="form-control" id="destination" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Vehicle Type -->
+                    <div class="col-xl-2 col-lg-3 col-md-6 px-1">
+                        <div class="form-group mb-1">
+                            <select class="form-control" id="vehicle_type" required >
+                                <option value="" disabled selected>Vechile Type</option>
+                                        <option value="Car">Car</option>
+                                        <option value="motorcycle">Motorcycle</option>
+                                        <option value="3_wheel_sidecar">3 Wheel Sidecar</option>
+                                        <option value="3_wheel_motorcycle">3 Wheel Motorcycle</option>
+                                        <option value="atv">ATV</option>
+                                        <option value="SUV">SUV</option>
+                                        <option value="Mid SUV">Mid SUV</option>
+                                        <option value="Large SUV">Large SUV</option>
+                                        <option value="Van">Van</option>
+                                        <option value="Mini Van">Mini Van</option>
+                                        <option value="Cargo Van">Cargo Van</option>
+                                        <option value="Passenger Van">Passenger Van</option>
+                                        <option value="Pickup">Pickup</option>
+                                        <option value="Pickup Dually">Pickup Dually</option>
+                                        <option value="Box Truck Dually">Box Truck Dually</option>
+                                        <option value="other_vehicle">Other Vehicle</option>
+                                        <option value="other_motorcycle">Other Motorcycle</option>
+                                        <option value="other">Other</option>
+                             
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Trailer Type -->
+                    <div class="col-xl-2 col-lg-2 col-md-2 px-1">
+                        <div class="form-group mb-1">
+                            <select class="form-control" id="inoperable" required>
+                                <option value="" disabled selected>Trailer Type</option>
+                                <option value="1">Open</option>
+                                <option value="2">Enclosed</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Dispatch Price -->
+                   <div class="col-xl-2 col-lg-2 col-md-4 px-1" style="max-width: 12.5%; flex: 0 0 12.5%;">
+                        <div class="form-group mb-1">
+                            <input type="number" placeholder="Dispatch Price" class="form-control" id="dispatch_price" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Listed Price -->
+                    <div class="col-xl-2 col-lg-2 col-md-4 px-1" style="max-width: 12.5%; flex: 0 0 12.5%;">
+                        <div class="form-group mb-1">
+                            <input type="number" placeholder="Listed Price" class="form-control" id="listed_price" required >
+                        </div>
+                    </div>
+                    
+                    <!-- Inop Checkbox -->
+                    <div class="col-xl-1 col-lg-2 col-md-6 px-1">
+                        <div class="form-group mb-0"> <!-- mb-0 removes bottom margin -->
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="trailer-type" value="2">
+                                <label class="form-check-label">Inop</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+          
+            <div class="modal-footer py-2"> <!-- Reduced footer padding -->
+                <button id="addRecord" class="btn btn-primary">Add Price</button>
+            </div>
+        </div>
+    </div>
+</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
 
     <script>
@@ -607,7 +1020,12 @@
             return new Date(date).toLocaleDateString('en-GB', options);
         }
 
+  // Add record functionality
+        $(document).on('click', '.addBtn2', function () {
+            $('#addModal2').modal('show');
+        });
 
+ 
         // Add record functionality
         $(document).on('click', '.addBtn', function () {
             $('#addModal').modal('show');
@@ -777,6 +1195,8 @@
                 }
             });
         });
+        
+
     </script>
 
     @include('Layout.footer')

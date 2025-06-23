@@ -4227,11 +4227,11 @@ section {
 }
 
 .table-earning thead th {
-    background: #333;
+    background: #2c3e50;
     font-size: 16px;
     color: #fff;
     vertical-align: middle;
-    font-weight: 400;
+    font-weight: 200px;
     text-transform: capitalize;
     line-height: 1;
     padding: 22px 40px;
@@ -4346,7 +4346,7 @@ section {
 
 .table-data thead tr td {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     color: #808080;
     text-transform: uppercase;
 }
