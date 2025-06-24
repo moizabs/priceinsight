@@ -61,6 +61,8 @@
         toastr.error("{{ session('error') }}");
     </script>
     @endif
+
+    @include('Layout.footer')
 </body>
 
 </html>

@@ -401,7 +401,7 @@
            </div>
         
           <div class="modal-footer py-2"> <!-- Reduced footer padding -->
-              <button id="addRecord" class="btn btn-primary" disabled>Add Price</button>
+              <button id="insertPrice" class="btn btn-primary">Add Price</button>
           </div>
       </div>
   </div>
