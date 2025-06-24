@@ -709,9 +709,7 @@
             var successModal = new bootstrap.Modal(document.getElementById('statusSuccessModal'));
             successModal.show();
         }
-
-
-        
+       
 
 
         const GetVehicleMake = '{{ route('Get.Vehcile.Make') }}';
