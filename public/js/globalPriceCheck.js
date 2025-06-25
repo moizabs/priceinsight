@@ -247,7 +247,7 @@ class GlobalPriceCheck {
         // $('#pmodel').val(vehicleInfo[2] || '').prop('readonly', true);
 
         $('#pvehicle_type').val(record.type || '').prop('disabled', true);
-        $('#pinoperable').prop('checked', record.condition == 1).prop('disabled', true);
+        $('#pinoperable').prop('checked', record.condition == 2).prop('disabled', true);
         $('#ptrailer-type').val(record.transport || '').prop('disabled', true);
         // $(`input[name="ptrailer-type"][value="${record.transport || '1'}"]`).prop('checked', true);
         // $('input[name="ptrailer-type"]').prop('disabled', true);
