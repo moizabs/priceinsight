@@ -24,9 +24,6 @@ Route::delete('/delete-account', 'UserController@delete_accounts');
 
 // Route::get('/account/get-user/{id}', 'UserController@getAccountData');
 
-
-
-
 Route::get('/osrm-proxy', function(Request $request) {
     $url = "http://router.project-osrm.org/route/v1/driving/" . 
            $request->coordinates . 
@@ -34,3 +31,11 @@ Route::get('/osrm-proxy', function(Request $request) {
     
     return Http::get($url)->json();
 });
+
+
+
+
+// Freight Price Insight
+Route::get('/freight-listing-data', 'FreightListingController@api_freight_listing_data');
+Route::post('/add-freight-listing-data', 'FreightListingController@add_api_freight_listing_data');
+Route::post('/price-check-freight-listing-data', 'FreightListingController@price_check_freight_listing_data');
